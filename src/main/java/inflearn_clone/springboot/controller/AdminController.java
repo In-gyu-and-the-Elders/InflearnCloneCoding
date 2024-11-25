@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/admin")
@@ -43,9 +44,14 @@ public class AdminController {
         return "admin/dashboard";
     }
 
-    @GetMapping("/list")
-    public String list(Model model){
-        return "admin/list";
+    @GetMapping("/member/list")
+    public String list(Model model,
+                       @RequestParam(defaultValue = "1") int pageNo,
+                       @RequestParam(required = false) String searchCategory,
+                       @RequestParam(required = false) String searchValue){
+
+
+        return "admin/member/list";
     }
 
 
