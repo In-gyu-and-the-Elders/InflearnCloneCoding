@@ -87,7 +87,7 @@ public class NoticeController {
     @PostMapping("/modify")
     public String modify(BbsDTO bbsDTO, Model model) {
         // 1. 파일 빼고는 동일하게 진행함.
-        // 2. 파일 업로드가 있을 시, 0) DB에서 원본 파일명을 1) 일단 이 파일을 업로드함. 2)
+        // 2. 파일 업로드가 있을 시, 0) DB에서 원본 파일명을 1) 일단 이 파일을 업로드함. 2) 으아아아아아아아아아아아악아아으아아아악
 
         noticeService.update(bbsDTO);
         return null;
