@@ -30,7 +30,6 @@ public class NoticeController {
     @PostMapping("/insert")
     public String insert(BbsDTO bbsDTO,
                          Model model, HttpServletResponse response) { //validation 추가해야 함.
-
         //1. 파일 업로드
         String fileName = null;
         try {
@@ -69,7 +68,10 @@ public class NoticeController {
     }
 
     @GetMapping("/list")
-    public String list(Model model) {return null;}
+    public String list(Model model) {
+        model.addAttribute("noticeList", noticeService.list());
+        return "notice/list";
+    }
 
     @GetMapping("/modify")
     public String modify(@RequestParam int idx, HttpServletResponse response, Model model) {
@@ -85,13 +87,33 @@ public class NoticeController {
     }
 
     @PostMapping("/modify")
-    public String modify(@RequestParam int idx, BbsDTO bbsDTO, Model model) {
-        // 1. 파일 빼고는 동일하게 진행함.
-        // 2. 파일 업로드가 있을 시, 0) DB에서 원본 파일명을 1) 일단 이 파일을 업로드함. 2) 으아아아아아아아아아아아악아아으아아아악
+    public String modify(@RequestParam int idx, BbsDTO bbsDTO, Model model, HttpServletResponse response) {
+        response.setCharacterEncoding("utf-8");
         String originalFilePath = noticeService.view(idx).getFilePath(); //원본 파일명
+        String newFilePath = null;
 
-        noticeService.update(bbsDTO);
-        return null;
+        try {
+            newFilePath = CommonFileUtil.uploadFile(bbsDTO.getFile()); // 새로운 파일 업로드
+        } catch (IOException e){
+            log.info(e.getMessage());
+        }
+        bbsDTO.setFilePath(newFilePath);
+
+        if (newFilePath != null && !newFilePath.isEmpty()) {
+            boolean fileDeleted = CommonFileUtil.deleteFile(originalFilePath);
+            if (!fileDeleted) {
+                log.info("기존 파일 삭제 실패");
+            }
+            bbsDTO.setFilePath(newFilePath);
+        }
+
+        int result = noticeService.update(bbsDTO);
+        if (result > 0) {
+            return "redirect:/notice/view?idx=" + idx;
+        } else {
+            JSFunc.alertBack("수정에 실패했습니다. 다시 시도해주세요.",response);
+            return null;
+        }
     }
 
     @GetMapping("/delete")

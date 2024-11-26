@@ -8,7 +8,9 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +38,9 @@ public class NoticeServiceImpl implements NoticeServiceIf{
 
     @Override
     public List<BbsDTO> list() {
-        return List.of();
+        List<BbsVO> list = noticeMapper.list();
+        List<BbsDTO> dtoList = list.stream().map(vo -> modelMapper.map(vo, BbsDTO.class)).toList();
+        return dtoList;
     }
 
     @Override

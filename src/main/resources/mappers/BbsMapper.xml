@@ -18,8 +18,9 @@
         DELETE FROM tbl_bbs
         WHERE idx = #{idx}
     </delete>
-    <select id="list">
-
+    <select id="list" resultType="inflearn_clone.springboot.domain.BbsVO">
+        SELECT * FROM tbl_bbs
+        WHERE category = 'N'
     </select>
     <select id="view" resultType="inflearn_clone.springboot.domain.BbsVO">
         SELECT * FROM tbl_bbs
