@@ -17,4 +17,9 @@ public interface MemberServiceIf {
 
     //회원 수정
     boolean modifyMemberInfo(MemberDTO dto);
+
+    //회원 삭제
+    boolean deleteMemberInfo(String memberId);
+
+    //회원 환불 여부
 }

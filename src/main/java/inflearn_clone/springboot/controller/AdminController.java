@@ -2,6 +2,7 @@ package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
+import inflearn_clone.springboot.service.CourseSerivce;
 import inflearn_clone.springboot.service.admin.NoticeServiceIf;
 import inflearn_clone.springboot.service.member.MemberServiceIf;
 import inflearn_clone.springboot.utils.CommonFileUtil;
@@ -10,6 +11,8 @@ import inflearn_clone.springboot.utils.Paging;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +30,7 @@ public class AdminController {
 
     private final MemberServiceIf memberService;
     private final NoticeServiceIf noticeService;
+    private final CourseSerivce courseSerivce;
     /*
     * 관리자 로그인 페이지 이동
      */
@@ -124,13 +128,46 @@ public class AdminController {
      */
     @PostMapping("/member/modify")
     public String modifyPost(@ModelAttribute MemberDTO dto){
-        System.out.println("DTO 수정: " + dto); // dto.toString()으로 출력
         boolean result = memberService.modifyMemberInfo(dto);
         System.out.println("result" + result);
         if(result){
             return "redirect:/admin/member/list"; //나중에 view로 바꿀 것
         }
         return null;
+    }
+
+    /*
+    * 강의 삭제
+    */
+    @GetMapping("/course/delete")
+    public String deleteCourse(@RequestParam String idx){
+        return null;
+    }
+
+    /*
+    * 회원 탈퇴
+    *  회원이 탈퇴 가능한 상태인지 확인
+    * 환불 처리 절차가 필요한 경우라면 즉시 탈퇴 처리가 아닌 유예 상태로 변경
+    */
+    @GetMapping("/member/delete")
+    public ResponseEntity<?> memberDelete(@RequestParam String memberId, @RequestParam String memberType){
+        if(memberType.equals("T")){
+            boolean result = courseSerivce.selectCourseByMemberId(memberId);
+            if(result){
+                boolean isDeleted = courseSerivce.deleteCourseByMemberId(memberId);
+                if(isDeleted){
+                    return ResponseEntity.ok("모든 강의가 성공적으로 삭제되었습니다.");
+                }else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("강의 삭제 중 오류가 발생했습니다.");
+                }
+            }else{
+                return ResponseEntity.badRequest().body("운영 중인 강의가 없습니다.");
+            }
+        }else{
+            log.info("학생 로직 들어가야함");
+            return ResponseEntity.ok("학생 로직 처리 예정");
+        }
     }
 
 

@@ -22,6 +22,7 @@
     </select>
 </div>
 <div layout:fragment="content">
+
     <table class="table table-bordered table-hover" th:if="${members}">
         <thead class="thead">
             <tr>
@@ -45,13 +46,14 @@
             <td>[[${dto.phone}]]</td>
             <td>[[${dto.regDate}]]</td>
             <td>
-                <span class="badge badge-success" th:if="${dto.memberType == 'S'}">활성</span>
-                <span class="badge badge-secondary" th:if="${dto.memberType == 'T'}">비활성</span>
-                <span class="badge badge-danger" th:if="${dto.memberType != 'S' and dto.memberType != 'T'}">탈퇴</span>
+                <span class="badge badge-success" th:if="${dto.status == 'Y'}">활성</span>
+                <span class="badge badge-secondary" th:if="${dto.status == 'N'}">비활성</span>
+                <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N'}">탈퇴</span>
             </td>
         </tr>
         </tbody>
     </table>
     <div th:replace="~{/common/paging :: paging}"></div>
 </div>
+
 

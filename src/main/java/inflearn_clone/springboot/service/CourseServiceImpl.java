@@ -5,6 +5,7 @@ import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.mappers.CourseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseSerivce {
-    @Autowired
+
     private final CourseMapper courseMapper;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<CourseDTO> courseList() {
@@ -26,4 +28,17 @@ public class CourseServiceImpl implements CourseSerivce {
     public CourseDTO courseView(int idx) {
         return null;
     }
+
+    //teacherId로 존재하는 강의가 있는지 확인하기
+    @Override
+    public boolean selectCourseByMemberId(String memberId) {
+        return courseMapper.selectCourseByMemberId(memberId);
+    }
+
+    // 특정 teacherId의 강의 삭제하기
+    @Override
+    public boolean deleteCourseByMemberId(String memberId) {
+        return courseMapper.deleteCourseByMemberId(memberId);
+    }
+
 }

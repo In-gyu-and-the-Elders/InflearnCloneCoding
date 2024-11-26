@@ -9,4 +9,13 @@ import java.util.List;
 public interface CourseMapper {
     List<CourseVO> courseList();
     CourseVO courseView(int idx);
-}
+
+    // 특정 teacherId로 존재하는 강의가 있는지 확인하기
+    boolean selectCourseByMemberId(String teacherId);
+
+    // 특정 teacherId로 강좌 삭제
+    boolean deleteCourseByMemberId(String teacherId);
+
+
+
+ }

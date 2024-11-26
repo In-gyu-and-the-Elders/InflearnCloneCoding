@@ -9,4 +9,9 @@ public interface CourseSerivce {
     List<CourseDTO> courseList();
     // 강의 상세 정보 가져오기
     CourseDTO courseView(int idx);
+
+    //아이디에 해당하는 강의 정보 확인하기(관리자 사용)
+    boolean selectCourseByMemberId(String memberId);
+
+    boolean deleteCourseByMemberId(String memberId);
 }

@@ -18,5 +18,19 @@
         FROM tbl_course
         WHERE idx = #{idx} AND status = 'Y';
     </select>
+
+    <!--teacherId로 존재하는 강의가 있는지 확인-->
+    <select id="selectCourseByMemberId" resultType="int">
+        SELECT COUNT(idx)
+        FROM tbl_course
+        WHERE teacherId = #{teacherId} AND status = 'Y';
+    </select>
+
+    <!--teacherId에 해당하는 강의 비활성화로 변경-->
+    <update id="deleteCourseByMemberId">
+        UPDATE tbl_course
+        SET status = 'N'
+        WHERE teacherId = #{teacherId} AND status = 'Y';
+    </update>
 </mapper>
 
