@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="inflearn_clone.springboot.mapper.NoticeMapper">
+    <insert id="insert">
+        INSERT INTO tbl_bbs(category, title, content, displayDate, filePath)
+        VALUES ('N', #{title}, #{content}, #{displayDate}, #{filePath})
+    </insert>
+    <update id="update">
+        UPDATE tbl_bbs SET
+        title = #{title},
+        content = #{content},
+        displayDate = #{displayDate},
+        filePath = #{filePath}
+        WHERE idx = #{idx}
+    </update>
+    <delete id="delete">
+        DELETE FROM tbl_bbs
+        WHERE idx = #{idx}
+    </delete>
+    <select id="list">
+
+    </select>
+    <select id="view" resultType="inflearn_clone.springboot.domain.BbsVO">
+        SELECT * FROM tbl_bbs
+        WHERE idx = #{idx}
+    </select>
+</mapper>    
