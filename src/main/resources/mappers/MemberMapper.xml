@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="inflearn_clone.springboot.mapper.MemberMapper">
+<mapper namespace="inflearn_clone.springboot.mappers.MemberMapper">
 
     <!-- 관리자 기능용 쿼리들 -->
     <!-- 회원 전체 수 -->
     <select id="memberTotalCnt" resultType="int">
-        SELECT COUNT(memberId)
+        SELECT COUNT(*)
         FROM tbl_member
         <where>
             <if test="searchCategory != null and searchValue != null">
@@ -22,7 +22,7 @@
     </select>
 
     <!-- 전체 회원 목록 -->
-    <select id="selectAllMember" resultType="inflearn_clone.springboot.domain.member.MemberVO">
+    <select id="selectAllMember" resultType="inflearn_clone.springboot.domain.MemberVO">
         SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType
         FROM tbl_member
         <where>
@@ -37,8 +37,7 @@
                 </choose>
             </if>
         </where>
-        ${getSortType}
-        LIMIT #{offset}, #{pageSize}
+        LIMIT #{offset}, #{limit}
     </select>
 
 

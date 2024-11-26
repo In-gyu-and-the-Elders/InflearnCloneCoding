@@ -2,24 +2,46 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
       layout:decorate="~{admin/layout/common}">
 <div layout:fragment="content">
-    <table class="table table-bordered table-hover">
+<!--    <table class="table table-bordered table-hover">-->
+<!--        <thead class="thead">-->
+<!--        <tr>-->
+<!--            <th>#</th>-->
+<!--            <th>회원ID</th>-->
+<!--            <th>성명</th>-->
+<!--            <th>이메일</th>-->
+<!--            <th>전화번호</th>-->
+<!--            <th>회원상태</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr>-->
+<!--            <td>1</td>-->
+<!--            <td>sumisong</td>-->
+<!--            <td>홍길동</td>-->
+<!--            <td>hong@example.com</td>-->
+<!--            <td>010-1111-1111</td>-->
+<!--            <td><span class="badge badge-success">활성</span></td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+    <table class="table table-bordered table-hover" th:if="${members}">
         <thead class="thead">
-        <tr>
-            <th>#</th>
-            <th>회원ID</th>
-            <th>성명</th>
-            <th>이메일</th>
-            <th>전화번호</th>
-            <th>회원상태</th>
-        </tr>
+            <tr>
+                <th>#</th>
+                <th>회원ID</th>
+                <th>성명</th>
+                <th>이메일</th>
+                <th>전화번호</th>
+                <th>회원상태</th>
+            </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>1</td>
-            <td>sumisong</td>
-            <td>홍길동</td>
-            <td>hong@example.com</td>
-            <td>010-1111-1111</td>
+        <tr th:each="dto, status:${members}">
+            <td>#</td>
+            <td>[[${dto.memberId}]]</td>
+            <td>[[${dto.name}]]</td>
+            <td>[[${dto.email}]]</td>
+            <td>[[${dto.phone}]]</td>
             <td><span class="badge badge-success">활성</span></td>
         </tr>
         </tbody>

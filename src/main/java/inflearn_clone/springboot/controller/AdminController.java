@@ -64,6 +64,7 @@ public class AdminController {
                        @RequestParam(required = false) String sortType,
                        @RequestParam(required = false) String sortOrder){
         int totalCnt = memberServiceIf.memberTotalCnt(searchCategory, searchValue);
+        log.info("Member totalCnt" + totalCnt); // 100
         Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
         List<MemberDTO> members =  memberServiceIf.selectAllMember(pageNo, 10, searchCategory, searchValue);
         model.addAttribute("members", members);
@@ -72,6 +73,4 @@ public class AdminController {
         model.addAttribute("searchValue", searchValue);
         return "admin/member/list";
     }
-
-
 }

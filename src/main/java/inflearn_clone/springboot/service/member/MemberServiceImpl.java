@@ -6,7 +6,6 @@ import inflearn_clone.springboot.mappers.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -26,6 +25,8 @@ public class MemberServiceImpl implements MemberServiceIf{
 
     @Override
     public int memberTotalCnt(String searchCategory, String searchValue) {
+        log.info("searchCategory", searchCategory);
+        log.info("searchValue", searchValue);
         return memberMapper.memberTotalCnt(searchCategory, searchValue);
     }
 
