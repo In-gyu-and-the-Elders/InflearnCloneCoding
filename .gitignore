@@ -78,5 +78,8 @@ bin/
 ### Mac OS ###
 .DS_Store
 dbDump/
+.gradle/
+/test/
+
 ### TEST 제거 ###
 **/src/test/

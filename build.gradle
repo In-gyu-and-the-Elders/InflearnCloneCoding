@@ -31,13 +31,16 @@ dependencies {
 	}
 
 	compileOnly 'org.projectlombok:lombok'
+	compileOnly('javax.servlet:javax.servlet-api:4.0.1')
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect', version: '3.3.0'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.3.0'
+	
 
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
@@ -50,6 +53,9 @@ dependencies {
 
 	implementation 'org.modelmapper:modelmapper:3.2.1'
 	implementation 'org.springframework.boot:spring-boot-starter-validation:3.3.5'
+
+	//제이슨추가
+	implementation group: 'org.json', name: 'json', version: '20240303'
 }
 
 tasks.named('test') {

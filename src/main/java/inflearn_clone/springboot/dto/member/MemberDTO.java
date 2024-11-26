@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Log4j2
+@ToString
 public class MemberDTO {
     private String memberId;
     private String pwd;
