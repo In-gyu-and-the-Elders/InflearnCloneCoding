@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/common}">
+<div layout:fragment="content">
+    <form th:action="@{/admin/notice/modify}" method="post" enctype="multipart/form-data">
+        <table class="table table-bordered">
+            <tr>
+                <th style="width: 20%;">제목</th>
+                <td>
+                    <input type="text" class="form-control" th:value="${bbsDTO.title}" name="title" placeholder="제목을 입력하세요" required>
+                </td>
+            </tr>
+            <tr>
+                <th>등록일</th>
+                <td>
+                    <input type="text" class="form-control" th:value="${bbsDTO.regDate}" disabled>
+                </td>
+            </tr>
+            <tr>
+                <th>내용</th>
+                <td colspan="3">
+                    <textarea class="form-control" name="content" rows="5" placeholder="내용을 입력하세요" required th:text="${bbsDTO.content}"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <th>첨부파일</th>
+                <td colspan="3">
+                    <div class="mb-3">
+                        <!-- 기존 파일 표시 -->
+                        <p id="originalFile" class="form-control-plaintext">기존 파일 : [[${bbsDTO.fileName}]]</p>
+
+                        <!-- 파일 업로드 입력 -->
+                        <div class="input-group mt-2">
+                            <input type="file" class="form-control" name="file" accept=".pdf, .doc, .docx, .xls, .xlsx">
+                        </div>
+
+                        <!-- 업로드 안내 텍스트 -->
+                        <span class="form-text text-muted mt-2" style="font-size: 0.875rem;">
+                .pdf, .doc, .docx, .xls, .xlsx 파일만 업로드 가능.<br>업로드 시 이전 파일은 완전히 삭제되어 복구가 불가능합니다.
+            </span>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+        <input type="hidden" th:value="${bbsDTO.idx}" name="idx">
+        <div class="d-flex justify-content-end mt-3">
+            <button type="submit" class="btn btn-success me-2">수정</button>
+            <a href="#" class="btn btn-danger">삭제</a>
+        </div>
+    </form>
+</div>
+</html>

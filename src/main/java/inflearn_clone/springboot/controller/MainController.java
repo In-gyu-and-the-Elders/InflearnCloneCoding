@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @Log4j2
 public class MainController {
-  @GetMapping("/main")
-  public void main(Model model) {
-    model.addAttribute("msg", "Hello World");
+  @GetMapping("/")
+  public String main(Model model) {
+    return "main";
   }
 }

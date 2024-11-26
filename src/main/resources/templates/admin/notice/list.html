@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/common}">
+<div layout:fragment="content">
+    <table class="table table-bordered table-hover" th:if="${notice}">
+        <thead class="thead">
+        <tr>
+            <th>#</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>등록일</th>
+            <th>공개일</th>
+            <th>첨부파일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="dto, status:${notice}">
+            <td>#</td>
+            <td><a th:href="@{/admin/notice/view(idx=${dto.getIdx()})}">[[${dto.title}]]</a></td>
+            <td>[[${dto.writerId}]]</td>
+            <td th:text="${#temporals.format(dto.regDate, 'yyyy-MM-dd HH:mm:ss')}">
+            <td th:if="${dto.displayDate != null}" th:text="${#temporals.format(dto.displayDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:if="${dto.displayDate == null}" th:text="${#temporals.format(dto.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:if="${dto.filePath != null}">
+                <a th:href="@{/file/download(fileName=${dto.fileName})}" th:text="'O'"></a>
+            </td>
+            <td th:if="${dto.filePath == null}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${notice.isEmpty()}">
+        등록된 공지사항이 없습니다.
+    </p>
+    <div class="d-flex justify-content-end mt-3">
+        <a th:href="@{/admin/notice/insert}" class="btn btn-primary">등록</a>
+    </div>
+</div>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="inflearn_clone.springboot.mappers.NoticeMapper">
+<mapper namespace="inflearn_clone.springboot.mappers.BbsMapper">
     <insert id="insert">
-        INSERT INTO tbl_bbs(category, title, content, displayDate, filePath)
-        VALUES ('N', #{title}, #{content}, #{displayDate}, #{filePath})
+        INSERT INTO tbl_bbs(category, title, content, displayDate, filePath, writerId)
+        VALUES (#{category}, #{title}, #{content}, #{displayDate}, #{filePath}, #{writerId})
     </insert>
     <update id="update">
         UPDATE tbl_bbs SET
@@ -21,6 +21,7 @@
     <select id="list" resultType="inflearn_clone.springboot.domain.BbsVO">
         SELECT * FROM tbl_bbs
         WHERE category = 'N'
+        ORDER BY regDate DESC
     </select>
     <select id="view" resultType="inflearn_clone.springboot.domain.BbsVO">
         SELECT * FROM tbl_bbs
