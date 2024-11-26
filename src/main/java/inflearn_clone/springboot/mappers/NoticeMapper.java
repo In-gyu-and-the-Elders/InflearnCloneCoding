@@ -1,4 +1,4 @@
-package inflearn_clone.springboot.mapper;
+package inflearn_clone.springboot.mappers;
 
 import inflearn_clone.springboot.domain.BbsVO;
 import inflearn_clone.springboot.dto.bbs.BbsDTO;

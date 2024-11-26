@@ -10,5 +10,11 @@ public interface MemberServiceIf {
     int memberTotalCnt(String searchCategory, String searchValue);
 
     //전체 회원 조회
-    List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue);
+    List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);
+
+    //아이디로 회원 조회
+    MemberDTO selectMemberInfo(String memberId);
+
+    //회원 수정
+    boolean modifyMemberInfo(MemberDTO dto);
 }

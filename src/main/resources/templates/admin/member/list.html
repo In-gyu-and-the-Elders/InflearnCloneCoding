@@ -1,29 +1,27 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
       layout:decorate="~{admin/layout/common}">
+<div layout:fragment="title">
+    <div class="title">
+        <h2>회원 목록</h2>
+    </div>
+</div>
+<div layout:fragment="searchCategory">
+    <select class="form-select" name="searchCategory">
+        <option value="">카테고리</option>
+        <option value="name" >이름</option>
+        <option value="memberId">회원 ID</option>
+        <option value="email">회원 이메일</option>
+    </select>
+</div>
+<div layout:fragment="sortType">
+    <select class="form-select" name="sortType">
+        <option value="">정렬내용</option>
+        <option value="regDate">등록일</option>
+        <option value="name">이름</option>
+    </select>
+</div>
 <div layout:fragment="content">
-<!--    <table class="table table-bordered table-hover">-->
-<!--        <thead class="thead">-->
-<!--        <tr>-->
-<!--            <th>#</th>-->
-<!--            <th>회원ID</th>-->
-<!--            <th>성명</th>-->
-<!--            <th>이메일</th>-->
-<!--            <th>전화번호</th>-->
-<!--            <th>회원상태</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr>-->
-<!--            <td>1</td>-->
-<!--            <td>sumisong</td>-->
-<!--            <td>홍길동</td>-->
-<!--            <td>hong@example.com</td>-->
-<!--            <td>010-1111-1111</td>-->
-<!--            <td><span class="badge badge-success">활성</span></td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--    </table>-->
     <table class="table table-bordered table-hover" th:if="${members}">
         <thead class="thead">
             <tr>
@@ -32,18 +30,28 @@
                 <th>성명</th>
                 <th>이메일</th>
                 <th>전화번호</th>
+                <th>등록일</th>
                 <th>회원상태</th>
             </tr>
         </thead>
         <tbody>
         <tr th:each="dto, status:${members}">
             <td>#</td>
-            <td>[[${dto.memberId}]]</td>
+            <td>
+                <a th:href="@{/admin/member/modify(memberId=${dto.memberId})}">[[${dto.memberId}]]</a>
+            </td>
             <td>[[${dto.name}]]</td>
             <td>[[${dto.email}]]</td>
             <td>[[${dto.phone}]]</td>
-            <td><span class="badge badge-success">활성</span></td>
+            <td>[[${dto.regDate}]]</td>
+            <td>
+                <span class="badge badge-success" th:if="${dto.memberType == 'S'}">활성</span>
+                <span class="badge badge-secondary" th:if="${dto.memberType == 'T'}">비활성</span>
+                <span class="badge badge-danger" th:if="${dto.memberType != 'S' and dto.memberType != 'T'}">탈퇴</span>
+            </td>
         </tr>
         </tbody>
     </table>
+    <div th:replace="~{/common/paging :: paging}"></div>
 </div>
+

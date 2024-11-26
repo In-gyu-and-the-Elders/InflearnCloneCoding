@@ -1,4 +1,4 @@
-package inflearn_clone.springboot.mapper;
+package inflearn_clone.springboot.mappers;
 
 import inflearn_clone.springboot.domain.CourseVO;
 import org.apache.ibatis.annotations.Mapper;

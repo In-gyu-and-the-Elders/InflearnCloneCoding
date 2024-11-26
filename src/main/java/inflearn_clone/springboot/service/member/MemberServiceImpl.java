@@ -31,15 +31,36 @@ public class MemberServiceImpl implements MemberServiceIf{
     }
 
     @Override
-    public List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue) {
+    public List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
         Map<String, Object> map = new HashMap<>();
         map.put("offset", (pageNo - 1) * pageSize);
         map.put("limit", pageSize);
         map.put("searchCategory", searchCategory);
         map.put("searchValue", searchValue);
+        map.put("sortQuery", sortQuery);
 
         List<MemberVO> voList =  memberMapper.selectAllMember(map);
         return voList.stream()
                 .map(vo -> modelMapper.map(vo, MemberDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public MemberDTO selectMemberInfo(String memberId) {
+        MemberVO vo = memberMapper.selectMemberInfo(memberId);
+        MemberDTO memberInfo = modelMapper.map(vo, MemberDTO.class);
+        return memberInfo;
+    }
+
+    @Override
+    public boolean modifyMemberInfo(MemberDTO dto) {
+        MemberVO vo = modelMapper.map(dto, MemberVO.class);
+        boolean result = memberMapper.modifyMemberInfo(vo);
+        if(result){
+            return result;
+        }
+        else{
+            log.info("회원 수정 실패");
+        }
+        return false;
     }
 }

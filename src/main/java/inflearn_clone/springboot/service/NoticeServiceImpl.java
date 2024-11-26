@@ -2,15 +2,13 @@ package inflearn_clone.springboot.service;
 
 import inflearn_clone.springboot.domain.BbsVO;
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
-import inflearn_clone.springboot.mapper.NoticeMapper;
+import inflearn_clone.springboot.mappers.NoticeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

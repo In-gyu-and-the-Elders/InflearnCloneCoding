@@ -31,15 +31,16 @@
         .search-container {
             display: flex;
             justify-content: flex-end;
-            margin-bottom: 15px; /* 테이블과의 간격 */
+            margin-bottom: 15px;
+            /*border: 1px solid red;*/
         }
         .search-container .form-select {
-            max-width: 150px; /* 셀렉트박스 너비 */
-            margin-right: 10px; /* 요소 간격 */
+            max-width: 150px;
+            margin-right: 10px;
         }
         .search-container .form-control {
-            max-width: 350px; /* 검색창 너비 (넓게 설정) */
-            margin-right: 10px; /* 요소 간격 */
+            max-width: 250px;
+            margin-right: 10px;
         }
         .search-container .btn {
             margin-left: 5px;
@@ -66,9 +67,7 @@
                 <li class="menu-title">강의</li>
                 <li class="menu-item-has-children dropdown">
                     <a href="#"  aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-th"></i>강의관리</a>
-
                 </li>
-
                 <li class="menu-title">결제</li><!-- /.menu-title -->
                 <li class="menu-item-has-children dropdown">
                     <a href="#"  aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>거래내역</a>
@@ -104,29 +103,30 @@
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
-                    <div class="title">
-                        <h2>회원 목록</h2>
+                    <div layout:fragment="title">
                     </div>
                     <div class="search-container">
-                        <form action="/admin/list" method="get" class="d-flex align-items-center">
+                        <form action="/admin/member/list" method="get" class="d-flex align-items-center">
                             <!-- 셀렉트박스 -->
-                            <select class="form-select" name="search_type">
-                                <option value="">----------</option>
-                                <option value="t">제목</option>
-                                <option value="c">내용</option>
-                                <option value="m">작성자</option>
-                            </select>
+                            <div layout:fragment="searchCategory">
+                            </div>
                             <!-- 검색창 -->
-                            <input type="search" class="form-control" name="search_word">
+                            <input type="search" class="form-control" name="searchValue" placeholder="내용">
+                            <!-- 셀렉트박스 -->
+                            <select class="form-select" name="sortOrder">
+                                <option value="">정렬순</option>
+                                <option value="DESC">내림차순</option>
+                                <option value="ASC">오름차순</option>
+                            </select>
+                            <div layout:fragment="sortType">
+
+                            </div>
                             <!-- 버튼 -->
                             <button class="btn btn-primary" type="submit">검색</button>
                             <button class="btn btn-secondary" type="reset">취소</button>
                         </form>
                     </div>
                     <div layout:fragment="content">
-                        <!-- 각 페이지가 여기에 콘텐츠를 삽입합니다 -->
-                    </div>
-                    <div layout:fragment="paging">
                         <!-- 각 페이지가 여기에 콘텐츠를 삽입합니다 -->
                     </div>
                 </div>

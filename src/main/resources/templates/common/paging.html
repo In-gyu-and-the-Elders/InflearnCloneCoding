@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
-      layout:decorate="~{/admin/layout/common.html}">
-<div layout:fragment="paging">
-    <!-- 페이징 영역 -->
+      layout:decorate="~{admin/layout/common}">
+<body>
+<div th:fragment="paging">
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <!-- 이전 페이지 블록 버튼 -->
             <li class="page-item" th:if="${paging.prevBlock}">
-                <a class="page-link" th:href="@{(pageNo=${paging.startBlockPage - 1}, searchCategory=${searchCategory}, searchValue=${searchValue})}" aria-label="Previous">
+                <a class="page-link"
+                   th:href="@{${url}(pageNo=${paging.startBlockPage - 1}, searchCategory=${searchCategory}, searchValue=${searchValue}, sortType=${sortType}, sortOrder=${sortOrder})}"
+                   aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -16,16 +18,21 @@
             <li class="page-item"
                 th:each="i : ${#numbers.sequence(paging.startBlockPage, paging.endBlockPage)}"
                 th:classappend="${i == pageNo} ? 'active'">
-                <a class="page-link" th:href="@{(pageNo=${i}, searchCategory=${searchCategory}, searchValue=${searchValue})}" th:text="${i}"></a>
+                <a class="page-link"
+                   th:href="@{${url}(pageNo=${i}, searchCategory=${searchCategory}, searchValue=${searchValue}, sortType=${sortType}, sortOrder=${sortOrder})}"
+                   th:text="${i}"></a>
             </li>
 
             <!-- 다음 페이지 블록 버튼 -->
             <li class="page-item" th:if="${paging.nextBlock}">
-                <a class="page-link" th:href="@{(pageNo=${paging.endBlockPage + 1}, searchCategory=${searchCategory}, searchValue=${searchValue})}" aria-label="Next">
+                <a class="page-link"
+                   th:href="@{${url}(pageNo=${paging.endBlockPage + 1}, searchCategory=${searchCategory}, searchValue=${searchValue}, sortType=${sortType}, sortOrder=${sortOrder})}"
+                   aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         </ul>
     </nav>
-
 </div>
+
+</body>
