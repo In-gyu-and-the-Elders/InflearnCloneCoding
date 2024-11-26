@@ -1,7 +1,73 @@
 <!DOCTYPE html>
 <html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout.html}"
 >
-<div>
-    <h1>강의 상세보기</h1>
-</div>
+<div layout:fragment="main">
+<!--    <div >-->
+    <link rel="stylesheet" href="/css/course/courseViewStyle.css">
+        <div class="content2">
+            <!-- 상단: 강의명 + 썸네일 -->
+            <div class="header">
+                <div class="course-info">
+                    <h1>강의명</h1>
+                    <p>⭐별점  수강생: <span></span>명</p>
+                    <p>👤 강사명: <span></span></p>
+                </div>
+                <div class="thumbnail">
+                    <img alt="강의 썸네일">
+                </div>
+            </div>
+
+            <!-- 중앙: 탭 영역 -->
+            <div class="tabs">
+                <button class="tab" data-tab="info">강의소개</button>
+                <button class="tab" data-tab="curriculum">커리큘럼</button>
+                <button class="tab" data-tab="qna">Q&A</button>
+                <button class="tab" data-tab="review">수강평</button>
+                <button class="tab" data-tab="notice">공지사항</button>
+            </div>
+
+            <!-- 중앙: 변경될 콘텐츠 영역 -->
+            <div class="tab-content">
+                <!-- 동적으로 로드될 콘텐츠 -->
+            </div>
+
+            <!-- 우측: 사이드바 -->
+            <div class="sidebar">
+                <h2>가격</h2>
+                <button>수강신청하기</button>
+                <button>장바구니에 담기</button>
+                <div class="like">
+                    <span class="heart">❤️</span>
+                    <span>20,333</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.tab[data-tab="info"]').click();
+    });
+    // 탭 클릭 이벤트
+    $('.tab').on('click', function () {
+        console.log("클릭시작")
+        const tabName = $(this).data('tab'); // 탭 이름 가져오기
+        $.get(`/course/tab/${tabName}`, function (data) { // 서버에서 해당 탭의 내용을 받아옴
+            $('.tab-content').html(data); // 받은 데이터를 5번 영역에 삽입
+        });
+    });
+
+    // 좋아요 버튼 클릭
+    $('.heart').on('click', function () {
+        const isLiked = $(this).hasClass('liked');
+        $.post('/course/like', { liked: !isLiked }, function (response) {
+            $('.heart').toggleClass('liked');
+            $('.like span:last-child').text(response.likeCount);
+        });
+    });
+</script>

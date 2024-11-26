@@ -5,3 +5,4 @@ public class CommonUtil {
         return url.substring(url.indexOf("://") + 3).substring(url.substring(url.indexOf("://") + 3).indexOf("/"));
     }
 }
+

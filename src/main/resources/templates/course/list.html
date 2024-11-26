@@ -1,28 +1,49 @@
 <!DOCTYPE html>
 <html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout.html}"
 >
-<div>
+<div layout:fragment="main">
     <link rel="stylesheet" href="/css/course/courseStyle.css">
     <h1>리스트</h1>
     <main class="main-content">
         <section class="filters">
             <button>전체</button>
-            <button>분류 1</button>
-            <button>분류 2</button>
+            <button>개발·프로그래밍</button>
+            <button>인공지능</button>
+            <button>하드웨어</button>
+            <button>기획·경영·마케팅</button>
+            <button>커리어·자기계발</button>
             <!-- 드롭다운 -->
             <select class="sort-dropdown">
                 <option value="recent">최신순</option>
-                <option value="popular">인기순</option>
-                <option value="rating">평점순</option>
+                <option value="rating">평점높은순</option>
+                <option value="rating">평점낮은순</option>
             </select>
         </section>
+        <section class="filters">
+            <button>검색</button>
+        </section>
         <section class="courses">
-            <!-- 강의 카드들 -->
-            <div class="course-card">강의 1</div>
-            <div class="course-card">강의 2</div>
-            <div class="course-card">강의 3</div>
-            <!-- ... -->
+            <div class="course-card">
+                <img src="image1.jpg" alt="강의 이미지">
+                <div class="content">
+                    <h3 class="title">파이썬 입문</h3>
+                    <p class="instructor">강사: DaveLee</p>
+                    <p class="price">₩66,000</p>
+                    <div class="rating">
+                        <span>★ 4.9</span>
+                        <span>(594)</span>
+                    </div>
+<!--                    추후 생각해보기-->
+<!--                    <div class="buttons">-->
+<!--                        <button>찜하기</button>-->
+<!--                        <button>장바구니</button>-->
+<!--                    </div>-->
+                </div>
+            </div>
+            <!-- 추가 강의 카드 -->
         </section>
     </main>
     <footer class="pagination">
