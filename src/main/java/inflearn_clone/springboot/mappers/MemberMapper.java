@@ -1,6 +1,7 @@
 package inflearn_clone.springboot.mappers;
 
 import inflearn_clone.springboot.domain.MemberVO;
+import inflearn_clone.springboot.dto.member.MemberDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,4 +12,8 @@ import java.util.Map;
 public interface MemberMapper {
     List<MemberVO> selectAllMember(Map<String, Object> map);
     int memberTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue);
+
+    MemberVO selectMemberInfo(String memberId);
+
+    boolean modifyMemberInfo(MemberVO vo);
 }
