@@ -78,5 +78,6 @@ bin/
 ### Mac OS ###
 .DS_Store
 dbDump/
+
 ### TEST 제거 ###
-!**/src/test/
+**/src/test/
