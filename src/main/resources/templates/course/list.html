@@ -4,8 +4,12 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/layout.html}"
 >
-<div layout:fragment="main">
+<head>
     <link rel="stylesheet" href="/css/course/courseStyle.css">
+    <title>강의 리스트</title>
+</head>
+<body>
+<div layout:fragment="main">
     <h1>리스트</h1>
     <main class="main-content">
         <section class="filters">
@@ -15,7 +19,6 @@
             <button>하드웨어</button>
             <button>기획·경영·마케팅</button>
             <button>커리어·자기계발</button>
-            <!-- 드롭다운 -->
             <select class="sort-dropdown">
                 <option value="recent">최신순</option>
                 <option value="rating">평점높은순</option>
@@ -26,24 +29,25 @@
             <button>검색</button>
         </section>
         <section class="courses">
-            <div class="course-card">
-                <img src="image1.jpg" alt="강의 이미지">
+            <!-- 데이터가 있을 경우 반복 출력 -->
+            <div class="course-card" th:each="course : ${courseList}">
+                <a th:href="@{/course/view/{idx}(idx=${course.idx})}">
+                <img th:src="${course.thumbnail}" alt="강의 이미지">
                 <div class="content">
-                    <h3 class="title">파이썬 입문</h3>
-                    <p class="instructor">강사: DaveLee</p>
-                    <p class="price">₩66,000</p>
+                    <h3 class="title" th:text="${course.title}"></h3>
+                    <p class="instructor" th:text="'강사: ' + ${course.teacherId}"></p>
+                    <p class="price" th:text="'₩' + ${course.price}"></p>
                     <div class="rating">
                         <span>★ 4.9</span>
                         <span>(594)</span>
                     </div>
-<!--                    추후 생각해보기-->
-<!--                    <div class="buttons">-->
-<!--                        <button>찜하기</button>-->
-<!--                        <button>장바구니</button>-->
-<!--                    </div>-->
                 </div>
+                </a>
             </div>
-            <!-- 추가 강의 카드 -->
+            <!-- 데이터가 없을 경우 메시지 출력 -->
+            <p class="no-data-message" th:if="${courseList == null or courseList.isEmpty()}">
+                표시할 데이터가 없습니다.
+            </p>
         </section>
     </main>
     <footer class="pagination">
@@ -54,3 +58,5 @@
         <button>다음</button>
     </footer>
 </div>
+</body>
+</html>
