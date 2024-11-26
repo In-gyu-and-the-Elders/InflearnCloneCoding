@@ -1,5 +1,7 @@
 package inflearn_clone.springboot.utils;
 
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -11,10 +13,13 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class CommonFileUtil {
 
-    @Value("${file.upload-dir}")
-    private static String UPLOAD_DIR;
+
+    private static final String UPLOAD_DIR = "C:/Users/Jerry/Desktop/java7/project/inflearn_clone_file";
     // 단일 파일 업로드 메서드
     public static String uploadFile(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            return null;  // null 허용
+        }
         File uploadDir = new File(UPLOAD_DIR);
 
         if (!uploadDir.exists()) {
@@ -87,5 +92,15 @@ public class CommonFileUtil {
             extension = originalFileName.substring(index);
         }
         return UUID.randomUUID().toString() + extension;
+    }
+
+    public static Resource downloadFile(String fileName) throws IOException {
+        File file = new File(UPLOAD_DIR + File.separator + fileName);
+
+        if (file.exists()) {
+            return new FileSystemResource(file); // FileSystemResource는 Spring에서 파일을 읽는 데 사용됩니다.
+        } else {
+            throw new IOException("파일을 찾을 수 없습니다: " + fileName); // 파일이 존재하지 않으면 예외 처리
+        }
     }
 }

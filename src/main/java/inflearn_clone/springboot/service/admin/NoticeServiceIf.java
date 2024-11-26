@@ -1,4 +1,4 @@
-package inflearn_clone.springboot.service;
+package inflearn_clone.springboot.service.admin;
 
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
 
