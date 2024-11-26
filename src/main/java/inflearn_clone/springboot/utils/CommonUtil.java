@@ -1,4 +1,4 @@
-package inflearn_clone.springboot.util;
+package inflearn_clone.springboot.utils;
 
 public class CommonUtil {
     public static String urlToUri(String url) {

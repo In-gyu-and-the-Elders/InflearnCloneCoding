@@ -1,7 +1,7 @@
 package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
-import inflearn_clone.springboot.service.NoticeServiceIf;
+import inflearn_clone.springboot.service.admin.NoticeServiceIf;
 import inflearn_clone.springboot.utils.CommonFileUtil;
 import inflearn_clone.springboot.utils.JSFunc;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,7 +10,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
