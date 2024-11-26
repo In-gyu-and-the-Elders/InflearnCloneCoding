@@ -1,7 +1,6 @@
-package inflearn_clone.springboot.mapper;
+package inflearn_clone.springboot.mappers;
 
 import inflearn_clone.springboot.domain.BbsVO;
-import inflearn_clone.springboot.dto.bbs.BbsDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

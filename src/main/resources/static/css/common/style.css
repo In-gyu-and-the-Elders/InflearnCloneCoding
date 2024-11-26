@@ -1,0 +1,50 @@
+.flex {
+  display: flex;
+}
+
+.flexCenter {
+  display: flex;
+  justify-content: center;
+}
+
+.flexCenterCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.mainContent {
+  width: 70%;
+  border: 1px solid black;
+  max-width: 1650px;
+  min-height: 463px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1920px) {
+  .mainContent {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 1366px) {
+  .mainContent {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    max-width: 95%;
+    padding: 5px;
+  }
+}
+
