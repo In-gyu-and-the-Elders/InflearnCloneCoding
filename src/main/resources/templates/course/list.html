@@ -3,5 +3,33 @@
       xmlns:th="http://www.thymeleaf.org"
 >
 <div>
+    <link rel="stylesheet" href="/css/course/courseStyle.css">
     <h1>리스트</h1>
+    <main class="main-content">
+        <section class="filters">
+            <button>전체</button>
+            <button>분류 1</button>
+            <button>분류 2</button>
+            <!-- 드롭다운 -->
+            <select class="sort-dropdown">
+                <option value="recent">최신순</option>
+                <option value="popular">인기순</option>
+                <option value="rating">평점순</option>
+            </select>
+        </section>
+        <section class="courses">
+            <!-- 강의 카드들 -->
+            <div class="course-card">강의 1</div>
+            <div class="course-card">강의 2</div>
+            <div class="course-card">강의 3</div>
+            <!-- ... -->
+        </section>
+    </main>
+    <footer class="pagination">
+        <button>이전</button>
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>다음</button>
+    </footer>
 </div>
