@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+</head>
+<body>
+<form id="loginForm">
+  <input type="text" name="memberId" placeholder="ID" required>
+  <input type="password" name="pwd" placeholder="Password" required>
+  <button type="submit">Login</button>
+</form>
+
+<script>
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault(); // 기본 폼 제출 동작 방지
+
+    const formData = new FormData(e.target);
+    const jsonData = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch('/sign/signIn', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      });
+
+      if (response.ok) {
+        alert('로그인 성공!');
+        // 성공 후 리다이렉트 또는 다른 동작 수행
+      } else {
+        const error = await response.text();
+        console.error('로그인 실패:', error);
+        alert('로그인 실패');
+      }
+    } catch (error) {
+      console.error('로그인 중 오류 발생:', error);
+      alert('로그인 중 오류가 발생했습니다.');
+    }
+  });
+</script>
+</body>
+</html>
