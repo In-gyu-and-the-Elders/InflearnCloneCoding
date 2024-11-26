@@ -11,8 +11,8 @@
         ORDER BY regDate DESC;
     </select>
 
-    <!-- 강좌 상세 조회 -->
-    <select id="courseView" parameterType="int" resultType="inflearn_clone.springboot.domain.CourseVO">
+    <!-- 코스 상세 조회 -->
+    <select id="getCourseDetail" parameterType="int" resultType="inflearn_clone.springboot.domain.CourseVO">
         SELECT
             idx, category, title, description, teacherId, regDate, displayDate, modifyDate, price, thumbnail
         FROM tbl_course

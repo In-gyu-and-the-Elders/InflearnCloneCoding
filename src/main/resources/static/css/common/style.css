@@ -1,0 +1,156 @@
+.flex {
+  display: flex;
+}
+
+.flexCenter {
+  display: flex;
+  justify-content: center;
+}
+
+.flexCenterCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.mainContent {
+  width: 100%;
+  max-width: 1650px;
+  min-height: 463px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1920px) {
+  .mainContent {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 1366px) {
+  .mainContent {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    max-width: 95%;
+    padding: 5px;
+  }
+}
+
+/* 기본 스타일 */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* 버튼 스타일 */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  color: #fff;
+}
+
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-success {
+  background-color: #28a745;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* 모달 기본 스타일 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.modal-content h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.modal-content .links {
+  margin-top: 10px;
+}
+
+.modal-content .links a {
+  color: #007bff;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.modal-content .social-login {
+  margin-top: 20px;
+}
+
+.modal-content .social-login .social-icons button {
+  background-color: #eee;
+  border: none;
+  padding: 8px 15px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* 모달 활성화 상태 */
+.modal.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 숨김 */
+.hidden {
+  display: none;
+}
