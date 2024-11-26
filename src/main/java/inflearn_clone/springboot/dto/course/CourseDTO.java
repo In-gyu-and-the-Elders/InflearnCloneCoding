@@ -1,33 +1,28 @@
 package inflearn_clone.springboot.dto.course;
 
-import groovy.transform.builder.Builder;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@Log4j2
+import java.time.LocalDateTime;
 @Data
-@AllArgsConstructor
-@NotNull
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Log4j2
 public class CourseDTO {
     private int idx;
     private String category;
-    @NotNull
-    @Size(min = 5, max = 50)
     private String title;
-    @NotNull
-    @Size(min = 10, max = 1000)
     private String description;
-    @NotNull
     private String teacherId;
-    private String regDate;
-    private String displayDate;
-    private String modifyDate;
-    private String deleteDate;
-    private String status;
+    private LocalDateTime regDate;
+    private LocalDateTime displayDate;
+    private LocalDateTime modifyDate;
+    private LocalDateTime deleteDate;
+    private String status; // (Y: Active, N: Inactive, D: Deleted)
     private int price;
-    private String thumbnail;
+    private String thumbnail; // Thumbnail image path
 }

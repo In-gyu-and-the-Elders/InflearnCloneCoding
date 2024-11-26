@@ -10,15 +10,12 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberVO {
+public class ReviewVO {
+    private int idx;
+    private int courseIdx;
     private String memberId;
-    private String pwd;
-    private String name;
-    private String phone;
-    private String email;
-    private String status; // Status (Y: Active, N: Inactive)
+    private String content;
+    private int rating;
     private LocalDateTime regDate;
     private LocalDateTime modifyDate;
-    private LocalDateTime leaveDate;
-    private String memberType; // Member type (S: Student, T: Teacher)
 }

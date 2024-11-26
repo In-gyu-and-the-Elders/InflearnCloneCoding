@@ -10,17 +10,16 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CourseVO {
+public class BbsVO {
     private int idx;
-    private String category;
+    private int level;
+    private int refIdx;
     private String title;
-    private String description;
-    private String teacherId;
-    private LocalDateTime regDate;
+    private String content;
     private LocalDateTime displayDate;
+    private LocalDateTime regDate;
     private LocalDateTime modifyDate;
-    private LocalDateTime deleteDate;
-    private String status; // (Y: Active, N: Inactive, D: Deleted)
-    private int price;
-    private String thumbnail; // Thumbnail image path
+    private int readCnt;
+    private String filePath;
+    private int courseIdx;
 }

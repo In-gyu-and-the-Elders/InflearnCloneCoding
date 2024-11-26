@@ -78,7 +78,6 @@ bin/
 ### Mac OS ###
 .DS_Store
 dbDump/
-=======
 .gradle/
 /test/
 
