@@ -12,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -126,12 +123,12 @@ public class AdminController {
      * 회원 수정 후 회원 상세 페이지로 이동
      */
     @PostMapping("/member/modify")
-    public String modifyPost(MemberDTO dto){
-        System.out.println(dto.getName());
+    public String modifyPost(@ModelAttribute MemberDTO dto){
+        System.out.println("DTO 수정: " + dto); // dto.toString()으로 출력
         boolean result = memberService.modifyMemberInfo(dto);
         System.out.println("result" + result);
         if(result){
-            return "admin/member/list"; //나중에 view로 바꿀 것
+            return "redirect:/admin/member/list"; //나중에 view로 바꿀 것
         }
         return null;
     }

@@ -53,7 +53,9 @@ public class MemberServiceImpl implements MemberServiceIf{
 
     @Override
     public boolean modifyMemberInfo(MemberDTO dto) {
+        System.out.println("Service Layer에서 받은 DTO: " + dto); // 디버그
         MemberVO vo = modelMapper.map(dto, MemberVO.class);
+        System.out.println("Mapper로 전달될 VO: " + vo); // 디버그
         boolean result = memberMapper.modifyMemberInfo(vo);
         if(result){
             return result;
