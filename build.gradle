@@ -31,6 +31,7 @@ dependencies {
 	}
 
 	compileOnly 'org.projectlombok:lombok'
+	compileOnly('javax.servlet:javax.servlet-api:4.0.1')
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
@@ -51,6 +52,9 @@ dependencies {
 
 	implementation 'org.modelmapper:modelmapper:3.2.1'
 	implementation 'org.springframework.boot:spring-boot-starter-validation:3.3.5'
+
+	//제이슨추가
+	implementation group: 'org.json', name: 'json', version: '20240303'
 }
 
 tasks.named('test') {
