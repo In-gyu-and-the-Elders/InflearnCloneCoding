@@ -2,7 +2,7 @@ package inflearn_clone.springboot.service;
 
 import inflearn_clone.springboot.domain.BbsVO;
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
-import inflearn_clone.springboot.mapper.NoticeMapper;
+import inflearn_clone.springboot.mappers.NoticeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;

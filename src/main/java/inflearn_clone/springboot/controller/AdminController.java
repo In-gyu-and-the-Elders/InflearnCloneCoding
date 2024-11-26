@@ -2,7 +2,7 @@ package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.service.member.MemberServiceIf;
-import inflearn_clone.springboot.util.Paging;
+import inflearn_clone.springboot.utils.Paging;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package inflearn_clone.springboot.service;
 
 
 import inflearn_clone.springboot.dto.course.CourseDTO;
-import inflearn_clone.springboot.mapper.CourseMapper;
+import inflearn_clone.springboot.mappers.CourseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;

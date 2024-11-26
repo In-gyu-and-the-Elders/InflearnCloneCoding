@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -31,5 +32,26 @@ public class CourseController {
 //        CourseDTO course = courseSerivce.courseView(idx);
 //        model.addAttribute("course", course);
         return "course/view";
+    }
+
+    @GetMapping("/tab/{tabName}")
+    public String getTabContent(@PathVariable String tabName, Model model) {
+        switch (tabName) {
+            case "info":
+                return "course/tabs/info";
+            case "curriculum":
+                return "course/tabs/curriculum";
+            case "qna":
+//                model.addAttribute("qnaList", qnaService.getQnAList());
+                return "course/tabs/qna";
+            case "review":
+//                model.addAttribute("reviewList", reviewService.getReviewList());
+                return "course/tabs/review";
+            case "notice":
+//                model.addAttribute("noticeList", noticeService.getNoticeList());
+                return "course/tabs/notice";
+            default:
+                return "/";
+        }
     }
 }
