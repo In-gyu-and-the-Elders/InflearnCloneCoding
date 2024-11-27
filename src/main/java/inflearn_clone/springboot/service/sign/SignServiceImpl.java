@@ -51,7 +51,11 @@ public class SignServiceImpl {
 
   // 회원 정보 조회
   public SignDTO getMemberInfo(String memberId) {
-    return SignMapperUtil.toDTO(signMapper.getMemberInfo(memberId));
+    SignVO signVO = signMapper.getMemberInfo(memberId);
+    if (signVO == null) {
+        throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+    }
+    return SignMapperUtil.toDTO(signVO);
   }
 
   // 회원 정보 수정
@@ -84,9 +88,7 @@ public class SignServiceImpl {
 
   // 아이디 중복 체크
   public boolean checkDuplicateId(String memberId) {
-    // true면 이미 존재하는 아이디, false면 사용 가능한 아이디
     boolean isDuplicate = signMapper.checkDuplicateId(memberId);
-    
     return !isDuplicate;
   }
 }

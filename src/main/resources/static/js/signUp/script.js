@@ -71,14 +71,14 @@ function validatePassword(password) {
 function validateField(input) {
   const fieldName = input.name;
   const value = input.value;
-  
+
   // radio 버튼은 별도 처리
-  if (input.type === 'radio') {
+  if (input.type === "radio") {
     return true; // radio 버튼은 항상 유효하다고 처리
   }
 
   const errorElement = document.getElementById(`${fieldName}-error`);
-  
+
   // 에러 요소가 없는 경우 처리
   if (!errorElement) {
     return true;
@@ -253,14 +253,16 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   let firstInvalidInput = null;
 
   // radio 버튼을 제외한 input 요소들만 검사
-  document.querySelectorAll("#signupForm input:not([type='radio'])").forEach((input) => {
-    if (!validateField(input)) {
-      isValid = false;
-      if (!firstInvalidInput) {
-        firstInvalidInput = input;
+  document
+    .querySelectorAll("#signupForm input:not([type='radio'])")
+    .forEach((input) => {
+      if (!validateField(input)) {
+        isValid = false;
+        if (!firstInvalidInput) {
+          firstInvalidInput = input;
+        }
       }
-    }
-  });
+    });
 
   if (!isValid) {
     alert("모든 필드를 올바르게 입력해주세요.");

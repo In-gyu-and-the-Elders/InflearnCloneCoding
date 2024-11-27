@@ -6,6 +6,8 @@ import inflearn_clone.springboot.dto.sign.SignDTO;
 public class SignMapperUtil {
 
   public static SignVO toVO(SignDTO dto) {
+    if (dto == null) return null;
+    
     return SignVO.builder()
         .memberId(dto.getMemberId())
         .pwd(dto.getPwd())
@@ -18,6 +20,8 @@ public class SignMapperUtil {
   }
 
   public static SignDTO toDTO(SignVO vo) {
+    if (vo == null) return null;
+    
     return SignDTO.builder()
         .memberId(vo.getMemberId())
         .pwd(vo.getPwd())

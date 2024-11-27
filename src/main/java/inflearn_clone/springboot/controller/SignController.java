@@ -1,6 +1,7 @@
 package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.sign.SignDTO;
+import inflearn_clone.springboot.dto.sign.SignInDTO;
 import inflearn_clone.springboot.service.sign.SignServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Log4j2
@@ -28,11 +30,15 @@ public class SignController {
 
   // 로그인
   @PostMapping("/signIn")
-  public ResponseEntity<Map<String, String>> signIn(@Valid @RequestBody SignDTO signDTO) {
-    log.info("Received SignDTO: {}", signDTO);
-
-    String token = signService.signIn(signDTO.getMemberId(), signDTO.getPwd());
-    return ResponseEntity.ok(Map.of("token", token));
+  public ResponseEntity<Map<String, String>> signIn(@Valid @RequestBody SignInDTO signInDTO) {
+      String token = signService.signIn(signInDTO.getMemberId(), signInDTO.getPwd());
+      // SignDTO memberInfo = signService.getMemberInfo((String)signInDTO.getMemberId());
+      Map<String, String> response = new HashMap<>();
+      response.put("token", token);
+      // response.put("memberId", memberInfo.getMemberId());
+      // response.put("name", memberInfo.getName());
+      // response.put("memberType", memberInfo.getMemberType());
+      return ResponseEntity.ok(response);
   }
 
   // 회원 정보 조회

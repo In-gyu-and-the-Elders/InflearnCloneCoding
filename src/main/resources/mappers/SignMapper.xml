@@ -17,6 +17,7 @@
     FROM tbl_member
     WHERE memberId = #{memberId}
       AND status = 'Y'
+      AND memberType = #{memberType}
   </select>
 
   <!-- 아이디 찾기 -->

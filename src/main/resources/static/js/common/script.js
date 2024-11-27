@@ -55,3 +55,46 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
+// 토큰이랑 사용자 정보 저장하기
+document
+.getElementById("loginForm")
+.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  const jsonData = Object.fromEntries(formData.entries());
+
+  try {
+    const response = await fetch("/sign/signIn", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(jsonData),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      document.cookie =
+          "token=" +
+          data.token +
+          "; path=/; max-age=3600; secure; samesite=strict";
+
+      // // 사용자 정보는 localStorage에 저장 ㄱ
+      // localStorage.setItem('memberId', data.memberId);
+      // localStorage.setItem('name', data.name);
+      // localStorage.setItem('email', data.email);
+      // localStorage.setItem('memberType', data.memberType);
+      window.location.href = "/";
+    } else {
+      const error = await response.text();
+      console.error("로그인 실패:", error);
+      alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+    }
+  } catch (error) {
+    console.error("로그인 중 오류 발생:", error);
+    alert("로그인 중 오류가 발생했습니다.");
+  }
+});

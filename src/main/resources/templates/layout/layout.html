@@ -5,7 +5,12 @@
   xmlns:th="http://www.thymeleaf.org"
 >
   <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
     <meta charset="utf-8" />
 
     <meta
@@ -193,10 +198,7 @@
           <div class="inflab-integrated__container">
             <ul class="inflab-integrated__service">
               <li>
-                <a
-                  class="active e-integrated-header-inflearn-link"
-                  href="/"
-                >
+                <a class="active e-integrated-header-inflearn-link" href="/">
                   <svg
                     width="20"
                     height="20"
@@ -1853,6 +1855,35 @@
               </div>
             </div>
 
+            <div style="width: 100%">
+              <div>
+                <label>회원유형</label>
+                <div style="display: flex;">
+                  <div style="display: flex; align-items: center;">
+                    <div>
+                      <label for="studentType">학생</label>
+                    </div>
+                    <input
+                      type="radio"
+                      id="studentType"
+                      name="memberType"
+                      value="S"
+                      checked
+                    />
+                  </div>
+                  <div style="display: flex; align-items: center;">
+                    <label for="teacherType">강사</label>
+                    <input
+                      type="radio"
+                      id="teacherType"
+                      name="memberType"
+                      value="T"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <button
               class="ac-button is-md is-solid is-primary form__button e-sign-in"
               type="submit"
@@ -1879,9 +1910,7 @@
           </p>
           <div class="sign-in-modal__social-sign-in">
             <hr class="social-sign-in__line" />
-            <div style="width: 100%">
-              <div>일반 회원</div>
-            </div>
+
             <span class="social-sign-in__title">간편 로그인</span>
             <div class="social__sign-in-buttons">
               <div class="social__button__wrapper">
@@ -1893,38 +1922,38 @@
                   최근 로그인
                 </div>
 
-                <button
-                  id="Google-로그인-버튼"
-                  class="social__button social__button--Google e-o-auth"
-                  data-provider="Google"
-                  data-link="https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&amp;prompt=consent&amp;scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&amp;response_type=code&amp;client_id=887875630717-ror9t8ig4obhvokdij07eoochpqbu5kf.apps.googleusercontent.com&amp;redirect_uri=https%3A%2F%2Fwww.inflearn.com%2Fauth%2Fgoogle&amp;state=%7B%22prev_url%22%3A%22https%3A%2F%2Fwww.inflearn.com%2Fsignin%3FreferUrl%3Dhttps%253A%252F%252Fwww.inflearn.com%252Fhome%22%7D"
-                  aria-label="구글로 로그인"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    fill="none"
-                    viewBox="0 0 18 18"
-                  >
-                    <path
-                      fill="#4285F4"
-                      d="M17.785 9.169c0-.738-.06-1.276-.189-1.834h-8.42v3.328h4.942c-.1.828-.638 2.073-1.834 2.91l-.016.112 2.662 2.063.185.018c1.694-1.565 2.67-3.867 2.67-6.597z"
-                    ></path>
-                    <path
-                      fill="#34A853"
-                      d="M9.175 17.938c2.422 0 4.455-.797 5.94-2.172l-2.83-2.193c-.758.528-1.774.897-3.11.897-2.372 0-4.385-1.564-5.102-3.727l-.105.01-2.769 2.142-.036.1c1.475 2.93 4.504 4.943 8.012 4.943z"
-                    ></path>
-                    <path
-                      fill="#FBBC05"
-                      d="M4.073 10.743c-.19-.558-.3-1.156-.3-1.774 0-.618.11-1.216.29-1.774l-.005-.119L1.254 4.9l-.091.044C.555 6.159.206 7.524.206 8.969c0 1.445.349 2.81.957 4.026l2.91-2.252z"
-                    ></path>
-                    <path
-                      fill="#EB4335"
-                      d="M9.175 3.468c1.684 0 2.82.728 3.468 1.335l2.531-2.471C13.62.887 11.598 0 9.175 0 5.667 0 2.638 2.013 1.163 4.943l2.9 2.252c.727-2.162 2.74-3.727 5.112-3.727z"
-                    ></path>
-                  </svg>
-                </button>
+<!--                <button-->
+<!--                  id="Google-로그인-버튼"-->
+<!--                  class="social__button social__button&#45;&#45;Google e-o-auth"-->
+<!--                  data-provider="Google"-->
+<!--                  data-link="https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&amp;prompt=consent&amp;scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&amp;response_type=code&amp;client_id=887875630717-ror9t8ig4obhvokdij07eoochpqbu5kf.apps.googleusercontent.com&amp;redirect_uri=https%3A%2F%2Fwww.inflearn.com%2Fauth%2Fgoogle&amp;state=%7B%22prev_url%22%3A%22https%3A%2F%2Fwww.inflearn.com%2Fsignin%3FreferUrl%3Dhttps%253A%252F%252Fwww.inflearn.com%252Fhome%22%7D"-->
+<!--                  aria-label="구글로 로그인"-->
+<!--                >-->
+<!--                  <svg-->
+<!--                    xmlns="http://www.w3.org/2000/svg"-->
+<!--                    width="18"-->
+<!--                    height="18"-->
+<!--                    fill="none"-->
+<!--                    viewBox="0 0 18 18"-->
+<!--                  >-->
+<!--                    <path-->
+<!--                      fill="#4285F4"-->
+<!--                      d="M17.785 9.169c0-.738-.06-1.276-.189-1.834h-8.42v3.328h4.942c-.1.828-.638 2.073-1.834 2.91l-.016.112 2.662 2.063.185.018c1.694-1.565 2.67-3.867 2.67-6.597z"-->
+<!--                    ></path>-->
+<!--                    <path-->
+<!--                      fill="#34A853"-->
+<!--                      d="M9.175 17.938c2.422 0 4.455-.797 5.94-2.172l-2.83-2.193c-.758.528-1.774.897-3.11.897-2.372 0-4.385-1.564-5.102-3.727l-.105.01-2.769 2.142-.036.1c1.475 2.93 4.504 4.943 8.012 4.943z"-->
+<!--                    ></path>-->
+<!--                    <path-->
+<!--                      fill="#FBBC05"-->
+<!--                      d="M4.073 10.743c-.19-.558-.3-1.156-.3-1.774 0-.618.11-1.216.29-1.774l-.005-.119L1.254 4.9l-.091.044C.555 6.159.206 7.524.206 8.969c0 1.445.349 2.81.957 4.026l2.91-2.252z"-->
+<!--                    ></path>-->
+<!--                    <path-->
+<!--                      fill="#EB4335"-->
+<!--                      d="M9.175 3.468c1.684 0 2.82.728 3.468 1.335l2.531-2.471C13.62.887 11.598 0 9.175 0 5.667 0 2.638 2.013 1.163 4.943l2.9 2.252c.727-2.162 2.74-3.727 5.112-3.727z"-->
+<!--                    ></path>-->
+<!--                  </svg>-->
+<!--                </button>-->
               </div>
             </div>
           </div>
@@ -1932,62 +1961,37 @@
       </div>
 
       <!--  이건 문의하기 일단 비활성화 2024.11.27 다시 활성화-->
-        <a
-            href="/channeltalk"
-            target="_blank"
-            class="channel-talk__redirect-button"
-        >
-          <picture>
-            <source
-                srcset="
-                  https://cdn.inflearn.com/assets/channeltalk/channeltalk.png?f=avif
-                "
-                type="image/avif"
-            />
-            <source
-                srcset="
-                  https://cdn.inflearn.com/assets/channeltalk/channeltalk.png?f=webp
-                "
-                type="image/webp"
-            />
-            <img
-                src="https://cdn.inflearn.com/assets/channeltalk/channeltalk.png"
-                alt="채널톡 아이콘"
-                class="channel-talk__redirect-button__icon"
-            />
-          </picture>
-        </a>
+      <a
+        href="/channeltalk"
+        target="_blank"
+        class="channel-talk__redirect-button"
+      >
+        <picture>
+          <source
+            srcset="
+              https://cdn.inflearn.com/assets/channeltalk/channeltalk.png?f=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://cdn.inflearn.com/assets/channeltalk/channeltalk.png?f=webp
+            "
+            type="image/webp"
+          />
+          <img
+            src="https://cdn.inflearn.com/assets/channeltalk/channeltalk.png"
+            alt="채널톡 아이콘"
+            class="channel-talk__redirect-button__icon"
+          />
+        </picture>
+      </a>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
     <script src="/js/common/script.js"></script>
-    <script>
-      document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const formData = new FormData(e.target);
-        const jsonData = Object.fromEntries(formData.entries());
-
-        try {
-          const response = await fetch('/sign/signIn', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(jsonData),
-          });
-
-          if (response.ok) {
-            alert('로그인 성공!');
-          } else {
-            const error = await response.text();
-            console.error('로그인 실패:', error);
-            alert('로그인 실패');
-          }
-        } catch (error) {
-          console.error('로그인 중 오류 발생:', error);
-          alert('로그인 중 오류가 발생했습니다.');
-        }
-      });
-    </script>
   </body>
 </html>
