@@ -191,21 +191,27 @@ public class AdminController {
     *  회원이 탈퇴 가능한 상태인지 확인
     * 환불 처리 절차가 필요한 경우라면 즉시 탈퇴 처리가 아닌 유예 상태로 변경
     */
+    // ResponseEntity 사용해서 처리해보기
     @GetMapping("/member/delete")
     public ResponseEntity<?> memberDelete(@RequestParam String memberId, @RequestParam String memberType){
         if(memberType.equals("T")){
-            List<Integer> result = courseSerivce.selectCourseByMemberId(memberId);
-            System.out.println(result.size());
-            if(result.size() > 0){
-                boolean isDeleted = courseSerivce.deleteCourseByMemberId(memberId);
-                if(isDeleted){
-                    return ResponseEntity.ok("모든 강의가 성공적으로 삭제되었습니다.");
-                }else {
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body("강의 삭제 중 오류가 발생했습니다.");
-                }
+            List<Integer> list = courseSerivce.selectCourseByMemberId(memberId);
+            //System.out.println(result.size());
+            if(list.size() > 0){
+                // 공지사항 자동 등록 로직
+                int insertNotice = noticeService.autoInsert(memberId, list);
+                return ResponseEntity.ok("공지 사항 등록됨");
+                // 공지사항 등록 이후 30일 뒤 강좌 삭제되도록 처리해야함
+//                boolean isDeleted = courseSerivce.deleteCourseByMemberId(memberId); //강의 바로 삭제가 아님
+//                if(isDeleted){
+//                    return ResponseEntity.ok("해당 강사의 강좌가 성공적으로 삭제되었습니다.");
+//                }else {
+//                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                            .body("강좌 삭제 중 오류가 발생했습니다.");
+//                }
             }else{
-                return ResponseEntity.badRequest().body("운영 중인 강의가 없습니다.");
+                // 회원탈퇴 로직 추가
+                return ResponseEntity.badRequest().body("운영 중인 강좌가 없습니다.");
             }
         }else{
             log.info("학생 로직 들어가야함");

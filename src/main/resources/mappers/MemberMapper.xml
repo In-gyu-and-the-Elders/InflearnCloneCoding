@@ -39,7 +39,7 @@
             <if test="memberType != null">
                 AND memberType = #{memberType}
             </if>
-            AND status = 'S' or status = 'P'
+            AND status = 'R'
         </where>
     </select>
 
@@ -78,7 +78,7 @@
                     </when>
                 </choose>
             </if>
-            AND status = 'S' or status = 'P'
+            AND status = 'R'
         </where>
         ${sortQuery}
         LIMIT #{offset}, #{limit}

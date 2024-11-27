@@ -61,9 +61,8 @@
             <td>
                 <span class="badge badge-success" th:if="${dto.status == 'Y'}">활성</span>
                 <span class="badge badge-secondary" th:if="${dto.status == 'N'}">비활성</span>
-                <span class="badge badge-warning" th:if="${dto.status == 'S'}">대기</span>
-                <span class="badge badge-info" th:if="${dto.status == 'P'}">승인</span>
-                <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N' and dto.status != 'S' and dto.status != 'P'}">탈퇴</span>
+                <span class="badge badge-warning" th:if="${dto.status == 'R'}">대기</span>
+                <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N' and dto.status != 'R'}">탈퇴</span>
             </td>
         </tr>
         </tbody>

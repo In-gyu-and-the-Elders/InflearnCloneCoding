@@ -14,4 +14,8 @@ public interface CourseSerivce {
     List<Integer> selectCourseByMemberId(String memberId);
 
     boolean deleteCourseByMemberId(String memberId);
+
+    //삭제 대상 강의 idx 가져옴
+
+    //삭제 대상 강의 삭제
 }
