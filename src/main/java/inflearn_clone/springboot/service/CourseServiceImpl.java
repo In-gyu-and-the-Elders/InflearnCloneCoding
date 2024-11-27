@@ -31,7 +31,8 @@ public class CourseServiceImpl implements CourseSerivce {
 
     //teacherId로 존재하는 강의가 있는지 확인하기
     @Override
-    public boolean selectCourseByMemberId(String memberId) {
+    public List<Integer> selectCourseByMemberId(String memberId) {
+
         return courseMapper.selectCourseByMemberId(memberId);
     }
 

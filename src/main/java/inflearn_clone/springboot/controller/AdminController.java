@@ -1,6 +1,7 @@
 package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
+import inflearn_clone.springboot.dto.member.LeaveReasonDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.service.CourseSerivce;
 import inflearn_clone.springboot.service.admin.NoticeServiceIf;
@@ -66,7 +67,7 @@ public class AdminController {
     }
 
     /*
-    * 회원 목록
+    * 전체 회원 목록
     */
     @GetMapping("/member/list")
     public String list(Model model,
@@ -77,7 +78,7 @@ public class AdminController {
                        @RequestParam(required = false) String sortOrder){
         String sortQuery = generateSortQuery(sortType, sortOrder);
         int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue);
-        log.info("Member totalCnt" + totalCnt); // 100
+        log.info("Member list totalCnt" + totalCnt); // 100
         Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
         List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery);
         model.addAttribute("members", members);
@@ -86,8 +87,33 @@ public class AdminController {
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("sortType", sortType);
         model.addAttribute("sortOrder", sortOrder);
-        model.addAttribute("url", "/admin/member/list");
+        model.addAttribute("uri", "/admin/member/list");
         return "admin/member/list";
+    }
+
+    /*
+     * 회원 목록
+     */
+    @GetMapping("/member/teacherList")
+    public String teacherlist(Model model,
+                       @RequestParam(defaultValue = "1") int pageNo,
+                       @RequestParam(required = false) String searchCategory,
+                       @RequestParam(required = false) String searchValue,
+                       @RequestParam(required = false) String sortType,
+                       @RequestParam(required = false) String sortOrder){
+        String sortQuery = generateSortQuery(sortType, sortOrder);
+        int totalCnt = memberService.teacherRequestTotalCnt(searchCategory, searchValue, "T");
+        log.info("Member totalCnt" + totalCnt);
+        Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
+        List<MemberDTO> members =  memberService.selectTeacherRequest(pageNo, 10, searchCategory, searchValue, sortQuery);
+        model.addAttribute("members", members);
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchCategory", searchCategory);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("uri", "/admin/member/teacherList");
+        return "admin/member/teacherList";
     }
 
     /*
@@ -137,12 +163,28 @@ public class AdminController {
     }
 
     /*
+    * 회원 탈퇴 사유 조회
+    */
+    @GetMapping("/member/leaveReasonView")
+    public String leaveReasonView(Model model, String memberId){
+        LeaveReasonDTO info = memberService.leaveReasonView(memberId);
+        if(info != null){
+            model.addAttribute("info", info);
+            return "admin/member/leaveReason";
+        }else{
+            log.info("조회된 내용이 없습니다."); // 로직추가할것
+        }
+        return null;
+    }
+
+    /*
     * 강의 삭제
     */
     @GetMapping("/course/delete")
     public String deleteCourse(@RequestParam String idx){
         return null;
     }
+
 
     /*
     * 회원 탈퇴
@@ -152,8 +194,9 @@ public class AdminController {
     @GetMapping("/member/delete")
     public ResponseEntity<?> memberDelete(@RequestParam String memberId, @RequestParam String memberType){
         if(memberType.equals("T")){
-            boolean result = courseSerivce.selectCourseByMemberId(memberId);
-            if(result){
+            List<Integer> result = courseSerivce.selectCourseByMemberId(memberId);
+            System.out.println(result.size());
+            if(result.size() > 0){
                 boolean isDeleted = courseSerivce.deleteCourseByMemberId(memberId);
                 if(isDeleted){
                     return ResponseEntity.ok("모든 강의가 성공적으로 삭제되었습니다.");

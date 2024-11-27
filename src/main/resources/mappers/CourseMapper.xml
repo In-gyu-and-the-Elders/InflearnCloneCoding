@@ -20,10 +20,10 @@
     </select>
 
     <!--teacherId로 존재하는 강의가 있는지 확인-->
-    <select id="selectCourseByMemberId" resultType="int">
-        SELECT COUNT(idx)
+    <select id="selectCourseByMemberId" resultType="Integer">
+        SELECT idx
         FROM tbl_course
-        WHERE teacherId = #{teacherId} AND status = 'Y';
+        WHERE teacherId = #{teacherId};
     </select>
 
     <!--teacherId에 해당하는 강의 비활성화로 변경-->

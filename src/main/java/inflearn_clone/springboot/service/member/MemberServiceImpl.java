@@ -1,6 +1,7 @@
 package inflearn_clone.springboot.service.member;
 
 import inflearn_clone.springboot.domain.MemberVO;
+import inflearn_clone.springboot.dto.member.LeaveReasonDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.mappers.MemberMapper;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,14 @@ public class MemberServiceImpl implements MemberServiceIf{
     }
 
     @Override
+    public int teacherRequestTotalCnt(String searchCategory, String searchValue, String memberType) {
+        log.info("searchCategory", searchCategory);
+        log.info("searchValue", searchValue);
+        log.info("memberType", memberType);
+        return memberMapper.teacherRequestTotalCnt(searchCategory, searchValue, memberType);
+    }
+
+    @Override
     public List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
         Map<String, Object> map = new HashMap<>();
         map.put("offset", (pageNo - 1) * pageSize);
@@ -43,6 +52,7 @@ public class MemberServiceImpl implements MemberServiceIf{
         return voList.stream()
                 .map(vo -> modelMapper.map(vo, MemberDTO.class)).collect(Collectors.toList());
     }
+
 
     @Override
     public MemberDTO selectMemberInfo(String memberId) {
@@ -65,9 +75,28 @@ public class MemberServiceImpl implements MemberServiceIf{
     }
 
     @Override
-    public boolean deleteMemberInfo(String memberId) {
+    public LeaveReasonDTO leaveReasonView(String memberId) {
+        MemberVO vo = memberMapper.leaveReasonView(memberId);
+        return modelMapper.map(vo, LeaveReasonDTO.class);
+    }
 
+    @Override
+    public boolean deleteMemberInfo(String memberId) {
         return false;
+    }
+
+    @Override
+    public List<MemberDTO> selectTeacherRequest(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("offset", (pageNo - 1) * pageSize);
+        map.put("limit", pageSize);
+        map.put("searchCategory", searchCategory);
+        map.put("searchValue", searchValue);
+        map.put("sortQuery", sortQuery);
+
+        List<MemberVO> voList =  memberMapper.selectTeacherRequest(map);
+        return voList.stream()
+                .map(vo -> modelMapper.map(vo, MemberDTO.class)).collect(Collectors.toList());
     }
 
 
