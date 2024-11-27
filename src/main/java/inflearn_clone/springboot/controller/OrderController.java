@@ -21,23 +21,33 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/regist")
-    public void registOrder(
-            HttpServletRequest request, HttpServletResponse response) {
+    public String registOrder(@RequestParam String memberId,
+                              @RequestParam String courseIdxList,
+                              @RequestParam String priceList) {
         // 로그인 후 삭제
         //String memberId = (String) request.getSession().getAttribute("memberId");
-        String memberId = "user1";
+         memberId = "user1";
+        String orderNumber = generateOrderNumber();
 
-        boolean success = orderService.processOrder(memberId);
-        if (success) {
-            response.setCharacterEncoding("utf-8");
-            JSFunc.alertLocation("주문이 성공적으로 처리되었습니다.", "/mypage/courseList", response);
-        } else {
-            response.setCharacterEncoding("utf-8");
-            JSFunc.alertLocation("주문 처리에 실패했습니다. 다시 시도해주세요.", request.getHeader("Referer"), response);
+        String[] courseIdxArray = courseIdxList.split(",");
+        String[] priceArray = priceList.split(",");
+
+        for (int i = 0; i < courseIdxArray.length; i++) {
+            int courseIdx = Integer.parseInt(courseIdxArray[i]);
+            int price = Integer.parseInt(priceArray[i]);
+
+            OrderDTO orderDTO = new OrderDTO();
+            orderDTO.setMemberId(memberId);
+            orderDTO.setCourseIdx(courseIdx);
+            orderDTO.setOrderPrice(price);
+            orderDTO.setOrderNumber(orderNumber);
+            orderService.regist(orderDTO);
         }
+        return "redirect:/mypage/courseList";
     }
-
-
+    private String generateOrderNumber() {
+        return "ORDER_" + System.currentTimeMillis() + "_" + (int) (Math.random() * 1000);
+    }
     @GetMapping("/list")
     public List<OrderCourseDTO> orderList(@RequestParam String memberId) {
         return orderService.getOrderList(memberId);

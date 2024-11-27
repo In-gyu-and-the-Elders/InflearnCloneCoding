@@ -19,8 +19,13 @@
         <div class="cart-summary">
             <p>총 선택한 강좌 가격: <span id="total-price">₩0</span></p>
             <form id="orderForm" action="/order/regist" method="POST">
-                <input type="hidden" name="idxList" id="selectedCourses">
-                <input type="hidden" name="priceList" id="coursePrices">
+                <input type="hidden" name="memberId" value="${memberId}">
+                <input type="hidden" name="orderNumber" id="orderNumber"> <!-- 결제번호는 서버에서 생성 -->
+
+                <!-- 선택된 강좌들의 courseIdx와 price를 hidden 필드로 전달 -->
+                <input type="hidden" name="courseIdxList" id="courseIdxList">
+                <input type="hidden" name="priceList" id="priceList">
+
                 <button type="submit" id="checkoutBtn">결제하기</button>
             </form>
         </div>
@@ -80,28 +85,31 @@
             });
         }
         //결제버튼
-        document.getElementById('checkoutBtn').addEventListener('click', function (event) {
-            e.preventDefault(); // 기본 폼 제출 방지
+        // 결제 버튼 클릭 시 선택된 강좌들의 정보 담기
+        function getSelectedCourses() {
+            let courseIdxList = [];
+            let priceList = [];
 
-            const selectedCourses = [];
-            const selectedPrices = [];
-            const checkboxes = document.querySelectorAll('.course-select:checked'); // 선택된 강좌 체크박스
+            // 체크된 강좌들만 가져오기
+            document.querySelectorAll('.course-select:checked').forEach(function (checkbox) {
+                const courseItem = checkbox.closest('.cart-item');
+                const courseIdx = courseItem.getAttribute('data-course-id');
+                const price = courseItem.querySelector('.course-price').innerText;
 
-            checkboxes.forEach((checkbox) => {
-                const cartItem = checkbox.closest('.cart-item'); // 부모 노드 탐색
-                const courseId = cartItem.dataset.courseId; // idx
-                const coursePrice = cartItem.querySelector('.course-price').innerText.replace(/₩|,/g, '').trim(); // price
-
-                selectedCourses.push(courseId);
-                selectedPrices.push(coursePrice);
+                courseIdxList.push(courseIdx);
+                priceList.push(price);
             });
 
-            // 선택된 값 폼에 반영
-            document.getElementById('selectedCourses').value = selectedCourses.join(','); // idx 리스트
-            document.getElementById('coursePrices').value = selectedPrices.join(','); // price 리스트
+            // hidden input에 선택된 강좌들의 idx와 가격을 설정
+            document.getElementById('courseIdxList').value = courseIdxList.join(',');
+            document.getElementById('priceList').value = priceList.join(',');
+        }
 
-            // 폼 제출
-            document.getElementById('orderForm').submit();
+        // 결제 버튼 클릭 시 선택된 강좌들을 서버로 전송
+        document.getElementById('checkoutBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+            getSelectedCourses();
+            document.getElementById('orderForm').submit(); // 폼 제출
         });
 
 
