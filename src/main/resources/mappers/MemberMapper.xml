@@ -18,10 +18,11 @@
                     </when>
                 </choose>
             </if>
+            AND memberType = #{memberType}
         </where>
     </select>
 
-    <!-- 선생님 회원 수 -->
+    <!-- 탈퇴 요청한 선생님 회원 수 -->
     <select id="teacherRequestTotalCnt" resultType="int">
         SELECT COUNT(*)
         FROM tbl_member
@@ -58,6 +59,7 @@
                     </when>
                 </choose>
             </if>
+        AND memberType = #{memberType}
         </where>
         ${sortQuery}
         LIMIT #{offset}, #{limit}
@@ -106,5 +108,10 @@
         WHERE memberId = #{memberId}
     </select>
 
-
+    <!-- 회원 탈퇴 -->
+    <update id="deleteMemberInfo">
+        UPDATE tbl_member
+        SET status = 'D'
+        WHERE memberId = #{memberId}
+    </update>
 </mapper>

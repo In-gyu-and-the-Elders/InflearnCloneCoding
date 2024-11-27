@@ -12,7 +12,7 @@ import java.util.Map;
 @Mapper
 public interface MemberMapper {
     List<MemberVO> selectAllMember(Map<String, Object> map);
-    int memberTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue);
+    int memberTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue, @Param("memberType") String memberType);
 
     int teacherRequestTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue, @Param("memberType") String memberType);
 
@@ -24,4 +24,6 @@ public interface MemberMapper {
     boolean modifyMemberInfo(MemberVO vo);
 
     MemberVO leaveReasonView(String memberId);
+
+    boolean deleteMemberInfo(String memberId);
 }

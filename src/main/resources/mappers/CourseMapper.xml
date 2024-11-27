@@ -40,7 +40,7 @@
         WHERE idx = #{idx}
     </update>
 
-    <select id="findCoursesToBeDeleted" resultType="int">
+    <select id="findCoursesToDeleted" resultType="int">
         SELECT idx
         FROM tbl_course
         WHERE deleteDate &lt;= #{now}

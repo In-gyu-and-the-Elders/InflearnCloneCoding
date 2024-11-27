@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 public class CourseDeleteScheduler {
     private final CourseSerivce courseSerivce;
 
-    @Scheduled(cron = "0 * * * * ?")
+    //@Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     // 스케쥴러 언제 실횅될지 정함
     public void processScheduler(){
         LocalDateTime now = LocalDateTime.now();

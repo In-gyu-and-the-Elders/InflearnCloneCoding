@@ -12,8 +12,6 @@ import inflearn_clone.springboot.utils.Paging;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -67,9 +65,9 @@ public class AdminController {
     }
 
     /*
-    * 전체 회원 목록
+    * 학생 회원 목록
     */
-    @GetMapping("/member/list")
+    @GetMapping("/member/sList")
     public String list(Model model,
                        @RequestParam(defaultValue = "1") int pageNo,
                        @RequestParam(required = false) String searchCategory,
@@ -77,24 +75,49 @@ public class AdminController {
                        @RequestParam(required = false) String sortType,
                        @RequestParam(required = false) String sortOrder){
         String sortQuery = generateSortQuery(sortType, sortOrder);
-        int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue);
+        int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "S");
         log.info("Member list totalCnt" + totalCnt); // 100
         Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
-        List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery);
+        List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery, "S");
         model.addAttribute("members", members);
         model.addAttribute("paging", paging);
         model.addAttribute("searchCategory", searchCategory);
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("sortType", sortType);
         model.addAttribute("sortOrder", sortOrder);
-        model.addAttribute("uri", "/admin/member/list");
-        return "admin/member/list";
+        model.addAttribute("uri", "/admin/member/sList");
+        return "/admin/member/stdList";
     }
 
     /*
-     * 회원 목록
+     * 강사 회원 목록
      */
-    @GetMapping("/member/teacherList")
+    @GetMapping("/member/tList")
+    public String list_1(Model model,
+                       @RequestParam(defaultValue = "1") int pageNo,
+                       @RequestParam(required = false) String searchCategory,
+                       @RequestParam(required = false) String searchValue,
+                       @RequestParam(required = false) String sortType,
+                       @RequestParam(required = false) String sortOrder){
+        String sortQuery = generateSortQuery(sortType, sortOrder);
+        int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "T");
+        log.info("Member list totalCnt" + totalCnt); // 100
+        Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
+        List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery, "T");
+        model.addAttribute("members", members);
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchCategory", searchCategory);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("uri", "/admin/member/tList");
+        return "admin/member/teacherList";
+    }
+
+    /*
+     * 강사 탈퇴 요청 회원 목록
+     */
+    @GetMapping("/member/teacherRequestList")
     public String teacherlist(Model model,
                        @RequestParam(defaultValue = "1") int pageNo,
                        @RequestParam(required = false) String searchCategory,
@@ -112,8 +135,8 @@ public class AdminController {
         model.addAttribute("searchValue", searchValue);
         model.addAttribute("sortType", sortType);
         model.addAttribute("sortOrder", sortOrder);
-        model.addAttribute("uri", "/admin/member/teacherList");
-        return "admin/member/teacherList";
+        model.addAttribute("uri", "/admin/member/teacherRequestList");
+        return "admin/member/teacherRequestList";
     }
 
     /*
@@ -191,9 +214,9 @@ public class AdminController {
     *  회원이 탈퇴 가능한 상태인지 확인
     * 환불 처리 절차가 필요한 경우라면 즉시 탈퇴 처리가 아닌 유예 상태로 변경
     */
-    // ResponseEntity 사용해서 처리해보기
+
     @GetMapping("/member/delete")
-    public ResponseEntity<?> memberDelete(@RequestParam String memberId, @RequestParam String memberType){
+    public String memberDelete(@RequestParam String memberId, @RequestParam String memberType){
         if(memberType.equals("T")){
             List<Integer> list = courseSerivce.selectCourseByMemberId(memberId);
             //System.out.println(result.size());
@@ -203,27 +226,22 @@ public class AdminController {
                 if(insertNotice > 0){
                     // 공지사항 등록 이후 30일 뒤 강좌 삭제되도록 처리해야함 (즉 예약 처리)
                     // 예약 로직이 들어가야함
-                    return ResponseEntity.ok("강의 삭제 예약 완료");
+                    memberService.deleteMemberInfo(memberId);
+                    return "강의 삭제 예약 완료";
 
                 }else{
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약 설정 중 오류가 발생했습니다.");
+                    return "예약 설정 중 오류가 발생했습니다.";
                 }
             }else{
                 // 회원탈퇴 로직 추가
-                return ResponseEntity.badRequest().body("운영 중인 강좌가 없습니다.");
+                memberService.deleteMemberInfo(memberId);
+                return "운영 중인 강좌가 없습니다.";
             }
         }else{
-            log.info("학생 로직 들어가야함");
-            return ResponseEntity.ok("학생 로직 처리 예정");
+            memberService.deleteMemberInfo(memberId);
+            return "학생 로직 처리";
         }
     }
-
-
-
-
-
-
-
 
     //여기부터 아래는 인규가 작업한 부분입니다.
     // [관리자 공지사항]

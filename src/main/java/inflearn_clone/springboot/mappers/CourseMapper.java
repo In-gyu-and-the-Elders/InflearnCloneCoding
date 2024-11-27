@@ -29,7 +29,7 @@ public interface CourseMapper {
 
     int updateCourseStatusToDeleted(@Param("now") LocalDateTime now);
 
-    List<Integer> findCoursesToBeDeleted(@Param("now") LocalDateTime now);
+    List<Integer> findCoursesToDeleted(@Param("now") LocalDateTime now);
 
 
 

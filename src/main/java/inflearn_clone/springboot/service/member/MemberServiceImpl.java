@@ -25,10 +25,11 @@ public class MemberServiceImpl implements MemberServiceIf{
     private final ModelMapper modelMapper;
 
     @Override
-    public int memberTotalCnt(String searchCategory, String searchValue) {
+    public int memberTotalCnt(String searchCategory, String searchValue, String memberType) {
         log.info("searchCategory", searchCategory);
         log.info("searchValue", searchValue);
-        return memberMapper.memberTotalCnt(searchCategory, searchValue);
+        log.info("memberType", memberType);
+        return memberMapper.memberTotalCnt(searchCategory, searchValue, memberType);
     }
 
     @Override
@@ -40,13 +41,14 @@ public class MemberServiceImpl implements MemberServiceIf{
     }
 
     @Override
-    public List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
+    public List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String memberType) {
         Map<String, Object> map = new HashMap<>();
         map.put("offset", (pageNo - 1) * pageSize);
         map.put("limit", pageSize);
         map.put("searchCategory", searchCategory);
         map.put("searchValue", searchValue);
         map.put("sortQuery", sortQuery);
+        map.put("memberType", memberType);
 
         List<MemberVO> voList =  memberMapper.selectAllMember(map);
         return voList.stream()
@@ -82,7 +84,7 @@ public class MemberServiceImpl implements MemberServiceIf{
 
     @Override
     public boolean deleteMemberInfo(String memberId) {
-        return false;
+        return memberMapper.deleteMemberInfo(memberId);
     }
 
     @Override

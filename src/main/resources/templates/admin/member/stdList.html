@@ -3,10 +3,10 @@
       layout:decorate="~{admin/layout/common}">
 <div layout:fragment="content">
     <div>
-        <h2>회원 목록</h2>
+        <h2>전체 회원 목록</h2>
     </div>
     <div class="search-container">
-        <form action="/admin/member/list" method="get" class="d-flex align-items-center">
+        <form action="/admin/member/sList" method="get" class="d-flex align-items-center">
             <!-- 셀렉트박스 -->
             <div>
                 <select class="form-select" name="searchCategory">
@@ -49,7 +49,7 @@
             </tr>
         </thead>
         <tbody>
-        <tr th:each="dto, status:${members}">
+        <tr th:each="dto, status:${members}" >
             <td>#</td>
             <td>
                 <a th:href="@{/admin/member/modify(memberId=${dto.memberId})}">[[${dto.memberId}]]</a>
@@ -70,5 +70,6 @@
     </table>
     <div th:replace="~{/common/paging :: paging}"></div>
 </div>
+
 
 

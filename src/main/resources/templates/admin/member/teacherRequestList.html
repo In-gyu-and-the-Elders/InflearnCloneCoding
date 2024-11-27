@@ -3,10 +3,10 @@
       layout:decorate="~{admin/layout/common}">
 <div layout:fragment="content">
     <div>
-        <h2>강사 회원 목록</h2>
+        <h2>선생님 탈퇴 요청 목록</h2>
     </div>
     <div class="search-container">
-        <form action="/admin/member/tList" method="get" class="d-flex align-items-center">
+        <form action="/admin/member/teacherRequestList" method="get" class="d-flex align-items-center">
             <!-- 셀렉트박스 -->
             <div>
                 <select class="form-select" name="searchCategory">
@@ -49,10 +49,10 @@
             </tr>
         </thead>
         <tbody>
-        <tr th:each="dto, status:${members}" >
+        <tr th:each="dto, status:${members}">
             <td>#</td>
             <td>
-                <a th:href="@{/admin/member/modify(memberId=${dto.memberId})}">[[${dto.memberId}]]</a>
+                <a th:href="@{/admin/member/leaveReasonView(memberId=${dto.memberId})}">[[${dto.memberId}]]</a>
             </td>
             <td>[[${dto.name}]]</td>
             <td>[[${dto.email}]]</td>
@@ -62,14 +62,12 @@
                 <span class="badge badge-success" th:if="${dto.status == 'Y'}">활성</span>
                 <span class="badge badge-secondary" th:if="${dto.status == 'N'}">비활성</span>
                 <span class="badge badge-warning" th:if="${dto.status == 'R'}">대기</span>
-                <span class="badge badge-info" th:if="${dto.status == 'P'}">승인</span>
-                <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N' and dto.status != 'R' and dto.status != 'P'}">탈퇴</span>
+                <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N' and dto.status != 'R'}">탈퇴</span>
             </td>
         </tr>
         </tbody>
     </table>
     <div th:replace="~{/common/paging :: paging}"></div>
 </div>
-
 
 
