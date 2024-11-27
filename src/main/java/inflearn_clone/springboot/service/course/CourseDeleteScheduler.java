@@ -10,13 +10,14 @@ import java.time.LocalDateTime;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class CourseDeletionScheduler {
+public class CourseDeleteScheduler {
     private final CourseSerivce courseSerivce;
 
     @Scheduled(cron = "0 0 0 * * ?") // 매일 자정 실행 ?
     // 스케쥴러 언제 실횅될지 정함
     public void processScheduler(){
         LocalDateTime now = LocalDateTime.now();
+        boolean result = courseSerivce.updateCourseStatusToDeleted(now);
 
     }
 }

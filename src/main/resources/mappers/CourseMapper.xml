@@ -39,5 +39,13 @@
         SET deleteDate = #{deleteDate}, status = 'R'
         WHERE idx = #{idx}
     </update>
+
+    <!-- 강의 상태 업데이트 -->
+    <update id="updateCourseStatusToDeleted">
+        UPDATE tbl_course
+        SET status = 'D'
+        WHERE deleteDate &lt;= #{now}
+        AND status != 'D'
+    </update>
 </mapper>
 

@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Log4j2
@@ -41,14 +42,10 @@ public class CourseServiceImpl implements CourseSerivce {
         return courseMapper.deleteCourseByMemberId(memberId);
     }
 
-    @Override
-    public boolean changeCourseStatus(String idx, String status) {
-        return false;
-    }
 
     @Override
-    public List<Integer> getExpectedDeleteCourse() {
-        return null;
+    public boolean updateCourseStatusToDeleted(LocalDateTime now) {
+         return courseMapper.updateCourseStatusToDeleted(now);
     }
 
 

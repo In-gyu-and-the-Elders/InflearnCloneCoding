@@ -2,6 +2,7 @@ package inflearn_clone.springboot.service.course;
 
 import inflearn_clone.springboot.dto.course.CourseDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CourseSerivce {
@@ -16,10 +17,6 @@ public interface CourseSerivce {
     // 지금 필요 없음
     boolean deleteCourseByMemberId(String memberId);
 
-    //강좌 status 변환(R:대기 | D:삭제)
-    boolean changeCourseStatus(String idx, String status);
-
-    //삭제 대상 강좌 idx 가져옴
-    List<Integer> getExpectedDeleteCourse();
-
+    // 강좌 삭제
+    boolean updateCourseStatusToDeleted(LocalDateTime now);
 }

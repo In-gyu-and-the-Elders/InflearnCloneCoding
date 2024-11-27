@@ -27,5 +27,7 @@ public interface CourseMapper {
     //삭제 항목에 포함되는 강의 삭제
     int deleteCoursesByIdx(@Param("list") List<Integer> idx);
 
+    boolean updateCourseStatusToDeleted(@Param("now") LocalDateTime now);
+
 
  }
