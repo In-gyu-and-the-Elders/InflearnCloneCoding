@@ -3,7 +3,7 @@ package inflearn_clone.springboot.controller;
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
 import inflearn_clone.springboot.dto.member.LeaveReasonDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
-import inflearn_clone.springboot.service.CourseSerivce;
+import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.admin.NoticeServiceIf;
 import inflearn_clone.springboot.service.member.MemberServiceIf;
 import inflearn_clone.springboot.utils.CommonFileUtil;
@@ -200,15 +200,13 @@ public class AdminController {
             if(list.size() > 0){
                 // 공지사항 자동 등록 로직
                 int insertNotice = noticeService.autoInsert(memberId, list);
-                return ResponseEntity.ok("공지 사항 등록됨");
-                // 공지사항 등록 이후 30일 뒤 강좌 삭제되도록 처리해야함
-//                boolean isDeleted = courseSerivce.deleteCourseByMemberId(memberId); //강의 바로 삭제가 아님
-//                if(isDeleted){
-//                    return ResponseEntity.ok("해당 강사의 강좌가 성공적으로 삭제되었습니다.");
-//                }else {
-//                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                            .body("강좌 삭제 중 오류가 발생했습니다.");
-//                }
+                if(insertNotice > 0){
+                    // 공지사항 등록 이후 30일 뒤 강좌 삭제되도록 처리해야함 (즉 예약 처리)
+                    // 예약 로직이 들어가야함
+                    return ResponseEntity.ok("강의 삭제 예약 완료");
+                }else{
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약 설정 중 오류가 발생했습니다.");
+                }
             }else{
                 // 회원탈퇴 로직 추가
                 return ResponseEntity.badRequest().body("운영 중인 강좌가 없습니다.");

@@ -60,8 +60,9 @@ public class NoticeServiceImpl implements NoticeServiceIf{
         StringBuilder content = new StringBuilder();
         content.append("30일 이후 다음 강좌들은 폐지됩니다\n");
         content.append("폐지 강좌 목록\n");
+
         for(Integer idx : list){
-            //courseMapper.updateDeleteDate(idx, LocalDateTime.now().plusMonths(3));
+            courseMapper.updateDeleteDate(idx, LocalDateTime.now().plusMonths(3));
             content.append(idx);
             content.append("\n");
         }

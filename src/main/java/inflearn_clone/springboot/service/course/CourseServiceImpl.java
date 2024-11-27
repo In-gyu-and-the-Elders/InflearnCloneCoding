@@ -1,12 +1,12 @@
-package inflearn_clone.springboot.service;
+package inflearn_clone.springboot.service.course;
 
 
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.mappers.CourseMapper;
+import inflearn_clone.springboot.service.course.CourseSerivce;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,14 +32,24 @@ public class CourseServiceImpl implements CourseSerivce {
     //teacherId로 존재하는 강의가 있는지 확인하기
     @Override
     public List<Integer> selectCourseByMemberId(String memberId) {
-
         return courseMapper.selectCourseByMemberId(memberId);
     }
 
-    // 특정 teacherId의 강의 삭제하기
+    // 특정 teacherId의 강의 삭제하기 (지금 필요없음)
     @Override
     public boolean deleteCourseByMemberId(String memberId) {
         return courseMapper.deleteCourseByMemberId(memberId);
     }
+
+    @Override
+    public boolean changeCourseStatus(String idx, String status) {
+        return false;
+    }
+
+    @Override
+    public List<Integer> getExpectedDeleteCourse() {
+        return null;
+    }
+
 
 }

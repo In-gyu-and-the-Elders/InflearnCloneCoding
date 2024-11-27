@@ -1,4 +1,4 @@
-package inflearn_clone.springboot.service;
+package inflearn_clone.springboot.service.course;
 
 import inflearn_clone.springboot.dto.course.CourseDTO;
 
@@ -13,9 +13,13 @@ public interface CourseSerivce {
     //아이디에 해당하는 강의 정보 확인하기(관리자 사용)
     List<Integer> selectCourseByMemberId(String memberId);
 
+    // 지금 필요 없음
     boolean deleteCourseByMemberId(String memberId);
 
-    //삭제 대상 강의 idx 가져옴
+    //강좌 status 변환(R:대기 | D:삭제)
+    boolean changeCourseStatus(String idx, String status);
 
-    //삭제 대상 강의 삭제
+    //삭제 대상 강좌 idx 가져옴
+    List<Integer> getExpectedDeleteCourse();
+
 }

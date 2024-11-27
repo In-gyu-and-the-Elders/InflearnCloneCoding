@@ -32,5 +32,12 @@
         SET status = 'N'
         WHERE teacherId = #{teacherId} AND status = 'Y';
     </update>
+
+    <!-- 강의 삭제 날짜 업데이트-->
+    <update id="updateDeleteDate">
+        UPDATE tbl_course
+        SET deleteDate = #{deleteDate}, status = 'R'
+        WHERE idx = #{idx}
+    </update>
 </mapper>
 
