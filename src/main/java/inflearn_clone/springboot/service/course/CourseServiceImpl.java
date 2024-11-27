@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseSerivce {
-    @Autowired
     private final CourseMapper courseMapper;
     private final ModelMapper modelMapper;
 

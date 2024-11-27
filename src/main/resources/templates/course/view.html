@@ -37,8 +37,15 @@
             <!-- 우측: 사이드바 -->
             <div class="sidebar">
                 <h2 th:text="'₩' + ${course.price}"> 가격</h2>
-                <button>수강신청하기</button>
-                <button>장바구니에 담기</button>
+                <form action="/cart/regist" method="post">
+                    <input type="hidden" name="courseIdx" th:value="${course.idx}">
+                    <button type="submit" class="btn1">수강신청하기</button>
+                </form>
+
+                <form action="/cart/regist" method="post">
+                    <input type="hidden" name="courseIdx" th:value="${course.idx}">
+                    <button type="submit" class="btn2">장바구니에 담기</button>
+                </form>
                 <div class="like">
                     <span class="heart">❤️</span>
                     <span>20,333</span>
@@ -58,10 +65,10 @@
     // 탭 클릭 이벤트
     $('.tab').on('click', function () {
         console.log("클릭시작")
-        const tabName = $(this).data('tab'); // 탭 이름 가져오기
+        const tabName = $(this).data('tab');
         const idx = courseIdx;
-        $.get(`/course/tab/${tabName}/${idx}`, function (data) { // 서버에서 해당 탭의 내용을 받아옴
-            $('.tab-content').html(data); // 받은 데이터를 5번 영역에 삽입
+        $.get(`/course/tab/${tabName}/${idx}`, function (data) {
+            $('.tab-content').html(data);
         });
     });
 
