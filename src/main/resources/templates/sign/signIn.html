@@ -13,7 +13,7 @@
 
 <script>
   document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault(); // 기본 폼 제출 동작 방지
+    e.preventDefault();
 
     const formData = new FormData(e.target);
     const jsonData = Object.fromEntries(formData.entries());
@@ -29,7 +29,6 @@
 
       if (response.ok) {
         alert('로그인 성공!');
-        // 성공 후 리다이렉트 또는 다른 동작 수행
       } else {
         const error = await response.text();
         console.error('로그인 실패:', error);

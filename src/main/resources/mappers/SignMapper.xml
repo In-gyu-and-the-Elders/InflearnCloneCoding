@@ -12,7 +12,7 @@
   </insert>
 
   <!-- 로그인 -->
-  <select id="signIn" parameterType="string" resultType="inflearn_clone.springboot.domain.SignVO">
+  <select id="signIn" parameterType="string">
     SELECT memberId, pwd, name, phone, email, status, regDate, memberType
     FROM tbl_member
     WHERE memberId = #{memberId}
@@ -60,4 +60,10 @@
     WHERE memberId = #{memberId}
   </update>
 
+  <!-- 아이디 중복 체크 -->
+  <select id="checkDuplicateId" parameterType="String" resultType="boolean">
+    SELECT COUNT(*) > 0
+    FROM tbl_member
+    WHERE memberId = #{memberId}
+  </select>
 </mapper>

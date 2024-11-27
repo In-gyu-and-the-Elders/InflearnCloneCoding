@@ -14,4 +14,5 @@ public interface SignMapper {
   String findMemberId(String email);
   String findPassword(String email, String memberId);
   String deleteMember(String memberId);
+  boolean checkDuplicateId(String memberId);
 }

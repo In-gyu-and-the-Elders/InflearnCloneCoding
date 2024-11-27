@@ -68,7 +68,7 @@ public class SignServiceImpl {
   public String findMemberId(String email) {
     String memberId = signMapper.findMemberId(email);
     if (memberId == null) {
-      throw new IllegalArgumentException("No matching member found");
+      throw new IllegalArgumentException("없어");
     }
     return memberId;
   }
@@ -77,8 +77,16 @@ public class SignServiceImpl {
   public String findPassword(String memberId, String email) {
     String password = signMapper.findPassword(memberId, email);
     if (password == null) {
-      throw new IllegalArgumentException("No matching member found");
+      throw new IllegalArgumentException("없다고");
     }
     return password;
+  }
+
+  // 아이디 중복 체크
+  public boolean checkDuplicateId(String memberId) {
+    // true면 이미 존재하는 아이디, false면 사용 가능한 아이디
+    boolean isDuplicate = signMapper.checkDuplicateId(memberId);
+    
+    return !isDuplicate;
   }
 }

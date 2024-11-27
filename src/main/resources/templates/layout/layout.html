@@ -17,22 +17,6 @@
     />
     <link rel="manifest" href="/manifest-web.json" />
     <!-- include PWACompat _after_ your manifest -->
-    <script type="text/javascript">
-      window.isReactNative = false;
-      window.isIos = false;
-
-      if (window.isReactNative) {
-        alert(
-          "더이상 제공되지 않는 앱 서비스 입니다. 새롭게 서비스되는 인프런 앱을 다운로드 받아 사용해주세요 :)"
-        );
-      }
-    </script>
-    <script async src="https://cdn.inflearn.com/dist/pwacompat.min.js"></script>
-
-    <script
-      type="text/javascript"
-      src="https://cdn.inflearn.com/dist/js/GIF_MP4.381aa3034290fc7f919f.js"
-    ></script>
 
     <link
       rel="icon"
@@ -191,90 +175,6 @@
       href="https://cdn.inflearn.com/dist/fontawesome/css/all.css"
     />
     <link rel="stylesheet" href="/css/common/style.css" />
-    <script type="text/javascript" src="" nomodule></script>
-    <script
-      type="text/javascript"
-      src="https://unpkg.com/element-closest/browser"
-      nomodule
-    ></script>
-    <script>
-      _ia_user = { user_id: null };
-    </script>
-    <script>
-      _hc_user = {
-        user_id: null,
-        device_id: "be79d20c-0e5b-48b3-9d4e-6b6bb5c14893",
-        hid: "78eb1354-4858-480b-8394-9d197aa8d16e",
-        user_info: {
-          user_id: null,
-          role_b2c: false,
-          role_b2b: false,
-          role_instructor: false,
-          role_admin: false,
-          user_created_date: null,
-          user_inactive_date: null,
-          is_marketing: null,
-          is_newsletter: null,
-          is_study_alert: false,
-        },
-      };
-    </script>
-    <script>
-      dataLayer = [];
-      window.dataLayer.push({
-        event: "gtm.customInit",
-        userId: "",
-        userEmail: "",
-        user_info: {},
-        mixpanelToken: "c05d8cc017a29af05e50c0d43d848d2d",
-        mxp___user: {
-          user_id: null,
-          role_b2c: false,
-          role_b2b: false,
-          role_instructor: false,
-          role_admin: false,
-          user_created_date: null,
-          user_inactive_date: null,
-          is_marketing: null,
-          is_newsletter: null,
-          is_study_alert: false,
-        },
-      });
-    </script>
-
-    <!-- Google Tag Manager -->
-    <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({
-          "gtm.start": new Date().getTime(),
-          event: "gtm.js",
-        });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-MVM7ZHX");
-    </script>
-    <!-- End Google Tag Manager -->
-    <script type="application/ld+json">
-      {
-        "@context": "http://schema.org",
-        "@type": "Person",
-        "name": "inflearn",
-        "url": "https://www.inflearn.com/",
-        "sameAs": [
-          "https://www.facebook.com/inflearn",
-          "https://www.youtube.com/channel/UC0Y0T9JpgIBbyGDjvy9PbOg",
-          "https://post.naver.com/my.nhn?memberNo=47726503",
-          "https://twitter.com/inflearn",
-          "https://www.instagram.com/inflearn__official/",
-          "https://blog.naver.com/inflearn"
-        ]
-      }
-    </script>
 
     <meta
       name="google-site-verification"
@@ -1913,23 +1813,21 @@
               <title>인프런 브랜드 로고</title>
             </svg></span
           >
-          <form class="sign-in-modal__form">
+          <form class="sign-in-modal__form" id="loginForm">
             <div class="form__input-block">
               <input
-                placeholder="이메일"
-                data-kv="email"
+                placeholder="아이디"
+                name="memberId"
                 class="form__input form__input--email ac-input--large"
-                type="email"
+                type="text"
               />
 
               <div class="ac-input-with-item--large password-input form__input">
                 <input
                   class="e-sign-in-input"
                   value=""
-                  data-kv="password"
+                  name="pwd"
                   type="password"
-                  spellcheck="false"
-                  id=""
                   placeholder="비밀번호"
                 />
                 <span
@@ -1957,6 +1855,7 @@
 
             <button
               class="ac-button is-md is-solid is-primary form__button e-sign-in"
+              type="submit"
             >
               로그인
             </button>
@@ -1980,6 +1879,9 @@
           </p>
           <div class="sign-in-modal__social-sign-in">
             <hr class="social-sign-in__line" />
+            <div style="width: 100%">
+              <div>일반 회원</div>
+            </div>
             <span class="social-sign-in__title">간편 로그인</span>
             <div class="social__sign-in-buttons">
               <div class="social__button__wrapper">
@@ -2029,34 +1931,63 @@
         </article>
       </div>
 
-      <!--  이건 문의하기 일단 비활성화-->
-      <!--  <a-->
-      <!--      href="/channeltalk"-->
-      <!--      target="_blank"-->
-      <!--      class="channel-talk__redirect-button"-->
-      <!--  >-->
-      <!--    <picture>-->
-      <!--      <source-->
-      <!--          srcset="-->
-      <!--            https://cdn.inflearn.com/assets/channeltalk/channeltalk.png?f=avif-->
-      <!--          "-->
-      <!--          type="image/avif"-->
-      <!--      />-->
-      <!--      <source-->
-      <!--          srcset="-->
-      <!--            https://cdn.inflearn.com/assets/channeltalk/channeltalk.png?f=webp-->
-      <!--          "-->
-      <!--          type="image/webp"-->
-      <!--      />-->
-      <!--      <img-->
-      <!--          src="https://cdn.inflearn.com/assets/channeltalk/channeltalk.png"-->
-      <!--          alt="채널톡 아이콘"-->
-      <!--          class="channel-talk__redirect-button__icon"-->
-      <!--      />-->
-      <!--    </picture>-->
-      <!--  </a>-->
+      <!--  이건 문의하기 일단 비활성화 2024.11.27 다시 활성화-->
+        <a
+            href="/channeltalk"
+            target="_blank"
+            class="channel-talk__redirect-button"
+        >
+          <picture>
+            <source
+                srcset="
+                  https://cdn.inflearn.com/assets/channeltalk/channeltalk.png?f=avif
+                "
+                type="image/avif"
+            />
+            <source
+                srcset="
+                  https://cdn.inflearn.com/assets/channeltalk/channeltalk.png?f=webp
+                "
+                type="image/webp"
+            />
+            <img
+                src="https://cdn.inflearn.com/assets/channeltalk/channeltalk.png"
+                alt="채널톡 아이콘"
+                class="channel-talk__redirect-button__icon"
+            />
+          </picture>
+        </a>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="/js/common/script.js"></script>
+    <script>
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const jsonData = Object.fromEntries(formData.entries());
+
+        try {
+          const response = await fetch('/sign/signIn', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonData),
+          });
+
+          if (response.ok) {
+            alert('로그인 성공!');
+          } else {
+            const error = await response.text();
+            console.error('로그인 실패:', error);
+            alert('로그인 실패');
+          }
+        } catch (error) {
+          console.error('로그인 중 오류 발생:', error);
+          alert('로그인 중 오류가 발생했습니다.');
+        }
+      });
+    </script>
   </body>
 </html>

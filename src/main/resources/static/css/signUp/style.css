@@ -1,0 +1,144 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.textAlignCenter {
+  text-align: center;
+}
+
+.center {
+  margin: 100px 0 100px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signUpHeader {
+  margin: 20px 0 40px 0;
+}
+
+.subBtn {
+  border: 0;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  background-color: #00c471;
+  font-weight: bold;
+  width: 100%;
+  height: 50px;
+  font-size: 20px;
+}
+
+input:not([type="radio"]) {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  height: 50px;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.phone-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.phone-input-group input {
+  width: 100px;
+  text-align: center;
+}
+
+.phone-input-group span {
+  color: #666;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  display: none;
+  width: 100%;
+  position: relative;
+  margin-top: 5px;
+}
+
+.pwValidation {
+  color: #868e96;
+  margin-top: 5px;
+}
+
+.invalid-input {
+  border-color: red;
+}
+
+.inputArea {
+  margin-bottom: 40px;
+}
+
+label {
+  font-weight: bold;
+}
+
+.radio-group {
+  display: flex;
+  gap: 30px;
+  margin: 10px 0;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radio-item input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.radio-item label {
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+#checkDuplicateId {
+  position: relative;
+  height: 40px;
+  bottom: 45px;
+  left: 268px;
+  padding: 5px;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #00c471;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.infoArea {
+  word-wrap: break-word;
+  word-break: keep-all;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  border-radius: 8px; /* 모서리 둥글게 */
+  font-size: 14px;
+  color: #666; /* 글자 색상 */
+  margin-bottom: 20px;
+}

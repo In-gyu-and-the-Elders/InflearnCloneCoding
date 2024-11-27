@@ -2,6 +2,7 @@ package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.sign.SignDTO;
 import inflearn_clone.springboot.service.sign.SignServiceImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,14 @@ public class SignController {
 
   // 회원가입
   @PostMapping("/signUp")
-  public ResponseEntity<String> signUp(@RequestBody SignDTO signDTO) {
+  public ResponseEntity<String> signUp(@Valid @RequestBody SignDTO signDTO) {
     signService.signUp(signDTO);
     return ResponseEntity.ok("Signup successful!");
   }
 
   // 로그인
   @PostMapping("/signIn")
-  public ResponseEntity<Map<String, String>> signIn(@RequestBody SignDTO signDTO) {
+  public ResponseEntity<Map<String, String>> signIn(@Valid @RequestBody SignDTO signDTO) {
     log.info("Received SignDTO: {}", signDTO);
 
     String token = signService.signIn(signDTO.getMemberId(), signDTO.getPwd());
@@ -42,7 +43,7 @@ public class SignController {
 
   // 회원 정보 수정
   @PutMapping("/member")
-  public ResponseEntity<String> modifyMemberInfo(@RequestBody SignDTO signDTO) {
+  public ResponseEntity<String> modifyMemberInfo(@Valid @RequestBody SignDTO signDTO) {
     signService.modifyMemberInfo(signDTO);
     return ResponseEntity.ok("Member info updated successfully!");
   }
@@ -66,5 +67,11 @@ public class SignController {
   public ResponseEntity<String> findPassword(@RequestParam String memberId, @RequestParam String email) {
     String password = signService.findPassword(memberId, email);
     return ResponseEntity.ok(password);
+  }
+
+  // 아이디 중복 체크
+  @GetMapping("/check-duplicate-id")
+  public ResponseEntity<Map<String, Boolean>> checkDuplicateId(@RequestParam String memberId) {
+    return ResponseEntity.ok(Map.of("available", signService.checkDuplicateId(memberId)));
   }
 }

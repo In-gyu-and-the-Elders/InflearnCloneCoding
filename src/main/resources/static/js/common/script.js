@@ -13,6 +13,14 @@ document.addEventListener("DOMContentLoaded", () => {
     loginModal.classList.add("hidden");
   });
 
+  // 쿼리스트링으로 로그인 모달 동적으로 켜지게 하기. 지금 쓰는곳 -> (회원가입)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("showLogin") === "true") {
+    loginModal.classList.add("active");
+    loginModal.classList.remove("hidden");
+    window.history.replaceState({}, document.title, "/");
+  }
+
   window.addEventListener("click", (e) => {
     if (e.target === loginModal) {
       loginModal.classList.remove("active");
