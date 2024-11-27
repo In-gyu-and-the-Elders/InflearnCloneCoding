@@ -40,11 +40,19 @@
         WHERE idx = #{idx}
     </update>
 
+    <select id="findCoursesToBeDeleted" resultType="int">
+        SELECT idx
+        FROM tbl_course
+        WHERE deleteDate &lt;= #{now}
+        AND status != 'D';
+    </select>
+
+
     <!-- 강의 상태 업데이트 -->
     <update id="updateCourseStatusToDeleted">
         UPDATE tbl_course
         SET status = 'D'
-        WHERE deleteDate &lt;= #{now}
+        WHERE deleteDate  &lt;= #{now}
         AND status != 'D'
     </update>
 </mapper>

@@ -45,7 +45,23 @@ public class CourseServiceImpl implements CourseSerivce {
 
     @Override
     public boolean updateCourseStatusToDeleted(LocalDateTime now) {
-         return courseMapper.updateCourseStatusToDeleted(now);
+        List<Integer> coursesToDelete = courseMapper.findCoursesToBeDeleted(now);
+        if (coursesToDelete.isEmpty()) {
+            log.info("삭제 예정 강좌가 없습니다.");
+            return false;
+        }
+
+        log.info("삭제 예정 강좌: " + coursesToDelete);
+
+        int updatedRows = courseMapper.updateCourseStatusToDeleted(now);
+        if(updatedRows > 0){
+            log.info(updatedRows + "개의 강좌가 삭제 상태로 변경되었습니다.");
+            return true;
+        }else{
+            log.info("강좌가 삭제 상태로 변경되지 않았습니다.");
+            return false;
+        }
+
     }
 
 

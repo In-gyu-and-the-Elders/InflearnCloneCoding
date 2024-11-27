@@ -204,6 +204,7 @@ public class AdminController {
                     // 공지사항 등록 이후 30일 뒤 강좌 삭제되도록 처리해야함 (즉 예약 처리)
                     // 예약 로직이 들어가야함
                     return ResponseEntity.ok("강의 삭제 예약 완료");
+
                 }else{
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약 설정 중 오류가 발생했습니다.");
                 }

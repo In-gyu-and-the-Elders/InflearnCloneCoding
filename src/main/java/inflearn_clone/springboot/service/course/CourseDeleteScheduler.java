@@ -13,11 +13,16 @@ import java.time.LocalDateTime;
 public class CourseDeleteScheduler {
     private final CourseSerivce courseSerivce;
 
-    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정 실행 ?
+    @Scheduled(cron = "0 * * * * ?")
     // 스케쥴러 언제 실횅될지 정함
     public void processScheduler(){
         LocalDateTime now = LocalDateTime.now();
         boolean result = courseSerivce.updateCourseStatusToDeleted(now);
+        if (result) {
+            log.info("강좌 상태가 삭제로 변경되었습니다.");
+        } else {
+            log.info("삭제 상태로 변경할 강좌가 없습니다.");
+        }
 
     }
 }
