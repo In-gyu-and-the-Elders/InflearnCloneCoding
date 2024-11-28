@@ -4,7 +4,7 @@
 <div layout:fragment="content">
     <h2>회원 조회</h2>
     <div class="container mt-5">
-        <form action="/admin/member/modify" method="POST">
+        <form th:action="@{/admin/member/modify}" method="POST">
             <!-- Member ID -->
             <div class="mb-3">
                 <label for="memberId" class="form-label">회원 ID</label>
@@ -42,10 +42,15 @@
                     <option value="D" th:selected="${info.status == 'D'}">탈퇴</option>
                 </select>
             </div>
+<!--            <div class="mb-3">-->
+<!--                <label for="regDate" class="form-label">등록일</label>-->
+<!--                <input type="date" class="form-control" id="regDate" name="regDate"-->
+<!--                       th:value="${#temporals.format(info.regDate, 'yyyy-MM-dd')}" disabled>-->
+<!--            </div>-->
             <div class="mb-3">
                 <label for="regDate" class="form-label">등록일</label>
-                <input type="date" class="form-control" id="regDate" name="regDate"
-                       th:value="${#temporals.format(info.regDate, 'yyyy-MM-dd')}" disabled>
+                <input type="text" class="form-control" id="regDate" name="regDate"
+                       th:value="${info.regDate}" disabled>
             </div>
 
             <!-- Modification Date -->
@@ -71,7 +76,7 @@
 
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary">수정</button>
-            <button type="reset" class="btn btn-secondary">탈퇴</button>
+            <button type="button" class="btn btn-secondary" th:onclick="|location.href= '@{/admin/member/delete(memberId=${info.memberId}, memberType=${info.memberType})}'|">탈퇴</button>
         </form>
     </div>
     <!-- Bootstrap JS -->

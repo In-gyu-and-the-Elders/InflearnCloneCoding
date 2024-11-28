@@ -154,3 +154,39 @@ body {
 .hidden {
   display: none;
 }
+
+.shopingCart {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.cart-icon {
+  display: inline-block;
+}
+
+.cart-icon img {
+  transition: opacity 0.3s ease;
+}
+
+.cart-icon:hover img {
+  content: url("/public/shopingCartGreen.png");
+}
+
+.myPageBtn {
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  border: none;
+  border-radius: 50% !important;
+  overflow: hidden;
+  padding: 0;
+  background-image: url("https://cdn.inflearn.com/public/main/profile/default_profile.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.profile_modal_cover a {
+  text-decoration: none;
+}

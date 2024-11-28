@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/common}">
+<div layout:fragment="content">
+
+    <div class="d-flex justify-content-end mt-3">
+        <a th:href="@{/admin/course/delete(idx=${info.idx}, memberId=${info.teacherId})}" class="btn btn-danger me-2" onclick="return confirm('삭제하시겠습니까?')">삭제</a>
+        <a th:href="@{/admin/course/modify(idx=${info.idx})}" class="btn btn-success">수정</a>
+    </div>
+
+</div>
