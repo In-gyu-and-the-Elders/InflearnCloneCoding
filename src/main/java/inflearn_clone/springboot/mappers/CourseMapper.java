@@ -1,6 +1,7 @@
 package inflearn_clone.springboot.mappers;
 
 import inflearn_clone.springboot.domain.CourseVO;
+import inflearn_clone.springboot.domain.MemberVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,7 +11,9 @@ import java.util.Map;
 
 @Mapper
 public interface CourseMapper {
+    // 전체강좌 리스트
     List<CourseVO> courseList();
+
     CourseVO courseView1(int idx);
 
     // 특정 teacherId로 존재하는 강의가 있는지 확인하기
@@ -39,8 +42,10 @@ public interface CourseMapper {
 
     List<CourseVO> allCourseList(Map<String, Object> map);
 
+    // 강좌상세보기
+    CourseVO courseView(int idx);
+    // 페이징 버전
+    List<CourseVO> selectAllCourse(Map<String, Object> map);
+    int courseTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue);
 
-
-
-
- }
+}

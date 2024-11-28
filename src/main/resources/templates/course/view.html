@@ -11,12 +11,12 @@
             <!-- 상단: 강의명 + 썸네일 -->
             <div class="header">
                 <div class="course-info">
-                    <h1>강의명</h1>
+                    <h1 th:text="${course.title}">강의명</h1>
                     <p>⭐별점  수강생: <span></span>명</p>
-                    <p>👤 강사명: <span></span></p>
+                    <p>👤 강사명: <span th:text="${course.teacherId}"></span></p>
                 </div>
                 <div class="thumbnail">
-                    <img alt="강의 썸네일">
+                    <img th:src="${course.thumbnail}" alt="강의 썸네일">
                 </div>
             </div>
 
@@ -36,9 +36,23 @@
 
             <!-- 우측: 사이드바 -->
             <div class="sidebar">
-                <h2>가격</h2>
-                <button>수강신청하기</button>
-                <button>장바구니에 담기</button>
+                <h2 th:text="'₩' + ${course.price}"> 가격</h2>
+                <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
+                    <input type="hidden" name="courseIdx" th:value="${course.idx}">
+                    <button type="submit" class="btn1">수강신청하기</button>
+                </form>
+
+                <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
+                    <input type="hidden" name="courseIdx" th:value="${course.idx}">
+                    <button type="submit" class="btn2">장바구니 담기</button>
+                </form>
+                <form action="/cart/list" method="get" th:if="${!isCartPossible && isOrderPossible}">
+                    <button type="submit" class="btn2">장바구니 이동</button>
+                </form>
+
+                <form action="/review/write" method="get" th:if="${!isOrderPossible}">
+                    <button type="submit" class="btn2">수강평 작성하기</button>
+                </form>
                 <div class="like">
                     <span class="heart">❤️</span>
                     <span>20,333</span>
@@ -50,15 +64,18 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+    const courseIdx = [[${course.idx}]];
+
     $(document).ready(function() {
         $('.tab[data-tab="info"]').click();
     });
     // 탭 클릭 이벤트
     $('.tab').on('click', function () {
         console.log("클릭시작")
-        const tabName = $(this).data('tab'); // 탭 이름 가져오기
-        $.get(`/course/tab/${tabName}`, function (data) { // 서버에서 해당 탭의 내용을 받아옴
-            $('.tab-content').html(data); // 받은 데이터를 5번 영역에 삽입
+        const tabName = $(this).data('tab');
+        const idx = courseIdx;
+        $.get(`/course/tab/${tabName}/${idx}`, function (data) {
+            $('.tab-content').html(data);
         });
     });
 
