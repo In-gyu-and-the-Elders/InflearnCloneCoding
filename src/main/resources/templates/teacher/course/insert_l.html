@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<div layout:fragment="main">
+  <div class="container">
+    <h3>섹션명 : <span th:text="${section.section}"></span></h3>
+
+    <div>
+      <form id="lectureForm" action="/teacher/course/insert_l" method="POST" enctype="multipart/form-data">
+        <div id="lectureInputs">
+          <!-- 첫 번째 강의 입력 필드 (삭제 불가) -->
+          <div class="mb-3 lecture-item" id="lecture-1">
+            <span class="lecture-number">1</span>
+            <input type="text" name="title" class="form-control" placeholder="강의 제목" />
+            <input type="file" name="videoFile" class="form-control" />
+            <!-- 첫 번째 강의는 삭제 불가 -->
+          </div>
+        </div>
+        <input type="hidden" th:value="${section.idx}" name="sectionIdx">
+
+        <!-- 강의 추가 버튼 -->
+        <button type="button" class="btn btn-primary" id="addLectureBtn" onclick="addLecture()">강의 추가</button>
+
+        <div class="mt-3">
+          <button th:if="${hasNextNext}" type="submit" class="btn btn-success">다음 섹션</button>
+          <button th:if="${!hasNextNext}" type="button" class="btn btn-success" onclick="location.href='/course/list'">완료</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <script>
+    // 강의 번호를 추적하기 위한 변수 (첫 번째 강의는 고정)
+    let lectureCount = 1;
+
+    // 강의 추가 함수
+    function addLecture() {
+      // 강의 번호 증가
+      lectureCount++;
+
+      // 새 강의 입력 필드 생성
+      const newLecture = document.createElement('div');
+      newLecture.classList.add('mb-3', 'lecture-item');
+      newLecture.id = 'lecture-' + lectureCount;
+
+      // 새로운 강의 입력 필드 내용
+      newLecture.innerHTML = `
+      <span class="lecture-number">${lectureCount}</span>
+      <input type="text" name="title" class="form-control" placeholder="강의 제목" />
+      <input type="file" name="videoFile" class="form-control" />
+      <button type="button" class="btn btn-danger delete-lecture-btn" onclick="deleteLecture(this)">X</button>
+    `;
+
+      // lectureInputs 컨테이너에 새 강의 추가
+      document.getElementById('lectureInputs').appendChild(newLecture);
+    }
+
+    // 강의 삭제 함수
+    function deleteLecture(button) {
+      const lectureItem = button.closest('.lecture-item');
+
+      // 첫 번째 강의는 삭제 불가
+      if (lectureItem.id === 'lecture-1') {
+        alert('첫 번째 강의는 삭제할 수 없습니다.');
+        return;
+      }
+
+      lectureItem.remove();
+
+      // 번호 다시 정렬
+      const lectures = document.querySelectorAll('.lecture-item');
+      lectures.forEach((lecture, index) => {
+        lecture.id = 'lecture-' + (index + 1);
+        // 번호를 올바르게 유지하기 위해 입력 필드 수정
+        const inputs = lecture.querySelectorAll('input');
+        inputs[0].name = 'title';
+        inputs[1].name = 'videoFile';
+
+        // 강의 번호 업데이트
+        const lectureNumber = lecture.querySelector('.lecture-number');
+        lectureNumber.textContent = index + 1;
+      });
+
+      // lectureCount 재설정 (현재 마지막 강의 번호로)
+      lectureCount = lectures.length;
+    }
+  </script>
+
+  <style>
+    .lecture-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .lecture-number {
+      margin-right: 10px;
+      font-weight: bold;
+      width: 30px;
+    }
+
+    .lecture-item input {
+      margin-right: 10px;
+    }
+
+    .delete-lecture-btn {
+      margin-left: 10px;
+    }
+  </style>
+</div>

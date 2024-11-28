@@ -1,10 +1,8 @@
 package inflearn_clone.springboot.dto.course;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 @Data
@@ -12,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Log4j2
+@ToString
 public class CourseDTO {
     private int idx;
     private String category;
@@ -19,10 +18,14 @@ public class CourseDTO {
     private String description;
     private String teacherId;
     private LocalDateTime regDate;
+
     private LocalDateTime displayDate;
     private LocalDateTime modifyDate;
     private LocalDateTime deleteDate;
     private String status; // (Y: Active, N: Inactive, D: Deleted)
     private int price;
     private String thumbnail; // Thumbnail image path
+
+    private MultipartFile thumbnailFile;
+
 }
