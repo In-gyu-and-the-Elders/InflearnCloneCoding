@@ -39,5 +39,7 @@ public interface CourseSerivce {
     int getTotalCourses(String searchCategory, String searchValue);
 
     int insertCourse(CourseDTO courseDTO);
+
     CourseDTO viewMyLastCourse(String memberId);
+
 }
