@@ -22,12 +22,16 @@
         WHERE courseIdx = #{courseIdx} AND memberId = #{memberId} AND status = 'Y'
     </select>
 
+    <select id="refundByDeleteCourse">
+        SELECT memberId, orderPrice, orderDate, status, orderNumber, leaveDate
+        FROM tbl_order
+        WHERE courseIdx = #{idx}
+    </select>
+  
     <update id="refundOrder">
         UPDATE tbl_order
         SET status = 'D',
             leaveDate = NOW()
         WHERE idx = #{idx}
     </update>
-
-
 </mapper>

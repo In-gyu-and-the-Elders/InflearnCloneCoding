@@ -53,7 +53,11 @@
                 <span class="badge badge-success" th:if="${dto.status == 'Y'}">활성</span>
                 <span class="badge badge-secondary" th:if="${dto.status == 'N'}">비활성</span>
                 <span class="badge badge-secondary" th:if="${dto.status == 'R'}">비활성</span>
-                <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N' and dto.status != 'R' and dto.status != 'P'}">삭제</span>
+                <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N' and dto.status != 'R'}">삭제</span>
+                <!-- 환불된 명단 조회 가능-->
+                <span class="badge badge-danger" th:if="${dto.status == 'D'}"
+                      th:onclick="|location.href= '@{/admin/course/refundList(idx=${dto.idx})}'|"> 환불 완료
+                </span>
             </td>
         </tr>
         </tbody>
