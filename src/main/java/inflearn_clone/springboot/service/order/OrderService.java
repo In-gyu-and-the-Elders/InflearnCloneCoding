@@ -9,4 +9,5 @@ public interface OrderService {
     void regist(OrderDTO orderDTO);
     List<OrderCourseDTO> getOrderList(String memberId);
     boolean orderCnt(int courseIdx, String memberId);
+    boolean refundOrder(int idx);
 }

@@ -1,59 +1,60 @@
 <!DOCTYPE html>
 <html lang="ko"
-<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
-<!--      layout:decorate="~{layout/layout.html}"-->
+      layout:decorate="~{layout/layout.html}"
 >
-<!--<div layout:fragment="main">-->
+<div layout:fragment="main">
     <div>
-    <div class="cart-container">
-        <!-- 상단: 전체 선택 및 강좌 수 -->
-        <div class="cart-header">
-            <label>
-                <input type="checkbox" id="select-all">
-                전체선택 <span id="course-count">(0/0)</span>
-                <button id="delete-selected-btn" onclick="deleteBtns()">삭제</button>
-            </label>
-        </div>
-        <!--        총가격+결제버튼부분-->
-        <div class="cart-summary">
-            <p>총 선택한 강좌 가격: <span id="total-price">₩0</span></p>
-            <form id="orderForm" action="/order/regist" method="POST">
-                <input type="hidden" name="memberId" value="${memberId}">
-                <input type="hidden" name="orderNumber" id="orderNumber"> <!-- 결제번호는 서버에서 생성 -->
-
-                <!-- 선택된 강좌들의 courseIdx와 price를 hidden 필드로 전달 -->
-                <input type="hidden" name="courseIdxList" id="courseIdxList">
-                <input type="hidden" name="priceList" id="priceList">
-
-                <button type="submit" id="checkoutBtn">결제하기</button>
-            </form>
-        </div>
-        <!-- 강좌 리스트 -->
-        <div class="cart-list" th:if="${cartList != null and cartList.size() > 0}">
-            <div class="cart-item" th:each="item : ${cartList}" th:data-course-id="${item.idx}" style="border:1px solid #1e1e1e; margin: 2px">
-                <div class="item-info">
-                    <input type="checkbox" class="course-select">
-                    <img th:src="${item.thumbnail}" alt="강좌 썸네일" class="thumbnail">
-                    <div class="course-details">
-                        <p class="course-title" th:text="${item.title}"></p>
-                        <p class="course-teacher" th:text="${item.teacherId}"></p>
-                        <p class="course-price" th:text="${item.price}"></p>
-                        <p class="course-regDate" th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd')}"></p>
-                    </div>
-                </div>
-                <button class="delete-btn" th:data-course-id="${item.idx}" onclick="deleteBtns()">부분삭제</button>
+        <div class="cart-container">
+            <!-- 상단: 전체 선택 및 강좌 수 -->
+            <div class="cart-header">
+                <label>
+                    <input type="checkbox" id="select-all">
+                    전체선택 <span id="course-count">(0/0)</span>
+                    <button id="delete-selected-btn" onclick="deleteBtns()">삭제</button>
+                </label>
             </div>
-        </div>
+            <!--        총가격+결제버튼부분-->
+            <div class="cart-summary">
+                <p>총 선택한 강좌 가격: <span id="total-price">₩0</span></p>
+                <form id="orderForm" action="/order/regist" method="POST">
+                    <input type="hidden" name="memberId" value="${memberId}">
+                    <input type="hidden" name="orderNumber" id="orderNumber"> <!-- 결제번호는 서버에서 생성 -->
 
-        <div th:unless="${cartList != null and cartList.size() > 0}">
-            <p>현재 장바구니에 담긴 강좌가 없습니다.</p>
+                    <!-- 선택된 강좌들의 courseIdx와 price를 hidden 필드로 전달 -->
+                    <input type="hidden" name="courseIdxList" id="courseIdxList">
+                    <input type="hidden" name="priceList" id="priceList">
+
+                    <button type="submit" id="checkoutBtn">결제하기</button>
+                </form>
+            </div>
+            <!-- 강좌 리스트 -->
+            <div class="cart-list" th:if="${cartList != null and cartList.size() > 0}">
+                <div class="cart-item" th:each="item : ${cartList}" th:data-course-id="${item.idx}"
+                     style="border:1px solid #1e1e1e; margin: 2px">
+                    <div class="item-info">
+                        <input type="checkbox" class="course-select">
+                        <img th:src="${item.thumbnail}" alt="강좌 썸네일" class="thumbnail">
+                        <div class="course-details">
+                            <p class="course-title" th:text="${item.title}"></p>
+                            <p class="course-teacher" th:text="${item.teacherId}"></p>
+                            <p class="course-price" th:text="${item.price}"></p>
+                            <p class="course-regDate" th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd')}"></p>
+                        </div>
+                    </div>
+                    <button class="delete-btn" th:data-course-id="${item.idx}" onclick="deleteBtns()">부분삭제</button>
+                </div>
+            </div>
+
+            <div th:unless="${cartList != null and cartList.size() > 0}">
+                <p>현재 장바구니에 담긴 강좌가 없습니다.</p>
+            </div>
         </div>
     </div>
 </div>
-
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const selectAllCheckbox = document.getElementById('select-all');
         const courseCountSpan = document.getElementById('course-count');
         const totalPriceSpan = document.getElementById('total-price');
@@ -65,7 +66,7 @@
         let totalPrice = 0;
 
         // 전체 선택 체크박스 클릭 처리
-        selectAllCheckbox.addEventListener('change', function() {
+        selectAllCheckbox.addEventListener('change', function () {
             const isChecked = selectAllCheckbox.checked;
             courseSelectCheckboxes.forEach(checkbox => {
                 checkbox.checked = isChecked;
@@ -78,12 +79,13 @@
         function updateCourseCheckboxes() {
             courseSelectCheckboxes = document.querySelectorAll('.course-select');
             courseSelectCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
+                checkbox.addEventListener('change', function () {
                     updateCourseCount();
                     updateTotalPrice();
                 });
             });
         }
+
         //결제버튼
         // 결제 버튼 클릭 시 선택된 강좌들의 정보 담기
         function getSelectedCourses() {
@@ -123,7 +125,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ idxList: idxList })
+                body: JSON.stringify({idxList: idxList})
             })
                 .then(response => response.json())
                 .then(data => {
@@ -150,14 +152,14 @@
 
         // 각 개별 삭제 버튼 클릭 시 처리
         document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 const courseId = button.getAttribute('data-course-id');
                 fetch('/cart/delete', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ idxList: [courseId] })
+                    body: JSON.stringify({idxList: [courseId]})
                 })
                     .then(response => response.json())
                     .then(data => {
