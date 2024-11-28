@@ -120,30 +120,40 @@
         background-color: #004494;
         transform: scale(0.98);
     }
+    a{
+        text-decoration-line: none;
+        color: black;
+    }
 </style>
 </head>
 <body>
 <div class="analytics-report">
     <div class="dashboard-overview">
             <div class="stat-card">
-                <h3>게시판 관리</h3>
+                <a th:href="@{/admin/notice/list}">
+                    <h4>게시판 관리</h4>
+                </a>
                 <p id="total-questions">바로가기</p>
             </div>
             <div class="stat-card">
-                <h3>강사 탈퇴 요청</h3>
+                <a th:href="@{/admin/member/teacherRequestList}">
+                    <h4>강사 탈퇴 요청</h4>
+                </a>
                 <p id="average-score">[[${teacherRequestTotalCnt}]]명</p>
             </div>
     </div>
     <div class="charts-container">
         <div class="chart-card">
-            <h4>일반 회원 분류</h4>
+            <a th:href="@{/admin/member/sList}">
+                <h4>일반 회원 분류</h4>
+            </a>
             <div class="chart-container">
                 <canvas id="performance-chart"></canvas>
             </div>
         </div>
 
         <div class="chart-card">
-            <h4>강의 관리</h4>
+            <h4>운영 중인 강좌</h4>
             <div class="chart-container">
                 <canvas id="score-distribution-chart"></canvas>
             </div>
@@ -171,8 +181,8 @@ const performanceChart = new Chart(ctxPerformance, {
     data: {
         labels: ['활성', '비활성', '탈퇴'],
         datasets: [{
-            label: 'Question Usage',
-            data: [ [[${StatusYTotalCnt}]], [[${StatusNTotalCnt}]], [[${StatusDTotalCnt}]] ],
+            label: '회원 상태',
+            data: [ [[${statusYTotalCnt}]], [[${statusNTotalCnt}]], [[${statusDTotalCnt}]] ],
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1
@@ -194,11 +204,11 @@ const ctxScoreDistribution = document.getElementById('score-distribution-chart')
 const scoreDistributionChart = new Chart(ctxScoreDistribution, {
     type: 'pie',
     data: {
-        labels: ['0-50', '51-70', '71-90', '91-100'],
+        labels: ['프로그래밍', '인공지능', '하드웨어', '커리어,자기계발', '기획,경영,마게팅'],
         datasets: [{
             label: 'Score Distribution',
-            data: [15, 25, 35, 25],
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF9F40']
+            data: [ [[${categoryDTotalCnt}]], [[${categoryATotalCnt}]], [[${categoryMTotalCnt}]], [[${categoryHTotalCnt}]], [[${categoryCTotalCnt}]] ],
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF9F40', '#a2eb36']
         }]
     },
     options: {

@@ -1,6 +1,7 @@
 package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
+import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.member.LeaveReasonDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.service.course.CourseSerivce;
@@ -9,6 +10,7 @@ import inflearn_clone.springboot.service.member.MemberServiceIf;
 import inflearn_clone.springboot.utils.CommonFileUtil;
 import inflearn_clone.springboot.utils.JSFunc;
 import inflearn_clone.springboot.utils.Paging;
+import inflearn_clone.springboot.utils.QueryUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -69,16 +71,25 @@ public class AdminController {
         model.addAttribute("teacherRequestTotalCnt", teacherTotalCnt);
 
         // 일반 회원 상태 별 조회
-        int StatusYTotalCnt = memberService.memberStatusTotalCnt("Y", "S");
-        int StatusNTotalCnt = memberService.memberStatusTotalCnt("N", "S");
-        int StatusDTotalCnt = memberService.memberStatusTotalCnt("D", "S");
-        model.addAttribute("StatusYTotalCnt", StatusYTotalCnt);
-        model.addAttribute("StatusNTotalCnt", StatusNTotalCnt);
-        model.addAttribute("StatusDTotalCnt", StatusDTotalCnt);
+        int statusYTotalCnt = memberService.memberStatusTotalCnt("Y", "S");
+        int statusNTotalCnt = memberService.memberStatusTotalCnt("N", "S");
+        int statusDTotalCnt = memberService.memberStatusTotalCnt("D", "S");
+        model.addAttribute("statusYTotalCnt", statusYTotalCnt);
+        model.addAttribute("statusNTotalCnt", statusNTotalCnt);
+        model.addAttribute("statusDTotalCnt", statusDTotalCnt);
 
         // 강의 관리(과목 별 강의 수)
+        int categoryDTotalCnt =  courseSerivce.categoryTotalCnt("D");
+        int categoryATotalCnt =  courseSerivce.categoryTotalCnt("A");
+        int categoryMTotalCnt =  courseSerivce.categoryTotalCnt("M");
+        int categoryHTotalCnt =  courseSerivce.categoryTotalCnt("H");
+        int categoryCTotalCnt =  courseSerivce.categoryTotalCnt("C");
 
-
+        model.addAttribute("categoryDTotalCnt", categoryDTotalCnt);
+        model.addAttribute("categoryATotalCnt", categoryATotalCnt);
+        model.addAttribute("categoryMTotalCnt", categoryMTotalCnt);
+        model.addAttribute("categoryHTotalCnt", categoryHTotalCnt);
+        model.addAttribute("categoryCTotalCnt", categoryCTotalCnt);
         return "admin/dashboard";
     }
 
@@ -225,12 +236,68 @@ public class AdminController {
     }
 
     /**
-     * 강의 삭제
+     * 강의 목록 작성 중
+     */
+    @GetMapping("/course/list")
+    public String courseList(Model model,
+                             @RequestParam(defaultValue = "1") int pageNo,
+                             @RequestParam(defaultValue = "false") String searchCategory,
+                             @RequestParam(defaultValue = "false") String searchValue,
+                             @RequestParam(required = false) String sortType,
+                             @RequestParam(required = false) String sortOrder){
+        String sortQuery = generateSortQuery(sortType, sortOrder);
+        int totalCnt = courseSerivce.allCourseListTotalCnt(searchCategory, searchValue, "Y");
+        log.info("Course list totalCnt" + totalCnt);
+        Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
+        List<CourseDTO> courses =  courseSerivce.allCourseList(pageNo, 10, searchCategory, searchValue, sortQuery);
+        model.addAttribute("courses", courses);
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchCategory", searchCategory);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("uri", "/admin/course/list");
+        return "/admin/course/courseList";
+
+    }
+
+    /**
+     * 강좌 조회
+     */
+
+    @GetMapping("/course/view")
+    public String courserView(Model model, @RequestParam int idx){
+        CourseDTO courseInfo = courseSerivce.courseView1(idx);
+        model.addAttribute("info", courseInfo);
+        if(courseInfo != null){
+            return "/admin/course/view";
+        }else{
+            log.info("강좌 정보 없음");
+        }
+        return null;
+    }
+
+    /**
+     * 강좌 삭제
      *
      */
     @GetMapping("/course/delete")
-    public String deleteCourse(@RequestParam String idx){
-        return null;
+    public String deleteCourse(@RequestParam String idx, @RequestParam String memberId){
+        List<Integer> list = courseSerivce.selectCourseByMemberId(memberId);
+        if(list.size() > 0){
+            // 공지사항 자동 등록 로직
+            int insertNotice = noticeService.autoInsert(memberId, list);
+            if(insertNotice > 0){
+                memberService.deleteMemberInfo(memberId);
+                return "강의 삭제 예약 완료";
+            }else{
+                return "예약 설정 중 오류가 발생했습니다.";
+            }
+        }else{
+            // 회원탈퇴 로직 추가
+            memberService.deleteMemberInfo(memberId);
+            return "운영 중인 강좌가 없습니다.";
+        }
     }
 
     /**
