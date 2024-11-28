@@ -120,7 +120,7 @@ public class AdminController {
      *
      */
     @GetMapping("/member/sList")
-    public String list(Model model,
+    public String studentlist(Model model,
                        @RequestParam(defaultValue = "1") int pageNo,
                        @RequestParam(required = false) String searchCategory,
                        @RequestParam(required = false) String searchValue,
@@ -370,6 +370,7 @@ public class AdminController {
 
     //여기부터 아래는 인규가 작업한 부분입니다.
     // [관리자 공지사항]
+    // 2024.11.28 송수미 수정
 
     // 11261051 --> validation 아직 안 됨
     @GetMapping("notice/insert")
@@ -422,13 +423,28 @@ public class AdminController {
     }
 
     @GetMapping("notice/list")
-    public String list(Model model) {
-        List<BbsDTO> list = noticeService.list();
-        for( BbsDTO bbsDTO : list){
+    public String list(Model model,
+                       @RequestParam(defaultValue = "1") int pageNo,
+                       @RequestParam(required = false) String searchCategory,
+                       @RequestParam(required = false) String searchValue,
+                       @RequestParam(required = false) String sortType,
+                       @RequestParam(required = false) String sortOrder) {
+
+        String sortQuery = generateSortQuery(sortType, sortOrder);
+        int totalCnt = noticeService.noticeTotalCnt(searchCategory, searchValue);
+        Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
+        List<BbsDTO> notice =  noticeService.list(pageNo, 10, searchCategory, searchValue, sortQuery);
+        for( BbsDTO bbsDTO : notice){
             bbsDTO.setFileName();
             bbsDTO.setExt();
         }
-        model.addAttribute("notice", list);
+        model.addAttribute("notice", notice);
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchCategory", searchCategory);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("uri", "/admin/notice/list");
         return "admin/notice/list";
     }
 

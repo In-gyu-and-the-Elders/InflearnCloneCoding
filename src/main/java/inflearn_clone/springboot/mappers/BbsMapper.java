@@ -4,12 +4,15 @@ import inflearn_clone.springboot.domain.BbsVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface BbsMapper {
     public int insert(BbsVO bbsVO);
     public int update(BbsVO bbsVO);
     public int delete(int idx);
-    public List<BbsVO> list(); //페이징, 검색 등 추가 필요
+    public List<BbsVO> list(Map<String, Object> map);
     public BbsVO view(int idx);
+
+    public int noticeTotalCnt(String searchCategory, String searchValue);
 }

@@ -10,9 +10,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -40,8 +40,15 @@ public class NoticeServiceImpl implements NoticeServiceIf{
     }
 
     @Override
-    public List<BbsDTO> list() {
-        List<BbsVO> list = bbsMapper.list();
+    public List<BbsDTO> list(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("offset", (pageNo - 1) * pageSize);
+        map.put("limit", pageSize);
+        map.put("searchCategory", searchCategory);
+        map.put("searchValue", searchValue);
+        map.put("sortQuery", sortQuery);
+
+        List<BbsVO> list = bbsMapper.list(map);
         List<BbsDTO> dtoList = list.stream().map(vo -> modelMapper.map(vo, BbsDTO.class)).toList();
         return dtoList;
     }
@@ -70,5 +77,10 @@ public class NoticeServiceImpl implements NoticeServiceIf{
         bbsVO.setContent(content.toString());
         int result = bbsMapper.insert(bbsVO);
         return result;
+    }
+
+    @Override
+    public int noticeTotalCnt(String searchCategory, String searchValue) {
+        return bbsMapper.noticeTotalCnt(searchCategory, searchValue);
     }
 }

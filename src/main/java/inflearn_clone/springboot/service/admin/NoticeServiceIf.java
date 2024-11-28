@@ -8,11 +8,14 @@ public interface NoticeServiceIf {
     public int insert(BbsDTO bbsDTO);
     public int update(BbsDTO bbsDTO);
     public int delete(int idx);
-    public List<BbsDTO> list(); //페이징, 검색 등 추가 필요
-    public BbsDTO view(int idx);
+    public List<BbsDTO> list(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery); //페이징, 검색 등 추가 필요
+
+    BbsDTO view(int idx);
 
     //수미가 작성한 것
     public int autoInsert(String memberId, List<Integer> list);
+
+    int noticeTotalCnt(String searchCategory, String searchValue);
 
 
 }

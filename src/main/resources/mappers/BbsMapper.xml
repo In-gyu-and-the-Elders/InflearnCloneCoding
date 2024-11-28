@@ -20,8 +20,21 @@
     </delete>
     <select id="list" resultType="inflearn_clone.springboot.domain.BbsVO">
         SELECT * FROM tbl_bbs
-        WHERE category = 'N'
-        ORDER BY regDate DESC
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                <choose>
+                    <when test ="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchValue == 'writerId'">
+                        writerId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND category = 'N'
+        </where>
+        ${sortQuery}
+        LIMIT #{offset}, #{limit}
     </select>
     <select id="view" resultType="inflearn_clone.springboot.domain.BbsVO">
         SELECT * FROM tbl_bbs
@@ -33,4 +46,22 @@
         SET deleteDate = #{deleteDate}
         WHERE idx = #{idx}
     </update>
+
+    <select id="noticeTotalCnt" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_bbs
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                <choose>
+                    <when test="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'writerId'">
+                        writerId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND category = 'N'
+        </where>
+    </select>
 </mapper>    
