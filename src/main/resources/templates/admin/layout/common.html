@@ -56,10 +56,18 @@
             <ul class="nav navbar-nav">
                 <li class="menu-title">회원</li>
                 <li class="menu-item-has-children dropdown">
-                    <a href="#"  aria-haspopup="true" aria-expanded="false"><i class="menu-icon fa fa-cogs"></i>회원관리</a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-table"></i>회원관리</a>
+                    <ul class="sub-menu children dropdown-menu">
+                        <li><a href="tables-basic.html">일반 회원</a></li>
+                        <li><a href="tables-data.html">선생님</a></li>
+                    </ul>
                 </li>
-                <li class="menu-item-has-children active dropdown">
-                    <a href="#"  aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-table"></i>회원탈퇴관리</a>
+                <li class="menu-item-has-children dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-table"></i>탈퇴회원관리</a>
+                    <ul class="sub-menu children dropdown-menu">
+                        <li><a href="tables-basic.html">일반 회원</a></li>
+                        <li><a href="tables-data.html">선생님</a></li>
+                    </ul>
                 </li>
                 <li class="menu-item-has-children active dropdown">
                     <a href="#"  aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-table"></i>회원문의</a>
@@ -103,29 +111,6 @@
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
-                    <div layout:fragment="title">
-                    </div>
-                    <div class="search-container">
-                        <form action="/admin/member/list" method="get" class="d-flex align-items-center">
-                            <!-- 셀렉트박스 -->
-                            <div layout:fragment="searchCategory">
-                            </div>
-                            <!-- 검색창 -->
-                            <input type="search" class="form-control" name="searchValue" placeholder="내용">
-                            <!-- 셀렉트박스 -->
-                            <select class="form-select" name="sortOrder">
-                                <option value="">정렬순</option>
-                                <option value="DESC">내림차순</option>
-                                <option value="ASC">오름차순</option>
-                            </select>
-                            <div layout:fragment="sortType">
-
-                            </div>
-                            <!-- 버튼 -->
-                            <button class="btn btn-primary" type="submit">검색</button>
-                            <button class="btn btn-secondary" type="reset">취소</button>
-                        </form>
-                    </div>
                     <div layout:fragment="content">
                         <!-- 각 페이지가 여기에 콘텐츠를 삽입합니다 -->
                     </div>

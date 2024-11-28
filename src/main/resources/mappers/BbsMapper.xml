@@ -27,4 +27,10 @@
         SELECT * FROM tbl_bbs
         WHERE idx = #{idx}
     </select>
+
+    <update id="updateDeleteDate">
+        UPDATE tbl_course
+        SET deleteDate = #{deleteDate}
+        WHERE idx = #{idx}
+    </update>
 </mapper>    
