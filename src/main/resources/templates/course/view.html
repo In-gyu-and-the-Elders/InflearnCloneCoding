@@ -1,7 +1,90 @@
 <!DOCTYPE html>
 <html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout.html}"
 >
-<div>
-    <h1>강의 상세보기</h1>
-</div>
+<div layout:fragment="main">
+<!--    <div >-->
+    <link rel="stylesheet" href="/css/course/courseViewStyle.css">
+        <div class="content2">
+            <!-- 상단: 강의명 + 썸네일 -->
+            <div class="header">
+                <div class="course-info">
+                    <h1 th:text="${course.title}">강의명</h1>
+                    <p>⭐별점  수강생: <span></span>명</p>
+                    <p>👤 강사명: <span th:text="${course.teacherId}"></span></p>
+                </div>
+                <div class="thumbnail">
+                    <img th:src="${course.thumbnail}" alt="강의 썸네일">
+                </div>
+            </div>
+
+            <!-- 중앙: 탭 영역 -->
+            <div class="tabs">
+                <button class="tab" data-tab="info">강의소개</button>
+                <button class="tab" data-tab="curriculum">커리큘럼</button>
+                <button class="tab" data-tab="qna">Q&A</button>
+                <button class="tab" data-tab="review">수강평</button>
+                <button class="tab" data-tab="notice">공지사항</button>
+            </div>
+
+            <!-- 중앙: 변경될 콘텐츠 영역 -->
+            <div class="tab-content">
+                <!-- 동적으로 로드될 콘텐츠 -->
+            </div>
+
+            <!-- 우측: 사이드바 -->
+            <div class="sidebar">
+                <h2 th:text="'₩' + ${course.price}"> 가격</h2>
+                <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
+                    <input type="hidden" name="courseIdx" th:value="${course.idx}">
+                    <button type="submit" class="btn1">수강신청하기</button>
+                </form>
+
+                <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
+                    <input type="hidden" name="courseIdx" th:value="${course.idx}">
+                    <button type="submit" class="btn2">장바구니 담기</button>
+                </form>
+                <form action="/cart/list" method="get" th:if="${!isCartPossible && isOrderPossible}">
+                    <button type="submit" class="btn2">장바구니 이동</button>
+                </form>
+
+                <form action="/review/write" method="get" th:if="${!isOrderPossible}">
+                    <button type="submit" class="btn2">수강평 작성하기</button>
+                </form>
+                <div class="like">
+                    <span class="heart">❤️</span>
+                    <span>20,333</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    const courseIdx = [[${course.idx}]];
+
+    $(document).ready(function() {
+        $('.tab[data-tab="info"]').click();
+    });
+    // 탭 클릭 이벤트
+    $('.tab').on('click', function () {
+        console.log("클릭시작")
+        const tabName = $(this).data('tab');
+        const idx = courseIdx;
+        $.get(`/course/tab/${tabName}/${idx}`, function (data) {
+            $('.tab-content').html(data);
+        });
+    });
+
+    // 좋아요 버튼 클릭
+    $('.heart').on('click', function () {
+        const isLiked = $(this).hasClass('liked');
+        $.post('/course/like', { liked: !isLiked }, function (response) {
+            $('.heart').toggleClass('liked');
+            $('.like span:last-child').text(response.likeCount);
+        });
+    });
+</script>

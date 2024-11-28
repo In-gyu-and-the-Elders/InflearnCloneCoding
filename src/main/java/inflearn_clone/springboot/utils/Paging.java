@@ -33,12 +33,4 @@ public class Paging {
         return getEndBlockPage() < getTotalPage();
     }
 
-    // 정렬조건
-    public String getSortType(){
-        if(sortType == null && sortType.trim().isEmpty()){
-            return "";
-        }
-        String direction  = (sortOrder != null && sortOrder.equals("DESC")) ? "DESC" : "ASC";
-        return "ORDER BY " + sortType + " " + direction ;
-    }
 }

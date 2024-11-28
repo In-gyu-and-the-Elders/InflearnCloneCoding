@@ -18,8 +18,39 @@
                     </when>
                 </choose>
             </if>
+            AND memberType = #{memberType}
         </where>
     </select>
+
+    <!-- 탈퇴 요청한 선생님 회원 수 -->
+    <select id="teacherRequestTotalCnt" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_member
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                <choose>
+                    <when test="searchCategory == 'memberId'">
+                        memberId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'name'">
+                        `name` LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
+            </if>
+            <if test="memberType != null">
+                AND memberType = #{memberType}
+            </if>
+            AND status = 'R'
+        </where>
+    </select>
+
+    <!-- 회원 상태 별 전체 수 -->
+    <select id="memberStatusTotalCnt" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_member
+        WHERE status = #{status} AND memberType = #{memberType}
+    </select>
+
 
     <!-- 전체 회원 목록 -->
     <select id="selectAllMember" resultType="inflearn_clone.springboot.domain.MemberVO">
@@ -36,12 +67,59 @@
                     </when>
                 </choose>
             </if>
+        AND memberType = #{memberType}
         </where>
+        ${sortQuery}
         LIMIT #{offset}, #{limit}
     </select>
 
+    <!-- 선생님 목록(탈퇴 요청) -->
+    <select id="selectTeacherRequest" resultType="inflearn_clone.springboot.domain.MemberVO">
+        SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType
+        FROM tbl_member
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                <choose>
+                    <when test="searchCategory == 'memberId'">
+                        memberId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'name'">
+                        `name` LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND status = 'R'
+        </where>
+        ${sortQuery}
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 아이디로 회원 정보 찾기-->
+    <select id="selectMemberInfo" resultType="inflearn_clone.springboot.domain.MemberVO">
+        SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType
+        FROM tbl_member
+        WHERE memberId = #{memberId}
+    </select>
+
+    <!-- 회원 수정-->
+    <update id="modifyMemberInfo">
+        UPDATE tbl_member
+        SET name = #{name}, phone = #{phone}, email = #{email}, status = #{status}, memberType = #{memberType}
+        WHERE memberId = #{memberId}
+    </update>
 
 
+    <!-- 회원 탈퇴 사유 조회 -->
+    <select id="leaveReasonView" resultType="inflearn_clone.springboot.domain.MemberVO">
+        SELECT leaveReason, name, leaveReasonRegDate, memberId
+        FROM tbl_member
+        WHERE memberId = #{memberId}
+    </select>
 
-
+    <!-- 회원 탈퇴 -->
+    <update id="deleteMemberInfo">
+        UPDATE tbl_member
+        SET status = 'D'
+        WHERE memberId = #{memberId}
+    </update>
 </mapper>
