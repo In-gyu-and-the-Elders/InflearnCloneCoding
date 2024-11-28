@@ -118,21 +118,21 @@ body {
     transition: background-color 0.3s;
 }
 
-.sidebar button:first-of-type {
+.sidebar .btn1 {
     background-color: #00c471;
     color: white;
 }
 
-.sidebar button:first-of-type:hover {
+.sidebar .btn1:hover {
     background-color: #00b464;
 }
 
-.sidebar button:last-of-type {
+.sidebar .btn2 {
     background-color: white;
     color: black;
 }
 
-.sidebar button:last-of-type:hover {
+.sidebar .btn2:hover {
     background-color: #E5E5E5;
 }
 

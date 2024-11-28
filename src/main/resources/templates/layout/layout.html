@@ -354,14 +354,14 @@
                   <div
                     class="has-dropdown is-hoverable navbar-item category_menu content--no-list-style"
                   >
-                    <a href="/courses?types=ONLINE" class="navbar-item"
+                    <a href="/course/list" class="navbar-item"
                       ><span>강의</span></a
                     >
                     <ul class="navbar-dropdown is-boxed">
                       <li>
                         <a
                           class="navbar-item"
-                          href="/courses/it-programming?types=ONLINE"
+                          href="/course/list?searchCategory=D"
                           >개발</a
                         >
 
@@ -601,7 +601,7 @@
                       <li>
                         <a
                           class="navbar-item"
-                          href="/courses/game-dev-all?types=ONLINE"
+                          href="/course/list?searchCategory=A"
                           >인공지능</a
                         >
 
@@ -841,7 +841,7 @@
                       <li>
                         <a
                           class="navbar-item"
-                          href="/courses/data-science?types=ONLINE"
+                          href=href="/course/list?searchCategory=H"
                           >하드웨어</a
                         >
 
@@ -1081,7 +1081,7 @@
                       <li>
                         <a
                           class="navbar-item"
-                          href="/courses/artificial-intelligence?types=ONLINE"
+                          href="/course/list?searchCategory=C"
                           >커리어,자기계발</a
                         >
 
@@ -1321,7 +1321,7 @@
                       <li>
                         <a
                           class="navbar-item"
-                          href="/courses/productivity?types=ONLINE"
+                          href="/course/list?searchCategory=M"
                           >기획,경영,마게팅</a
                         >
 
@@ -1575,8 +1575,9 @@
                   </div>
                 </div>
                 <div class="navbar-right">
-                  <div
+                  <form
                     class="search search_bar navbar-item header_search header_search--gnb e-header-search--gnb"
+                    action="/course/list" method="get"
                   >
                     <label class="visually-hidden" for="searchbar-input"
                       >통합 검색</label
@@ -1589,7 +1590,9 @@
                       placeholder="나의 진짜 성장을 도와줄 실무 강의를 찾아보세요"
                       data-kv="headerSearchWord"
                       maxlength="60"
+                      name="searchValue"
                     />
+
                     <span class="search__icon e-header-search"
                       ><i>
                         <img
@@ -1602,8 +1605,7 @@
                       class="autocomplete-dropdown hidden"
                       tabindex="-1"
                     ></div>
-                  </div>
-
+                  </form>
                   <div class="navbar-item bootstrap-components">
                     <button
                       type="button"
