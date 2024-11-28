@@ -13,6 +13,14 @@ document.addEventListener("DOMContentLoaded", () => {
     loginModal.classList.add("hidden");
   });
 
+  // 쿼리스트링으로 로그인 모달 동적으로 켜지게 하기. 지금 쓰는곳 -> (회원가입)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("showLogin") === "true") {
+    loginModal.classList.add("active");
+    loginModal.classList.remove("hidden");
+    window.history.replaceState({}, document.title, "/");
+  }
+
   window.addEventListener("click", (e) => {
     if (e.target === loginModal) {
       loginModal.classList.remove("active");
@@ -47,3 +55,78 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// 토큰이랑 사용자 정보 저장하기 & 로그아웃
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  const jsonData = Object.fromEntries(formData.entries());
+
+  try {
+    const response = await fetch("/sign/signIn", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(jsonData),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      window.location.href = "/";
+    } else {
+      const error = await response.text();
+      console.error("로그인 실패:", error);
+      alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+    }
+  } catch (error) {
+    console.error("로그인 중 오류 발생:", error);
+    alert("로그인 중 오류가 발생했습니다.");
+  }
+});
+
+async function logout() {
+  try {
+    const response = await fetch("/sign/signOut", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      window.location.href = "/";
+    } else {
+      console.error("로그아웃 실패");
+      alert("로그아웃 중 오류가 발생했습니다.");
+    }
+  } catch (error) {
+    console.error("로그아웃 중 오류 발생:", error);
+    alert("로그아웃 중 오류가 발생했습니다.");
+  }
+}
+
+function toggleProfileModal() {
+  const modalCover = document.querySelector(".profile_modal_cover");
+
+  if (modalCover.classList.contains("close")) {
+    modalCover.classList.remove("close");
+    modalCover.classList.add("active");
+  } else {
+    modalCover.classList.remove("active");
+    modalCover.classList.add("close");
+  }
+
+  // 모달 외부 클릭 시 닫기
+  document.addEventListener("click", function closeModal(e) {
+    if (
+      !e.target.closest(".myPageBtn") &&
+      !e.target.closest(".profile_modal_cover")
+    ) {
+      modalCover.classList.remove("active");
+      modalCover.classList.add("close");
+      document.removeEventListener("click", closeModal);
+    }
+  });
+}

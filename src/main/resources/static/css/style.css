@@ -1,0 +1,11 @@
+.cart-icon {
+    display: inline-block;
+}
+
+.cart-icon img {
+    transition: opacity 0.3s ease;
+}
+
+.cart-icon:hover img {
+    content: url('/public/shopingCart_hover.png');
+} 
