@@ -8,8 +8,8 @@
         VALUES (#{memberId}, #{courseIdx}, #{orderPrice}, #{orderNumber}, NOW())
     </insert>
 
-    <select id="orderList" resultType="inflearn_clone.springboot.dto.order.OrderCourseDTO">
-        SELECT o.idx, o.courseIdx, c.title, o.orderPrice, o.orderDate, o.orderNumber
+    <select id="getOrderList" resultType="inflearn_clone.springboot.dto.order.OrderCourseDTO">
+        SELECT o.idx, o.courseIdx, c.title, o.orderPrice, o.orderDate, o.orderNumber,o.memberId, o.status, o.leaveDate
         FROM tbl_order o
                  JOIN tbl_course c ON o.courseIdx = c.idx
         WHERE o.memberId = #{memberId}
@@ -27,5 +27,11 @@
         FROM tbl_order
         WHERE courseIdx = #{idx}
     </select>
-
+  
+    <update id="refundOrder">
+        UPDATE tbl_order
+        SET status = 'D',
+            leaveDate = NOW()
+        WHERE idx = #{idx}
+    </update>
 </mapper>

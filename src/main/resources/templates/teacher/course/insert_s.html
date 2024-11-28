@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layout.html}"
+>
+<div layout:fragment="main">
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">강좌 정보</h2>
+
+    <table class="table table-bordered table-sm">
+      <tr>
+        <th class="text-center">강좌 제목</th>
+        <td th:text="${courseDTO.title}" colspan="5"></td>
+      </tr>
+      <tr>
+        <th class="text-center">강좌 소개</th>
+        <td th:text="${courseDTO.description}" colspan="5"></td>
+      </tr>
+      <tr>
+        <th class="text-center">카테고리</th>
+        <td th:text="${courseDTO.category}"></td>
+        <th class="text-center">가격</th>
+        <td th:text="${courseDTO.price}"></td>
+        <th class="text-center">강좌 노출일</th>
+        <td th:text="${#temporals.format(courseDTO.displayDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+      </tr>
+      <tr>
+        <th class="text-center">강좌 썸네일</th>
+        <td th:text="${courseDTO.thumbnail}" colspan="5"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="container mt-5">
+    <h3>섹션 등록</h3>
+    <form id="sectionForm" method="POST">
+      <div id="sectionList">
+        <div class="mb-3 d-flex align-items-center" id="section_1">
+          <span class="me-2" id="sectionLabel_1">섹션 1</span>
+          <input type="text" class="form-control w-75" name="sections" placeholder="섹션명을 입력해주세요" />
+        </div>
+      </div>
+
+      <div class="d-flex mb-3">
+        <button type="button" class="btn btn-secondary me-2" onclick="addSection()">섹션 추가</button>
+        <button type="submit" class="btn btn-primary">등록</button>
+      </div>
+      <input type="hidden" name="courseIdx" th:value="${courseDTO.idx}">
+    </form>
+  </div>
+
+  <script>
+    let sectionCount = 1; // 섹션 번호를 추적하는 변수
+
+    function addSection() {
+      sectionCount++;
+      const sectionList = document.getElementById('sectionList');
+      const newSection = document.createElement('div');
+      newSection.classList.add('mb-3', 'd-flex', 'align-items-center');
+      newSection.id = 'section_' + sectionCount;  // 각 섹션에 고유 ID를 부여합니다.
+      newSection.innerHTML = `
+      <span class="me-2" id="sectionLabel_${sectionCount}">섹션 ${sectionCount}</span>
+      <input type="text" class="form-control w-75" name="sections" placeholder="섹션명을 입력해주세요" />
+      <button type="button" class="btn btn-danger btn-sm ms-2" onclick="removeSection('section_${sectionCount}')">&times;</button>
+    `;
+      sectionList.appendChild(newSection);
+    }
+
+    function removeSection(sectionId) {
+      // 섹션 1은 삭제할 수 없으므로, 해당 섹션을 삭제하려고 하면 리턴
+      if (sectionId === 'section_1') {
+        return;
+      }
+
+      const section = document.getElementById(sectionId);
+      const sectionLabel = document.getElementById('sectionLabel_' + sectionId.split('_')[1]);
+
+      section.remove(); // 섹션을 삭제합니다.
+
+      // 삭제된 후 번호 재정렬
+      const sections = document.querySelectorAll('[id^="section_"]');
+      let index = 1;
+      sections.forEach(section => {
+        const label = section.querySelector('span');
+        label.textContent = `섹션 ${index}`;
+        index++;
+      });
+
+      // 섹션 번호 정렬 후 각 ID도 정리
+      sectionCount--;
+    }
+  </script>
+
+</div>
+

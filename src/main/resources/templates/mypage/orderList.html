@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko"
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+      xmlns:th="http://www.thymeleaf.org"
+<!--      layout:decorate="~{layout/layout.html}"-->
+>
+<div>
+<!--<div layout:fragment="main">-->
+    <h1>결제내역확인</h1>
+    <div class="lecture-container">
+        <!-- orderList 데이터를 반복 출력 -->
+        <div class="lecture-item" th:each="order : ${orderList}">
+            <div class="lecture-info">
+                <label>강의 제목</label>
+                <span th:text="${order.title}"></span>
+            </div>
+            <div class="lecture-info">
+                <label>구매 날짜</label>
+                <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+            </div>
+            <div class="lecture-price">
+                <span th:text="'₩' + ${order.orderPrice}"></span>
+            </div>
+            <button th:if="${order.status != 'D'}" th:data-idx="${order.idx}"  class="refund-button" onclick="refund(this)">환불</button>
+        </div>
+    </div>
+</div>
+<script>
+    function refund(button) {
+        const idx = button.getAttribute('data-idx');
+        if (confirm('환불하시겠습니까?')) {
+            fetch(`/order/refund`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ idx })
+            })
+                .then(response => response.text())
+                .then(result => {
+                    if (result === 'S') {
+                        alert('환불이 처리되었습니다.');
+                        button.style.display = 'none';
+                    } else {
+                        alert('환불에 실패했습니다.');
+                    }
+                });
+        }
+    }
+</script>

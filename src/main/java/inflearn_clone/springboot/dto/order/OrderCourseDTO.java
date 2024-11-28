@@ -22,6 +22,8 @@ public class OrderCourseDTO {
     private LocalDateTime orderDate;
     private String orderNumber;
     private String title;
+    private String status;
+    private LocalDateTime leaveDate;
 
     private List<Integer> idxList;
     private List<Integer> priceList;

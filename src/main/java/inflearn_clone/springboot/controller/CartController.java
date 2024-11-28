@@ -92,7 +92,7 @@ public class CartController {
         }
         JSONObject jsonResponse = new JSONObject();
         jsonResponse.put("success", success);
-        jsonResponse.put("message", success ? "삭제 성공!" : "삭제 실패!");
+        jsonResponse.put("message", success ? "삭제되었습니다" : "다시시도해주세요");
         return jsonResponse.toString();
     }
 }

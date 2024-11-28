@@ -149,5 +149,16 @@
         LIMIT #{offset}, #{limit}
     </select>
 
+    <!-- 강좌 등록 -->
+    <insert id="insertCourse">
+        INSERT INTO tbl_course (category, title, description, teacherId, displayDate, price, thumbnail)
+        VALUES (#{category}, #{title}, #{description}, #{teacherId}, #{displayDate}, #{price}, #{thumbnail})
+    </insert>
+    <select id="viewMyLastCourse" resultType="inflearn_clone.springboot.domain.CourseVO">
+        SELECT * FROM tbl_course
+        WHERE teacherId = #{memberId}
+        ORDER BY regDate DESC
+        LIMIT 1
+    </select>
 </mapper>
 

@@ -48,4 +48,7 @@ public interface CourseMapper {
     List<CourseVO> selectAllCourse(Map<String, Object> map);
     int courseTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue);
 
+    int insertCourse(CourseVO courseVO);
+    CourseVO viewMyLastCourse(@Param("memberId") String memberId);
+
 }

@@ -84,13 +84,15 @@ public class OrderServiceImpl implements OrderService  {
         return cnt == 0;
     }
 
-    // 환불자 명단 전체 조회
     @Override
     public List<OrderRefundDTO> refundByDeleteCourse(int idx) {
         System.out.println("idx" + idx);
         List<OrderVO> list =  orderMapper.refundByDeleteCourse(idx);
         return list.stream()
                 .map(vo -> modelMapper.map(vo, OrderRefundDTO.class)).collect(Collectors.toList());
+    @Override
+    public boolean refundOrder(int idx) {
+        return orderMapper.refundOrder(idx) == 0;
     }
 
 }

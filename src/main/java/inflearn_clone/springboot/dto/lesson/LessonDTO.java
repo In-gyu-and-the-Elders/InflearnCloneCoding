@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 @Data
@@ -18,4 +19,6 @@ public class LessonDTO {
     private String title;
     private String video;
     private LocalDateTime regDate;
+
+    private MultipartFile videoFile;
 }

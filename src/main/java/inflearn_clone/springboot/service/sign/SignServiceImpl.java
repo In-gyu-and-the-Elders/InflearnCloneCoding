@@ -30,14 +30,14 @@ public class SignServiceImpl {
   public String signIn(String memberId, String rawPassword, String memberType) {
     log.info("로그인 시도: memberId={}", memberId, memberType);
 
-    // 1. 사용자 정보 조회
+    // 사용자 정보 조회
     SignVO signVO = signMapper.signIn(memberId, memberType);
     if (signVO == null) {
       log.error("로그인 실패: 존재하지 않는 사용자 ID - memberId=-{}-", memberId);
       throw new IllegalArgumentException("존재하지 않는 사용자 ID입니다.");
     }
 
-    // 2. 비밀번호 검증
+    // 비밀번호 검증
     if (!passwordEncoder.matches(rawPassword, signVO.getPwd())) {
       log.error("로그인 실패: 비밀번호 불일치 - memberId={}", memberId);
       throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -45,7 +45,6 @@ public class SignServiceImpl {
 
     log.info("로그인 성공: memberId={}", memberId);
 
-    // 3. JWT 토큰 생성 및 반환 (추가 정보 포함)
     return jwtTokenProvider.createToken(
         signVO.getMemberId(),
         signVO.getMemberType(),
