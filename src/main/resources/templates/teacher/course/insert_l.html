@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<div layout:fragment="main">
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">강의 등록</h2>
+
+    <!-- 섹션 리스트 -->
+    <div id="sectionList">
+      <!-- 섹션 리스트 반복 -->
+      <div th:each="section,status : ${sections}" class="section-container">
+        <h3 th:text="${section.section}"></h3>
+
+        <div class="lecture-form-container" id="lectureFormContainer_${iterStat.index}">
+          <div class="lecture-form">
+            <input type="text"  th:name="'lessons['${section.idx}'].title'" class="form-control" placeholder="강의 제목" required />
+            <input type="file" th:name="'lessons['${section.idx}'].video'" class="form-control" required />
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-secondary mt-2" onclick="addLectures()">강의 추가</button>
+      </div>
+    </div>
+
+    <!-- 등록 버튼 -->
+    <div class="d-flex justify-content-center mt-4">
+      <button type="submit" class="btn btn-primary">강의 등록</button>
+    </div>
+  </div>
+
+  <script th:inline='javascript'>
+    function addLecture(sectionIndex) {
+      // Get the section container by section index
+      const lectureFormContainer = document.getElementById(`lectureFormContainer_${sectionIndex}`);
+
+      // Create a new lecture form
+      const newLectureForm = document.createElement('div');
+      newLectureForm.classList.add('lecture-form');
+
+      // Create title input field
+      const titleInput = document.createElement('input');
+      titleInput.type = 'text';
+      titleInput.classList.add('form-control');
+      titleInput.placeholder = '강의 제목';
+      titleInput.name = `lessons[${sectionIndex}].title`;
+      titleInput.required = true;
+
+      // Create video input field
+      const videoInput = document.createElement('input');
+      videoInput.type = 'file';
+      videoInput.classList.add('form-control');
+      videoInput.name = `lessons[${sectionIndex}].video`;
+      videoInput.required = true;
+
+      // Append the new input fields to the form
+      newLectureForm.appendChild(titleInput);
+      newLectureForm.appendChild(videoInput);
+
+      // Append the new form to the section's lecture form container
+      lectureFormContainer.appendChild(newLectureForm);
+    }
+  </script>
+
+</div>

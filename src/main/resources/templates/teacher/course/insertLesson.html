@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layout.html}"
+>
+<div layout:fragment="main">
+  <div id="courseStep">
+    <!-- 강좌 등록 폼 -->
+    <form id="courseForm" method="POST">
+      <input type="text" name="title" placeholder="강좌 제목" />
+      <textarea name="description" placeholder="강좌 소개"></textarea>
+      <input type="text" name="category" placeholder="카테고리" />
+      <input type="number" name="price" placeholder="가격" />
+      <input type="date" name="displayDate" />
+      <input type="file" name="thumbnailFile" />
+      <button type="submit">강좌 등록</button>
+    </form>
+  </div>
+
+  <div id="sectionStep" style="display: block;">
+    <!-- 섹션 등록 폼 -->
+    <form id="sectionForm">
+      <input type="text" name="sectionTitle" placeholder="섹션 제목" />
+      <button type="button" id="addSection">섹션 추가</button>
+    </form>
+    <div id="sectionsList"></div>
+  </div>
+
+  <div id="lectureStep" style="display: block;">
+    <!-- 강의 등록 폼 -->
+    <button type="button" class="addLecture" data-section-id="1">강의 추가</button>
+    <div id="lecturesList1"></div>
+  </div>
+
+  <script>
+    // 강좌 등록
+    $('#courseForm').submit(function(e) {
+      e.preventDefault();
+      let formData = new FormData(this);
+      $.ajax({
+        url: '/api/course/insertCourse',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          let courseId = response.courseDTO.courseIdx;
+          // 강좌 등록 후 섹션 등록 화면으로 이동
+          $('#courseStep').hide();
+          $('#sectionStep').show();
+        }
+      });
+    });
+
+    // 섹션 등록
+    $('#addSection').click(function() {
+      let sectionTitle = $('[name="sectionTitle"]').val();
+      $.ajax({
+        url: 'api/course/addSection',
+        type: 'POST',
+        data: { title: sectionTitle },
+        success: function(response) {
+          let section = response.section;
+          $('#sectionsList').append(`
+                    <div id="section${section.id}">
+                        <p>${section.title}</p>
+                        <button type="button" class="addLecture" data-section-id="${section.id}">강의 추가</button>
+                    </div>
+                `);
+        }
+      });
+    });
+
+    // 강의 추가
+    $('.addLecture').click(function() {
+      let sectionId = $(this).data('section-id');
+      let lectureTitle = prompt('강의 제목 입력');
+      let lectureFile = prompt('강의 동영상 파일 입력');
+      $.ajax({
+        url: '/course/' + courseId + '/section/' + sectionId + '/addLecture',
+        type: 'POST',
+        data: { title: lectureTitle, video: lectureFile },
+        success: function(response) {
+          let lecture = response.lecture;
+          $('#lecturesList' + sectionId).append(`
+                    <div>
+                        <p>${lecture.title}</p>
+                        <video src="${lecture.videoUrl}" controls></video>
+                    </div>
+                `);
+        }
+      });
+    });
+  </script>
+
+</div>
+
+

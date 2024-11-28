@@ -1,16 +1,22 @@
 package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.course.CourseDTO;
+import inflearn_clone.springboot.dto.section.SectionDTO;
+import inflearn_clone.springboot.dto.section.SectionLessonFileDTO;
+import inflearn_clone.springboot.dto.section.SectionWrapperDTO;
 import inflearn_clone.springboot.service.CourseSerivce;
+import inflearn_clone.springboot.service.section.SectionServiceIf;
+import inflearn_clone.springboot.utils.CommonFileUtil;
+import inflearn_clone.springboot.utils.JSFunc;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -18,7 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/course")
 public class CourseController {
-    private final CourseSerivce courseSerivce;
+    private final CourseSerivce courseService;
+    private final SectionServiceIf sectionService;
     @GetMapping("/list")
     public String courseList() {
 //        List<CourseDTO> courseList = courseSerivce.courseList();
@@ -29,7 +36,7 @@ public class CourseController {
     // 상세보기 페이지
     @GetMapping("/view")
     public String courseView() {
-//        CourseDTO course = courseSerivce.courseView(idx);
+//        CourseDTO course = courseService.courseView(idx);
 //        model.addAttribute("course", course);
         return "course/view";
     }
@@ -54,4 +61,11 @@ public class CourseController {
                 return "/";
         }
     }
+
+
+
+
+
+
+
 }

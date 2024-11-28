@@ -6,7 +6,41 @@
   layout:decorate="~{layout/layout.html}"
 >
   <div layout:fragment="main">
-    <h1>메인</h1>
-    <a>ㅇㅇ</a>
+
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3 border-end">
+        <div class="text-center">
+          <!-- Profile Picture -->
+          <div
+                  class="rounded-circle bg-secondary mx-auto mb-2"
+                  style="width: 100px; height: 100px;">
+          </div>
+          <!-- User Info -->
+          <h5 class="mt-2">haninqq</h5>
+          <p class="mb-1">수강평 작성수: <span>-</span></p>
+          <p>평균평점: <span>-</span></p>
+        </div>
+        <!-- Navigation Menu -->
+        <ul class="nav flex-column mt-4">
+          <li class="nav-item">
+            <a class="nav-link active text-primary" href="#">홈</a>
+          </li>
+          <li class="nav-item ms-3">
+            <a class="nav-link" href="#">내 강의실</a>
+          </li>
+          <li class="nav-item ms-3">
+            <a class="nav-link" href="#">Q&A</a>
+          </li>
+          <li class="nav-item ms-3">
+            <a class="nav-link" href="#">계정 정보</a>
+          </li>
+        </ul>
+      </div>
+      <!-- Main Content -->
+      <div class="col-md-9" layout:fragment="mypage">
+
+      </div>
+    </div>
   </div>
 </html>

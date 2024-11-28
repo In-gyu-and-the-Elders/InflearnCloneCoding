@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layout.html}"
+>
+<div layout:fragment="main">
+    <!-- 강좌 정보 디스플레이 + 수정 -->
+  <div class="w-75">
+    <h2 class="text-center mb-4">등록된 강좌 정보</h2>
+    <table class="table table-bordered">
+      <colgroup>
+        <col style="width: 30%; background-color: #f9f9f9;"> <!-- 헤더 열 스타일 -->
+        <col style="width: 70%;"> <!-- 데이터 열 스타일 -->
+      </colgroup>
+      <tbody>
+      <tr>
+        <th>강좌 제목</th>
+        <td th:text="${course.title}"></td>
+      </tr>
+      <tr>
+        <th>강좌 소개</th>
+        <td th:text="${course.description}"></td>
+      </tr>
+      <tr>
+        <th>카테고리</th>
+        <td>
+          <span th:if="${course.category == 'D'}">개발</span>
+          <span th:if="${course.category == 'A'}">인공지능</span>
+          <span th:if="${course.category == 'H'}">하드웨어</span>
+          <span th:if="${course.category == 'C'}">커리어/자기계발</span>
+          <span th:if="${course.category == 'M'}">기획/경영/마케팅</span>
+        </td>
+      </tr>
+      <tr>
+        <th>강좌 가격</th>
+        <td th:text="${course.price}"></td>
+      </tr>
+      <tr>
+        <th>강좌 공개일</th>
+        <td th:text="${#temporals.format(course.displayDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+      </tr>
+      <tr>
+        <th>강의 썸네일</th>
+        <td>
+          <img th:src="@{/admin/images/avatar/1.jpg}" alt="강의썸네일" class="img-fluid" style="max-width: 150px;">
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+  <!-- 섹션 등록 -->
+    <div class="w-75">
+      <form id="sectionForm" method="POST" th:action="@{/course/insertSection}" class="mb-4">
+        <h2 class="text-center mb-4">섹션 등록</h2>
+        <div id="sectionContainer">
+
+          <!-- 초기 섹션 -->
+          <div class="mb-3 section-item">
+              <label for="section1" class="form-label fw-bold">섹션 1</label>
+              <input type="text" id="section1" name="sections" minlength="5" maxlength="100" required class="form-control">
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" id="addSection">섹션 추가</button>
+        <input type="hidden" th:value="${course.idx}" name="courseIdx">
+        <div class="text-center mt-3">
+          <button type="submit" class="btn btn-primary">섹션 등록</button>
+        </div>
+      </form>
+    </div>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const sectionContainer = document.getElementById("sectionContainer");
+          const addSectionButton = document.getElementById("addSection");
+
+          // 섹션 번호 추적
+          let sectionCount = 1;
+
+          // 섹션 추가
+          addSectionButton.addEventListener("click", function () {
+            sectionCount++;
+            const newSection = document.createElement("div");
+            newSection.classList.add("mb-3", "section-item");
+            newSection.innerHTML = `
+        <label for="section${sectionCount}" class="form-label fw-bold">섹션 ${sectionCount}</label>
+        <input type="text" id="section${sectionCount}" name="sections" minlength="5" maxlength="100" required class="form-control">
+        <button type="button" class="btn btn-danger btn-sm remove-section">x</button>
+      `;
+            sectionContainer.appendChild(newSection);
+
+            // 새 섹션 삭제 버튼 이벤트 연결
+            const removeButton = newSection.querySelector(".remove-section");
+            removeButton.addEventListener("click", function () {
+              newSection.remove();
+              updateSectionLabels();
+            });
+          });
+
+          // 섹션 삭제 후 번호 갱신
+          function updateSectionLabels() {
+            const sections = sectionContainer.querySelectorAll(".section-item");
+            sectionCount = sections.length;
+            sections.forEach((section, index) => {
+              const label = section.querySelector("label");
+              const input = section.querySelector("input");
+              label.textContent = `섹션 ${index + 1}`;
+              label.setAttribute("for", `section${index + 1}`);
+              input.id = `section${index + 1}`;
+            });
+          }
+
+          // 초기 섹션 삭제 이벤트
+          sectionContainer.addEventListener("click", function (event) {
+            if (event.target.classList.contains("remove-section")) {
+              event.target.closest(".section-item").remove();
+              updateSectionLabels();
+            }
+          });
+        });
+      </script>
+</div>

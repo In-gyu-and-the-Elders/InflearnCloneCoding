@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="inflearn_clone.springboot.mappers.SectionMapper">
+    <insert id="insertSection">
+        INSERT INTO tbl_section (courseIdx, section)
+        VALUES (#{courseIdx}, #{section})
+    </insert>
+
+    <select id="sectionList" resultType="inflearn_clone.springboot.domain.SectionVO">
+        SELECT * FROM tbl_section
+        WHERE courseIdx = #{courseIdx}
+        ORDER BY regDate DESC
+    </select>
+</mapper>    
