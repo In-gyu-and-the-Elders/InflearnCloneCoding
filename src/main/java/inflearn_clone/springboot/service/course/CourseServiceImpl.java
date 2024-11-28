@@ -2,26 +2,16 @@ package inflearn_clone.springboot.service.course;
 
 
 import inflearn_clone.springboot.domain.CourseVO;
-import inflearn_clone.springboot.domain.MemberVO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
-import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.mappers.CourseMapper;
-import inflearn_clone.springboot.service.course.CourseSerivce;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import inflearn_clone.springboot.dto.course.CourseDTO;
-import inflearn_clone.springboot.mappers.CourseMapper;
+
 import inflearn_clone.springboot.utils.CategoryMapper;
-import inflearn_clone.springboot.utils.Paging;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -157,6 +147,17 @@ public class CourseServiceImpl implements CourseSerivce {
         }
         map.put("searchValue", searchValue);
         return courseMapper.courseTotalCnt(searchCategory, searchValue);
+    }
+
+    @Override
+    public int insertCourse(CourseDTO courseDTO) {
+        CourseVO courseVO = modelMapper.map(courseDTO, CourseVO.class);
+        return courseMapper.insertCourse(courseVO);
+    }
+
+    @Override
+    public CourseDTO viewMyLastCourse(String memberId) {
+        return modelMapper.map(courseMapper.viewMyLastCourse(memberId), CourseDTO.class);
     }
 
 }

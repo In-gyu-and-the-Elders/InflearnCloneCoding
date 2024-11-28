@@ -1,7 +1,7 @@
 package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.course.CourseDTO;
-import inflearn_clone.springboot.service.CourseSerivce;
+import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.utils.CommonFileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
