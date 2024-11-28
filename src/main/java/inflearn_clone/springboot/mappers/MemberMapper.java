@@ -6,6 +6,7 @@ import inflearn_clone.springboot.dto.member.MemberDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,8 @@ public interface MemberMapper {
 
     int teacherRequestTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue, @Param("memberType") String memberType);
 
-    int memberStatusTotalCnt(@Param("status") String status, @Param("memberType") String memberType);
+    int memberStatusTotalCnt(@Param("status") String status, @Param("memberType") String memberType,
+                             @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
     MemberVO selectMemberInfo(String memberId);
 
     List<MemberVO> selectTeacherRequest(Map<String, Object> map);

@@ -1,11 +1,13 @@
 package inflearn_clone.springboot.controller;
 
+import inflearn_clone.springboot.dto.admin.AdminLoginDTO;
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.member.LeaveReasonDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.dto.order.OrderDTO;
 import inflearn_clone.springboot.dto.order.OrderRefundDTO;
+import inflearn_clone.springboot.service.admin.AdminServiceIf;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.admin.NoticeServiceIf;
 import inflearn_clone.springboot.service.member.MemberServiceIf;
@@ -15,6 +17,7 @@ import inflearn_clone.springboot.utils.JSFunc;
 import inflearn_clone.springboot.utils.Paging;
 import inflearn_clone.springboot.utils.QueryUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
@@ -22,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static inflearn_clone.springboot.utils.QueryUtil.generateSortQuery;
@@ -36,6 +40,7 @@ public class AdminController {
     private final NoticeServiceIf noticeService;
     private final CourseSerivce courseSerivce;
     private final OrderService orderService;
+    private final AdminServiceIf adminService;
 
     /**
      * 관리자 로그인 페이지 이동
@@ -51,17 +56,25 @@ public class AdminController {
      *
      */
     @PostMapping("/login")
-    public String login(){
-        return "admin/index";
+    public String loginProcess(AdminLoginDTO loginDTO,
+                               HttpSession session,
+                               Model model) {
+        if(adminService.loginAdmin(loginDTO)) {
+            session.setAttribute("adminId", loginDTO.getAdminId());
+            return "redirect:/admin/dashboard";
+        }
+        model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
+        return "admin/login";
     }
 
     /**
      * 관리자 로그아웃
      *
      */
-    @PostMapping("/logout")
-    public String logout(){
-        return "admin/login";
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/admin/login";
     }
 
     /**
@@ -75,9 +88,9 @@ public class AdminController {
         model.addAttribute("teacherRequestTotalCnt", teacherTotalCnt);
 
         // 일반 회원 상태 별 조회
-        int statusYTotalCnt = memberService.memberStatusTotalCnt("Y", "S");
-        int statusNTotalCnt = memberService.memberStatusTotalCnt("N", "S");
-        int statusDTotalCnt = memberService.memberStatusTotalCnt("D", "S");
+        int statusYTotalCnt = memberService.memberStatusTotalCnt("Y", "S", LocalDateTime.now().minusMonths(1), LocalDateTime.now());
+        int statusNTotalCnt = memberService.memberStatusTotalCnt("N", "S", LocalDateTime.now().minusMonths(1), LocalDateTime.now());
+        int statusDTotalCnt = memberService.memberStatusTotalCnt("D", "S", LocalDateTime.now().minusMonths(1), LocalDateTime.now());
         model.addAttribute("statusYTotalCnt", statusYTotalCnt);
         model.addAttribute("statusNTotalCnt", statusNTotalCnt);
         model.addAttribute("statusDTotalCnt", statusDTotalCnt);
@@ -88,12 +101,17 @@ public class AdminController {
         int categoryMTotalCnt =  courseSerivce.categoryTotalCnt("M");
         int categoryHTotalCnt =  courseSerivce.categoryTotalCnt("H");
         int categoryCTotalCnt =  courseSerivce.categoryTotalCnt("C");
-
         model.addAttribute("categoryDTotalCnt", categoryDTotalCnt);
         model.addAttribute("categoryATotalCnt", categoryATotalCnt);
         model.addAttribute("categoryMTotalCnt", categoryMTotalCnt);
         model.addAttribute("categoryHTotalCnt", categoryHTotalCnt);
         model.addAttribute("categoryCTotalCnt", categoryCTotalCnt);
+
+        // 최근 등록된 공지사항 상위 리스트
+
+
+
+        //상위 5개 강좌
         return "admin/dashboard";
     }
 
@@ -345,7 +363,6 @@ public class AdminController {
     public String selectRefundList(Model model, @RequestParam int idx){
         List<OrderRefundDTO> orderList = orderService.refundByDeleteCourse(idx);
         model.addAttribute("list", orderList);
-        System.out.println(orderList.size());
         return "admin/course/refundList";
     }
 

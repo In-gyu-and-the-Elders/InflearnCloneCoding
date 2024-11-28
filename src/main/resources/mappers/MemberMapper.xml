@@ -48,7 +48,17 @@
     <select id="memberStatusTotalCnt" resultType="int">
         SELECT COUNT(*)
         FROM tbl_member
-        WHERE status = #{status} AND memberType = #{memberType}
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="memberType != null">
+                AND memberType = #{memberType}
+            </if>
+            <if test="startDate != null and endDate != null">
+                AND regDate BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
     </select>
 
 

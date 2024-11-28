@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +42,12 @@ public class MemberServiceImpl implements MemberServiceIf{
     }
 
     @Override
-    public int memberStatusTotalCnt(String status, String memberType){
+    public int memberStatusTotalCnt(String status, String memberType, LocalDateTime startDate, LocalDateTime endDate){
         log.info("stauts" +status);
         log.info("memberType" +memberType);
-        return memberMapper.memberStatusTotalCnt(status, memberType);
+        log.info("startDate" +startDate);
+        log.info("endDate" +endDate);
+        return memberMapper.memberStatusTotalCnt(status, memberType, startDate, endDate);
     }
 
     @Override
