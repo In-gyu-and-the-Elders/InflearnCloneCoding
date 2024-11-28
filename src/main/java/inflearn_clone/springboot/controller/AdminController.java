@@ -4,9 +4,12 @@ import inflearn_clone.springboot.dto.bbs.BbsDTO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.member.LeaveReasonDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
+import inflearn_clone.springboot.dto.order.OrderDTO;
+import inflearn_clone.springboot.dto.order.OrderRefundDTO;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.admin.NoticeServiceIf;
 import inflearn_clone.springboot.service.member.MemberServiceIf;
+import inflearn_clone.springboot.service.order.OrderService;
 import inflearn_clone.springboot.utils.CommonFileUtil;
 import inflearn_clone.springboot.utils.JSFunc;
 import inflearn_clone.springboot.utils.Paging;
@@ -32,6 +35,7 @@ public class AdminController {
     private final MemberServiceIf memberService;
     private final NoticeServiceIf noticeService;
     private final CourseSerivce courseSerivce;
+    private final OrderService orderService;
 
     /**
      * 관리자 로그인 페이지 이동
@@ -331,6 +335,18 @@ public class AdminController {
             memberService.deleteMemberInfo(memberId);
             return "학생 로직 처리";
         }
+    }
+
+    /**
+     * 환불자 명단 조회
+     *
+     */
+    @GetMapping("/course/refundList")
+    public String selectRefundList(Model model, @RequestParam int idx){
+        List<OrderRefundDTO> orderList = orderService.refundByDeleteCourse(idx);
+        model.addAttribute("list", orderList);
+        System.out.println(orderList.size());
+        return "admin/course/refundList";
     }
 
 

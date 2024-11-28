@@ -13,4 +13,6 @@ public interface OrderMapper {
     int regist(OrderDTO order);
     List<OrderCourseDTO> getOrderList(@Param("memberId") String memberId);
     int orderCnt(@Param("courseIdx") int courseIdx, @Param("memberId") String memberId);
+
+    List<OrderVO> refundByDeleteCourse(int idx);
 }

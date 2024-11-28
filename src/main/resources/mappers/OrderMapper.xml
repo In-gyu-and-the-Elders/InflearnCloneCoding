@@ -22,4 +22,10 @@
         WHERE courseIdx = #{courseIdx} AND memberId = #{memberId} AND status = 'Y'
     </select>
 
+    <select id="refundByDeleteCourse">
+        SELECT memberId, orderPrice, orderDate, status, orderNumber, leaveDate
+        FROM tbl_order
+        WHERE courseIdx = #{idx}
+    </select>
+
 </mapper>
