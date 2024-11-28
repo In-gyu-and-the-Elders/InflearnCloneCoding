@@ -10,4 +10,6 @@ import java.util.List;
 public interface SectionMapper {
     int insertSection(SectionVO sectionVO);
     List<SectionVO> sectionList(@Param("courseIdx") int courseIdx);
+    List<Integer> sectionIdList(@Param("courseIdx") int courseIdx);
+    int getCourseIdBySectionId(@Param("sectionIdx") int sectionIdx);
 }

@@ -1,63 +1,109 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
 <div layout:fragment="main">
-  <div class="container mt-5">
-    <h2 class="text-center mb-4">강의 등록</h2>
+  <div class="container">
+    <h3>섹션명 : <span th:text="${section.section}"></span></h3>
 
-    <!-- 섹션 리스트 -->
-    <div id="sectionList">
-      <!-- 섹션 리스트 반복 -->
-      <div th:each="section,status : ${sections}" class="section-container">
-        <h3 th:text="${section.section}"></h3>
-
-        <div class="lecture-form-container" id="lectureFormContainer_${iterStat.index}">
-          <div class="lecture-form">
-            <input type="text"  th:name="'lessons['${section.idx}'].title'" class="form-control" placeholder="강의 제목" required />
-            <input type="file" th:name="'lessons['${section.idx}'].video'" class="form-control" required />
+    <div>
+      <form id="lectureForm" action="/teacher/course/insert_l" method="POST" enctype="multipart/form-data">
+        <div id="lectureInputs">
+          <!-- 첫 번째 강의 입력 필드 (삭제 불가) -->
+          <div class="mb-3 lecture-item" id="lecture-1">
+            <span class="lecture-number">1</span>
+            <input type="text" name="title" class="form-control" placeholder="강의 제목" />
+            <input type="file" name="videoFile" class="form-control" />
+            <!-- 첫 번째 강의는 삭제 불가 -->
           </div>
         </div>
+        <input type="hidden" th:value="${section.idx}" name="sectionIdx">
 
-        <button type="button" class="btn btn-secondary mt-2" onclick="addLectures()">강의 추가</button>
-      </div>
-    </div>
+        <!-- 강의 추가 버튼 -->
+        <button type="button" class="btn btn-primary" id="addLectureBtn" onclick="addLecture()">강의 추가</button>
 
-    <!-- 등록 버튼 -->
-    <div class="d-flex justify-content-center mt-4">
-      <button type="submit" class="btn btn-primary">강의 등록</button>
+        <div class="mt-3">
+          <button th:if="${hasNextNext}" type="submit" class="btn btn-success">다음 섹션</button>
+          <button th:if="${!hasNextNext}" type="button" class="btn btn-success" onclick="location.href='/course/list'">완료</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <script th:inline='javascript'>
-    function addLecture(sectionIndex) {
-      // Get the section container by section index
-      const lectureFormContainer = document.getElementById(`lectureFormContainer_${sectionIndex}`);
 
-      // Create a new lecture form
-      const newLectureForm = document.createElement('div');
-      newLectureForm.classList.add('lecture-form');
+  <script>
+    // 강의 번호를 추적하기 위한 변수 (첫 번째 강의는 고정)
+    let lectureCount = 1;
 
-      // Create title input field
-      const titleInput = document.createElement('input');
-      titleInput.type = 'text';
-      titleInput.classList.add('form-control');
-      titleInput.placeholder = '강의 제목';
-      titleInput.name = `lessons[${sectionIndex}].title`;
-      titleInput.required = true;
+    // 강의 추가 함수
+    function addLecture() {
+      // 강의 번호 증가
+      lectureCount++;
 
-      // Create video input field
-      const videoInput = document.createElement('input');
-      videoInput.type = 'file';
-      videoInput.classList.add('form-control');
-      videoInput.name = `lessons[${sectionIndex}].video`;
-      videoInput.required = true;
+      // 새 강의 입력 필드 생성
+      const newLecture = document.createElement('div');
+      newLecture.classList.add('mb-3', 'lecture-item');
+      newLecture.id = 'lecture-' + lectureCount;
 
-      // Append the new input fields to the form
-      newLectureForm.appendChild(titleInput);
-      newLectureForm.appendChild(videoInput);
+      // 새로운 강의 입력 필드 내용
+      newLecture.innerHTML = `
+      <span class="lecture-number">${lectureCount}</span>
+      <input type="text" name="title" class="form-control" placeholder="강의 제목" />
+      <input type="file" name="videoFile" class="form-control" />
+      <button type="button" class="btn btn-danger delete-lecture-btn" onclick="deleteLecture(this)">X</button>
+    `;
 
-      // Append the new form to the section's lecture form container
-      lectureFormContainer.appendChild(newLectureForm);
+      // lectureInputs 컨테이너에 새 강의 추가
+      document.getElementById('lectureInputs').appendChild(newLecture);
+    }
+
+    // 강의 삭제 함수
+    function deleteLecture(button) {
+      const lectureItem = button.closest('.lecture-item');
+
+      // 첫 번째 강의는 삭제 불가
+      if (lectureItem.id === 'lecture-1') {
+        alert('첫 번째 강의는 삭제할 수 없습니다.');
+        return;
+      }
+
+      lectureItem.remove();
+
+      // 번호 다시 정렬
+      const lectures = document.querySelectorAll('.lecture-item');
+      lectures.forEach((lecture, index) => {
+        lecture.id = 'lecture-' + (index + 1);
+        // 번호를 올바르게 유지하기 위해 입력 필드 수정
+        const inputs = lecture.querySelectorAll('input');
+        inputs[0].name = 'title';
+        inputs[1].name = 'videoFile';
+
+        // 강의 번호 업데이트
+        const lectureNumber = lecture.querySelector('.lecture-number');
+        lectureNumber.textContent = index + 1;
+      });
+
+      // lectureCount 재설정 (현재 마지막 강의 번호로)
+      lectureCount = lectures.length;
     }
   </script>
 
+  <style>
+    .lecture-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .lecture-number {
+      margin-right: 10px;
+      font-weight: bold;
+      width: 30px;
+    }
+
+    .lecture-item input {
+      margin-right: 10px;
+    }
+
+    .delete-lecture-btn {
+      margin-left: 10px;
+    }
+  </style>
 </div>

@@ -10,6 +10,16 @@
     <select id="sectionList" resultType="inflearn_clone.springboot.domain.SectionVO">
         SELECT * FROM tbl_section
         WHERE courseIdx = #{courseIdx}
-        ORDER BY regDate DESC
+        ORDER BY idx ASC
+    </select>
+    <select id="sectionIdList" resultType="java.lang.Integer">
+        SELECT idx FROM tbl_section
+        WHERE courseIdx = #{courseIdx}
+        ORDER BY idx ASC
+    </select>
+    <select id="getCourseIdBySectionId" resultType="java.lang.Integer">
+        SELECT courseIdx FROM tbl_section
+        WHERE idx = #{sectionIdx}
+        LIMIT 1
     </select>
 </mapper>    
