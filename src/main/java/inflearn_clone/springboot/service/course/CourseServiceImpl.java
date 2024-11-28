@@ -2,26 +2,17 @@ package inflearn_clone.springboot.service.course;
 
 
 import inflearn_clone.springboot.domain.CourseVO;
-import inflearn_clone.springboot.domain.MemberVO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
-import inflearn_clone.springboot.dto.member.MemberDTO;
+import inflearn_clone.springboot.dto.course.CourseTotalDTO;
 import inflearn_clone.springboot.mappers.CourseMapper;
-import inflearn_clone.springboot.service.course.CourseSerivce;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import inflearn_clone.springboot.dto.course.CourseDTO;
-import inflearn_clone.springboot.mappers.CourseMapper;
+
 import inflearn_clone.springboot.utils.CategoryMapper;
-import inflearn_clone.springboot.utils.Paging;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,9 +46,9 @@ public class CourseServiceImpl implements CourseSerivce {
 
     @Override
     public CourseDTO courseView1(int idx) {
-            CourseVO vo = courseMapper.courseView1(idx);
-            CourseDTO courseInfo = modelMapper.map(vo, CourseDTO.class);
-            return courseInfo;
+        CourseVO vo = courseMapper.courseView1(idx);
+        CourseDTO courseInfo = modelMapper.map(vo, CourseDTO.class);
+        return courseInfo;
     }
 
     //teacherId로 존재하는 강의가 있는지 확인하기
@@ -131,7 +122,7 @@ public class CourseServiceImpl implements CourseSerivce {
     }
 
     @Override
-    public List<CourseDTO> getCourses(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
+    public List<CourseTotalDTO> getCourses(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
         Map<String, Object> map = new HashMap<>();
         map.put("offset", (pageNo - 1) * pageSize);
         map.put("limit", pageSize);
@@ -143,7 +134,7 @@ public class CourseServiceImpl implements CourseSerivce {
         map.put("sortQuery", sortQuery);
 
         List<CourseVO> voList = courseMapper.selectAllCourse(map);
-        return voList.stream().map(vo -> modelMapper.map(vo, CourseDTO.class)).collect(Collectors.toList());
+        return voList.stream().map(vo -> modelMapper.map(vo, CourseTotalDTO.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -157,6 +148,17 @@ public class CourseServiceImpl implements CourseSerivce {
         }
         map.put("searchValue", searchValue);
         return courseMapper.courseTotalCnt(searchCategory, searchValue);
+    }
+
+    @Override
+    public int insertCourse(CourseDTO courseDTO) {
+        CourseVO courseVO = modelMapper.map(courseDTO, CourseVO.class);
+        return courseMapper.insertCourse(courseVO);
+    }
+
+    @Override
+    public CourseDTO viewMyLastCourse(String memberId) {
+        return modelMapper.map(courseMapper.viewMyLastCourse(memberId), CourseDTO.class);
     }
 
 }

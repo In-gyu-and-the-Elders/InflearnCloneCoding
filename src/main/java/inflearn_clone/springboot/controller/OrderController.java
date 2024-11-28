@@ -37,7 +37,7 @@ public class OrderController {
 
         List<Integer> successOrderedList = new ArrayList<>();
         List<Integer> alreadyOrderedList = new ArrayList<>();
-
+        log.info("courseIdxList{}: ", courseIdxList);
         for (int i = 0; i < courseIdxList.size(); i++) {
             int courseIdx = courseIdxList.get(i);
             int price = priceList.get(i);
@@ -67,13 +67,12 @@ public class OrderController {
             }
 
             response.setCharacterEncoding("utf-8");
-            JSFunc.alertLocation(message, "mypage/courseList", response);
+            JSFunc.alertLocation(message, "/order/courseList", response);
         } else {
             String message = "결제 가능한 강좌가 없습니다.";
             if (!alreadyOrderedList.isEmpty()) {
                 message = "모든 강좌가 이미 결제된 상태입니다.";
             }
-
             response.setCharacterEncoding("utf-8");
             JSFunc.alertLocation(message, request.getHeader("Referer"), response);
         }

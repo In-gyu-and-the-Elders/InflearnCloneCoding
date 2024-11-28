@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
       xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{layout/layout.html}"
+<!--      layout:decorate="~{layout/layout.html}"-->
 >
-<div layout:fragment="main">
+<div>
+<!--<div layout:fragment="main">-->
     <div>
         <div class="cart-container">
             <!-- 상단: 전체 선택 및 강좌 수 -->
@@ -12,7 +13,7 @@
                 <label>
                     <input type="checkbox" id="select-all">
                     전체선택 <span id="course-count">(0/0)</span>
-                    <button id="delete-selected-btn" onclick="deleteBtns()">삭제</button>
+                    <button id="delete-selected-btn" >삭제</button>
                 </label>
             </div>
             <!--        총가격+결제버튼부분-->
@@ -20,7 +21,7 @@
                 <p>총 선택한 강좌 가격: <span id="total-price">₩0</span></p>
                 <form id="orderForm" action="/order/regist" method="POST">
                     <input type="hidden" name="memberId" value="${memberId}">
-                    <input type="hidden" name="orderNumber" id="orderNumber"> <!-- 결제번호는 서버에서 생성 -->
+                    <input type="hidden" name="orderNumber" id="orderNumber">
 
                     <!-- 선택된 강좌들의 courseIdx와 price를 hidden 필드로 전달 -->
                     <input type="hidden" name="courseIdxList" id="courseIdxList">
@@ -31,7 +32,7 @@
             </div>
             <!-- 강좌 리스트 -->
             <div class="cart-list" th:if="${cartList != null and cartList.size() > 0}">
-                <div class="cart-item" th:each="item : ${cartList}" th:data-course-id="${item.idx}"
+                <div class="cart-item" th:each="item : ${cartList}" th:data-course-id="${item.courseIdx}"
                      style="border:1px solid #1e1e1e; margin: 2px">
                     <div class="item-info">
                         <input type="checkbox" class="course-select">
@@ -43,7 +44,7 @@
                             <p class="course-regDate" th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd')}"></p>
                         </div>
                     </div>
-                    <button class="delete-btn" th:data-course-id="${item.idx}" onclick="deleteBtns()">부분삭제</button>
+                    <button class="delete-btn" th:data-course-id="${item.idx}" >부분삭제</button>
                 </div>
             </div>
 
@@ -105,6 +106,8 @@
             // hidden input에 선택된 강좌들의 idx와 가격을 설정
             document.getElementById('courseIdxList').value = courseIdxList.join(',');
             document.getElementById('priceList').value = priceList.join(',');
+
+            console.log('결제 데이터:', { courseIdxList, priceList });
         }
 
         // 결제 버튼 클릭 시 선택된 강좌들을 서버로 전송

@@ -16,4 +16,5 @@ public interface OrderMapper {
 
     List<OrderVO> refundByDeleteCourse(int idx);
     int refundOrder(@Param("idx") int idx);
+    int studentCnt(int courseIdx);
 }

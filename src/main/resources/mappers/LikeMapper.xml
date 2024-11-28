@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="inflearn_clone.springboot.mappers.LikeMapper">
+
+    <insert id="regist" parameterType="map">
+        INSERT INTO tbl_like (courseIdx, memberId)
+        VALUES (#{courseIdx}, #{memberId})
+    </insert>
+
+    <delete id="delete" parameterType="map">
+        DELETE FROM tbl_like
+        WHERE courseIdx = #{courseIdx} AND memberId = #{memberId}
+    </delete>
+
+    <select id="likeCnt" parameterType="int" resultType="int">
+        SELECT COUNT(*) FROM tbl_like WHERE courseIdx = #{courseIdx}
+    </select>
+
+    <select id="likeCheck" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM tbl_like WHERE courseIdx = #{courseIdx} AND memberId = #{memberId}
+    </select>
+
+</mapper>    

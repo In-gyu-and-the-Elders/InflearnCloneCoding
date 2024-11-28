@@ -9,6 +9,7 @@
     <h1>결제내역확인</h1>
     <div class="lecture-container">
         <!-- orderList 데이터를 반복 출력 -->
+
         <div class="lecture-item" th:each="order : ${orderList}">
             <div class="lecture-info">
                 <label>강의 제목</label>
@@ -19,7 +20,7 @@
                 <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
             </div>
             <div class="lecture-price">
-                <span th:text="'₩' + ${order.orderPrice}"></span>
+                <span th:text="'₩' + ${#numbers.formatInteger(order.orderPrice, 0, 'COMMA')}"></span>
             </div>
             <button th:if="${order.status != 'D'}" th:data-idx="${order.idx}"  class="refund-button" onclick="refund(this)">환불</button>
         </div>

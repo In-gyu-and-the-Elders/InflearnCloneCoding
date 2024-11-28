@@ -6,13 +6,16 @@
 >
 <div layout:fragment="main">
 <!--    <div >-->
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="/css/course/courseViewStyle.css">
         <div class="content2">
             <!-- 상단: 강의명 + 썸네일 -->
             <div class="header">
                 <div class="course-info">
                     <h1 th:text="${course.title}">강의명</h1>
-                    <p>⭐별점  수강생: <span></span>명</p>
+                    <p>⭐별점<span></span>  수강생:<span th:text="${studentCnt}"></span>명</p>
                     <p>👤 강사명: <span th:text="${course.teacherId}"></span></p>
                 </div>
                 <div class="thumbnail">
@@ -36,7 +39,7 @@
 
             <!-- 우측: 사이드바 -->
             <div class="sidebar">
-                <h2 th:text="'₩' + ${course.price}"> 가격</h2>
+                <h2 th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}"> 가격</h2>
                 <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
                     <input type="hidden" name="courseIdx" th:value="${course.idx}">
                     <button type="submit" class="btn1">수강신청하기</button>
@@ -50,16 +53,20 @@
                     <button type="submit" class="btn2">장바구니 이동</button>
                 </form>
 
-                <form action="/review/write" method="get" th:if="${!isOrderPossible}">
+                <form action="/review/regit" method="get" th:if="${!isOrderPossible}">
                     <button type="submit" class="btn2">수강평 작성하기</button>
                 </form>
                 <div class="like">
-                    <span class="heart">❤️</span>
-                    <span>20,333</span>
+                  <span class="heart" data-liked="[[${isLiked}]]">
+                    <span class="heart-icon">[[${isLiked ? '❤️' : '🤍'}]]</span>
+                </span>
+                    <span id="likeCount" th:text="${likeCount}"></span>
                 </div>
             </div>
         </div>
     </div>
+
+
 </html>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -71,7 +78,6 @@
     });
     // 탭 클릭 이벤트
     $('.tab').on('click', function () {
-        console.log("클릭시작")
         const tabName = $(this).data('tab');
         const idx = courseIdx;
         $.get(`/course/tab/${tabName}/${idx}`, function (data) {
@@ -80,11 +86,26 @@
     });
 
     // 좋아요 버튼 클릭
-    $('.heart').on('click', function () {
-        const isLiked = $(this).hasClass('liked');
-        $.post('/course/like', { liked: !isLiked }, function (response) {
-            $('.heart').toggleClass('liked');
-            $('.like span:last-child').text(response.likeCount);
+    $(document).ready(function () {
+        $('.heart').on('click', function () {
+            const isLiked = $(this).data('liked') === 'true';
+
+            $.post('/like/regist', { courseIdx: courseIdx}, function (response) {
+                if (response.success) {
+                    const newLikeState = !isLiked;
+                    $(this).data('liked', newLikeState);
+                    if (newLikeState) {
+                        $(this).text('❤️').css('color', 'red');
+                    } else {
+                        $(this).text('🤍').css('color', 'gray');
+                    }
+
+                    $('#likeCount').text(response.likeCount);
+
+                } else {
+                    alert('좋아요 처리에 실패했습니다.');
+                }
+            }.bind(this));
         });
     });
 </script>
