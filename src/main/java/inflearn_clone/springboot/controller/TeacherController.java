@@ -4,7 +4,7 @@ import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.lesson.LessonDTO;
 import inflearn_clone.springboot.dto.section.SectionDTO;
 import inflearn_clone.springboot.mappers.SectionMapper;
-import inflearn_clone.springboot.service.CourseSerivce;
+import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.lesson.LessonServiceIf;
 import inflearn_clone.springboot.service.section.SectionServiceIf;
 import inflearn_clone.springboot.utils.CommonFileUtil;
@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
