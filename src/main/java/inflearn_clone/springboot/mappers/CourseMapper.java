@@ -17,4 +17,5 @@ public interface CourseMapper {
     // 페이징 버전
     List<CourseVO> selectAllCourse(Map<String, Object> map);
     int courseTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue);
+
 }

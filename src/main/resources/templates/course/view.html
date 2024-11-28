@@ -37,14 +37,21 @@
             <!-- 우측: 사이드바 -->
             <div class="sidebar">
                 <h2 th:text="'₩' + ${course.price}"> 가격</h2>
-                <form action="/cart/regist" method="post">
+                <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
                     <input type="hidden" name="courseIdx" th:value="${course.idx}">
                     <button type="submit" class="btn1">수강신청하기</button>
                 </form>
 
-                <form action="/cart/regist" method="post">
+                <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
                     <input type="hidden" name="courseIdx" th:value="${course.idx}">
-                    <button type="submit" class="btn2">장바구니에 담기</button>
+                    <button type="submit" class="btn2">장바구니 담기</button>
+                </form>
+                <form action="/cart/list" method="get" th:if="${!isCartPossible && isOrderPossible}">
+                    <button type="submit" class="btn2">장바구니 이동</button>
+                </form>
+
+                <form action="/review/write" method="get" th:if="${!isOrderPossible}">
+                    <button type="submit" class="btn2">수강평 작성하기</button>
                 </form>
                 <div class="like">
                     <span class="heart">❤️</span>

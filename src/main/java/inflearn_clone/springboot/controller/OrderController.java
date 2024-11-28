@@ -11,6 +11,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Log4j2
@@ -27,7 +29,8 @@ public class OrderController {
         // 로그인 후 삭제
         //String memberId = (String) request.getSession().getAttribute("memberId");
          memberId = "user1";
-        String orderNumber = generateOrderNumber();
+         String orderNumber = generateOrderNumber();
+
 
         String[] courseIdxArray = courseIdxList.split(",");
         String[] priceArray = priceList.split(",");
@@ -45,9 +48,16 @@ public class OrderController {
         }
         return "redirect:/mypage/courseList";
     }
+
     private String generateOrderNumber() {
-        return "ORDER_" + System.currentTimeMillis() + "_" + (int) (Math.random() * 1000);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String currentDate = sdf.format(new Date());
+
+        int randomNum = (int) (Math.random() * 1000000);
+
+        return currentDate + "_" + String.format("%06d", randomNum);
     }
+
     @GetMapping("/list")
     public List<OrderCourseDTO> orderList(@RequestParam String memberId) {
         return orderService.getOrderList(memberId);

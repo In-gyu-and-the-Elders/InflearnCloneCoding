@@ -15,4 +15,11 @@
         WHERE o.memberId = #{memberId}
         ORDER BY o.orderDate
     </select>
+
+    <select id="orderCnt">
+        SELECT COUNT(*)
+        FROM tbl_order
+        WHERE courseIdx = #{courseIdx} AND memberId = #{memberId} AND status = 'Y'
+    </select>
+
 </mapper>

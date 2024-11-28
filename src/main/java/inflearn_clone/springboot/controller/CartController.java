@@ -30,8 +30,7 @@ public class CartController {
         String memberId = "user1";
 
         cartOrderDTO.setMemberId(memberId);
-        boolean cnt = cartService.cartCnt(cartOrderDTO);
-        boolean added = cartService.regist(cartOrderDTO);
+        boolean cnt = cartService.cartCnt(cartOrderDTO.getCourseIdx(), cartOrderDTO.getMemberId());
 
         if (!cnt) {
             response.setCharacterEncoding("utf-8");
@@ -39,6 +38,7 @@ public class CartController {
             return;
         }
 
+        boolean added = cartService.regist(cartOrderDTO);
         // 장바구니 담기 실패
         if (!added) {
             response.setCharacterEncoding("utf-8");

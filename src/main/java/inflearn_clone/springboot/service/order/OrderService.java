@@ -8,4 +8,5 @@ import java.util.List;
 public interface OrderService {
     void regist(OrderDTO orderDTO);
     List<OrderCourseDTO> getOrderList(String memberId);
+    boolean orderCnt(int courseIdx, String memberId);
 }

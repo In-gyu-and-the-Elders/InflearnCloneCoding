@@ -27,9 +27,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public boolean cartCnt(CartOrderDTO cartOrderDTO) {
-        CartVO cartVO = modelMapper.map(cartOrderDTO, CartVO.class);
-        int count = cartMapper.cartCnt(cartVO);
+    public boolean cartCnt(int courseIdx, String memberId) {
+        int count = cartMapper.cartCnt(courseIdx, memberId);
         return count == 0;
     }
 
@@ -38,10 +37,10 @@ public class CartServiceImpl implements CartService {
         return cartMapper.cartList(memberId);
     }
 
-    @Override
-    public List<CartOrderDTO> goOrder(List<Integer> idxList, String memberId) {
-        return cartMapper.goOrder(idxList, memberId);
-    }
+//    @Override
+//    public List<CartOrderDTO> goOrder(List<Integer> idxList, String memberId) {
+//        return cartMapper.goOrder(idxList, memberId);
+//    }
 
     @Override
     public int delete(List<Integer> idxList, String memberId) {

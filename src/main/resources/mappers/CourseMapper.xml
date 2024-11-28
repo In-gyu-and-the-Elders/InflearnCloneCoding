@@ -22,18 +22,14 @@
         SELECT COUNT(*)
         FROM tbl_course
         <where>
-            <if test="searchCategory != null and searchValue != null">
-                <choose>
-                    <when test="searchCategory == 'title'">
-                        title LIKE CONCAT('%', #{searchValue}, '%')
-                    </when>
-                    <when test="searchCategory == 'teacherId'">
-                        `teacherId` LIKE CONCAT('%', #{searchValue}, '%')
-                    </when>
-                    <when test="searchCategory == 'category'">
-                        category LIKE CONCAT('%', #{searchValue}, '%')  <!-- 검색어를 카테고리 코드로 -->
-                    </when>
-                </choose>
+            <if test="searchCategory != null and searchCategory != ''">
+                category = #{searchCategory}
+            </if>
+            <if test="searchValue != null and searchValue != ''">
+                AND (
+                title LIKE CONCAT('%', #{searchValue}, '%') OR
+                teacherId LIKE CONCAT('%', #{searchValue}, '%')
+                )
             </if>
         </where>
     </select>
@@ -43,27 +39,19 @@
         idx, category, title, description, teacherId, regDate, displayDate, status, price, thumbnail
         FROM tbl_course
         <where>
-            <if test="searchCategory != null and searchValue != null">
-                <choose>
-                    <when test="searchCategory == 'title'">
-                        title LIKE CONCAT('%', #{searchValue}, '%')
-                    </when>
-                    <when test="searchCategory == 'teacherId'">
-                        `teacherId` LIKE CONCAT('%', #{searchValue}, '%')
-                    </when>
-                    <when test="searchCategory == 'category'">
-                        category LIKE CONCAT('%', #{searchValue}, '%')  <!-- 검색어를 카테고리 코드로 -->
-                    </when>
-                    <otherwise>
-                        1=1
-                    </otherwise>
-                </choose>
+            <if test="searchCategory != null and searchCategory != ''">
+                category = #{searchCategory}
+            </if>
+            <if test="searchValue != null and searchValue != ''">
+                AND (
+                title LIKE CONCAT('%', #{searchValue}, '%') OR
+                teacherId LIKE CONCAT('%', #{searchValue}, '%')
+                )
             </if>
         </where>
         ${sortQuery}
         LIMIT #{offset}, #{limit}
     </select>
-
 
 </mapper>
 
