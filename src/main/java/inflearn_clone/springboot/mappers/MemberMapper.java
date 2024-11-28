@@ -16,7 +16,7 @@ public interface MemberMapper {
 
     int teacherRequestTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue, @Param("memberType") String memberType);
 
-
+    int memberStatusTotalCnt(@Param("status") String status, @Param("memberType") String memberType);
     MemberVO selectMemberInfo(String memberId);
 
     List<MemberVO> selectTeacherRequest(Map<String, Object> map);

@@ -30,43 +30,62 @@ public class AdminController {
     private final MemberServiceIf memberService;
     private final NoticeServiceIf noticeService;
     private final CourseSerivce courseSerivce;
-    /*
-    * 관리자 로그인 페이지 이동
+
+    /**
+     * 관리자 로그인 페이지 이동
+     *
      */
     @GetMapping("/login")
     public String loginPage(){
         return "admin/login";
     }
 
-    /*
-    * 관리자 로그인
-    */
+    /**
+     * 관리자 로그인
+     *
+     */
     @PostMapping("/login")
     public String login(){
         return "admin/index";
     }
 
-    /*
+    /**
      * 관리자 로그아웃
+     *
      */
     @PostMapping("/logout")
     public String logout(){
         return "admin/login";
     }
 
-    /*
-     * 관리자 대시보드 이동
-     * 강의 수(상태 마다), 회원(상태 마다), 문의 메뉴 수
+    /**
+     * 대시보드
+     * 강사 탈퇴 요청 수, 회원분류(활성, 비활성, 탈퇴), 강의관리(과목 별 강의 수)
      */
     @GetMapping("/dashboard")
     public String dashboard(Model model){
-        model.addAttribute("");
+        // 강사 탈퇴 요청 수 조회
+        int teacherTotalCnt = memberService.teacherRequestTotalCnt(null, null, "T");
+        model.addAttribute("teacherRequestTotalCnt", teacherTotalCnt);
+
+        // 일반 회원 상태 별 조회
+        int StatusYTotalCnt = memberService.memberStatusTotalCnt("Y", "S");
+        int StatusNTotalCnt = memberService.memberStatusTotalCnt("N", "S");
+        int StatusDTotalCnt = memberService.memberStatusTotalCnt("D", "S");
+        model.addAttribute("StatusYTotalCnt", StatusYTotalCnt);
+        model.addAttribute("StatusNTotalCnt", StatusNTotalCnt);
+        model.addAttribute("StatusDTotalCnt", StatusDTotalCnt);
+
+        // 강의 관리(과목 별 강의 수)
+
+
         return "admin/dashboard";
     }
 
-    /*
-    * 학생 회원 목록
-    */
+    /**
+     * 학생 회원 리스트
+     *
+     */
     @GetMapping("/member/sList")
     public String list(Model model,
                        @RequestParam(defaultValue = "1") int pageNo,
@@ -89,8 +108,9 @@ public class AdminController {
         return "/admin/member/stdList";
     }
 
-    /*
+    /**
      * 강사 회원 목록
+     *
      */
     @GetMapping("/member/tList")
     public String list_1(Model model,
@@ -114,8 +134,9 @@ public class AdminController {
         return "admin/member/teacherList";
     }
 
-    /*
+    /**
      * 강사 탈퇴 요청 회원 목록
+     *
      */
     @GetMapping("/member/teacherRequestList")
     public String teacherlist(Model model,
@@ -139,9 +160,10 @@ public class AdminController {
         return "admin/member/teacherRequestList";
     }
 
-    /*
-    * 회원 조회
-    */
+    /**
+     * 회원 조회
+     *
+     */
     @GetMapping("/member/view")
     public String memberView(Model model,
                              @RequestParam String memberId){
@@ -155,8 +177,9 @@ public class AdminController {
         return null;
     }
 
-    /*
+    /**
      * 회원 수정 폼 전달
+     *
      */
     @GetMapping("/member/modify")
     public String modifyGet(Model model,
@@ -171,7 +194,7 @@ public class AdminController {
         return null;
     }
 
-    /*
+    /**
      * 회원 수정
      * 회원 수정 후 회원 상세 페이지로 이동
      */
@@ -185,9 +208,10 @@ public class AdminController {
         return null;
     }
 
-    /*
-    * 회원 탈퇴 사유 조회
-    */
+    /**
+     * 회원 탈퇴 사유 조회
+     *
+     */
     @GetMapping("/member/leaveReasonView")
     public String leaveReasonView(Model model, String memberId){
         LeaveReasonDTO info = memberService.leaveReasonView(memberId);
@@ -200,21 +224,20 @@ public class AdminController {
         return null;
     }
 
-    /*
-    * 강의 삭제
-    */
+    /**
+     * 강의 삭제
+     *
+     */
     @GetMapping("/course/delete")
     public String deleteCourse(@RequestParam String idx){
         return null;
     }
 
-
-    /*
-    * 회원 탈퇴
-    *  회원이 탈퇴 가능한 상태인지 확인
-    * 환불 처리 절차가 필요한 경우라면 즉시 탈퇴 처리가 아닌 유예 상태로 변경
-    */
-
+    /**
+     * 회원 탈퇴
+     * 회원이 탈퇴 가능한 상태인지 확인
+     * 환불 처리 절차가 필요한 경우라면 즉시 탈퇴 처리가 아닌 유예 상태로 변경
+     */
     @GetMapping("/member/delete")
     public String memberDelete(@RequestParam String memberId, @RequestParam String memberType){
         if(memberType.equals("T")){
@@ -242,6 +265,8 @@ public class AdminController {
             return "학생 로직 처리";
         }
     }
+
+
 
     //여기부터 아래는 인규가 작업한 부분입니다.
     // [관리자 공지사항]

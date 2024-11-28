@@ -124,44 +124,46 @@
 </head>
 <body>
 <div class="analytics-report">
-<div class="dashboard-overview">
-        <div class="stat-card">
-            <h3>총 문의 수</h3>
-            <p id="total-questions">120</p>
+    <div class="dashboard-overview">
+            <div class="stat-card">
+                <h3>게시판 관리</h3>
+                <p id="total-questions">바로가기</p>
+            </div>
+            <div class="stat-card">
+                <h3>강사 탈퇴 요청</h3>
+                <p id="average-score">[[${teacherRequestTotalCnt}]]명</p>
+            </div>
+    </div>
+    <div class="charts-container">
+        <div class="chart-card">
+            <h4>일반 회원 분류</h4>
+            <div class="chart-container">
+                <canvas id="performance-chart"></canvas>
+            </div>
         </div>
-        <div class="stat-card">
-            <h3>총 게시판 수</h3>
-            <p id="average-score">75%</p>
-        </div>
-</div>
 
-<div class="charts-container">
-    <div class="chart-card">
-        <h4>회원 분류</h4>
-        <div class="chart-container">
-            <canvas id="performance-chart"></canvas>
+        <div class="chart-card">
+            <h4>강의 관리</h4>
+            <div class="chart-container">
+                <canvas id="score-distribution-chart"></canvas>
+            </div>
         </div>
     </div>
 
-    <div class="chart-card">
-        <h4>Score Distribution</h4>
-        <div class="chart-container">
-            <canvas id="score-distribution-chart"></canvas>
+    <div class="report-generation">
+        <div class="report-filters">
+            <input type="date" id="start-date" />
+            <input type="date" id="end-date" />
+            <button id="generate-report">엑셀로 내보내기</button>
         </div>
     </div>
-</div>
-
-<div class="report-generation">
-    <div class="report-filters">
-        <input type="date" id="start-date" />
-        <input type="date" id="end-date" />
-        <button id="generate-report">엑셀로 내보내기</button>
-    </div>
-</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+
+
+<script th:inline="javascript">
+
 // Performance Chart
 const ctxPerformance = document.getElementById('performance-chart').getContext('2d');
 const performanceChart = new Chart(ctxPerformance, {
@@ -170,7 +172,7 @@ const performanceChart = new Chart(ctxPerformance, {
         labels: ['활성', '비활성', '탈퇴'],
         datasets: [{
             label: 'Question Usage',
-            data: [12, 19, 3],
+            data: [ [[${StatusYTotalCnt}]], [[${StatusNTotalCnt}]], [[${StatusDTotalCnt}]] ],
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1

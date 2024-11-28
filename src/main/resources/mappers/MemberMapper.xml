@@ -44,6 +44,14 @@
         </where>
     </select>
 
+    <!-- 회원 상태 별 전체 수 -->
+    <select id="memberStatusTotalCnt" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_member
+        WHERE status = #{status} AND memberType = #{memberType}
+    </select>
+
+
     <!-- 전체 회원 목록 -->
     <select id="selectAllMember" resultType="inflearn_clone.springboot.domain.MemberVO">
         SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType

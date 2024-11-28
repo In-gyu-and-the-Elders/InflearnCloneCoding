@@ -13,6 +13,8 @@ public interface MemberServiceIf {
     // 탈퇴 요청 선생님 회원 수
     int teacherRequestTotalCnt(String searchCategory, String searchValue, String memberType);
 
+    int memberStatusTotalCnt(String status, String memberType);
+
     //전체 회원 조회
     List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String memberType);
 

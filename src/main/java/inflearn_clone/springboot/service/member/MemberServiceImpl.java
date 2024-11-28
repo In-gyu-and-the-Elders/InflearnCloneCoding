@@ -41,6 +41,13 @@ public class MemberServiceImpl implements MemberServiceIf{
     }
 
     @Override
+    public int memberStatusTotalCnt(String status, String memberType){
+        log.info("stauts" +status);
+        log.info("memberType" +memberType);
+        return memberMapper.memberStatusTotalCnt(status, memberType);
+    }
+
+    @Override
     public List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String memberType) {
         Map<String, Object> map = new HashMap<>();
         map.put("offset", (pageNo - 1) * pageSize);
