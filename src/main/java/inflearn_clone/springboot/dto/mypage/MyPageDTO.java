@@ -1,0 +1,28 @@
+package inflearn_clone.springboot.dto.mypage;
+
+import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Log4j2
+@ToString
+public class MyPageDTO {
+  private int courseIdx;
+  private String title;
+  private String description;
+  private String category;
+  private int price;
+  private String thumbnail;
+  private String teacherId;
+  private String teacherName;
+  private LocalDateTime orderDate;
+  private int orderPrice;
+}

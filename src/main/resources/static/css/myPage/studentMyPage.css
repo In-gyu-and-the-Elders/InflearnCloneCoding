@@ -2,3 +2,26 @@
   display: flex;
   justify-content: center;
 }
+
+.myPageContainer {
+  width: 1100px;
+  border: 1px solid black;
+  min-height: 300px;
+  display: grid;
+  grid-template-columns: 200px 900px;
+  margin: 0 auto;
+}
+
+.menuArea {
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+
+.contentArea {
+  padding: 20px;
+}
+
+.myRoomH2 {
+  font-weight: bold;
+  font-size: 26px;
+}

@@ -5,23 +5,45 @@
   xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout/layout.html}"
 >
-  <!-- <th:block layout:fragment="css">
-      <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
-  </th:block> -->
-  <style>
-    .cccccc {
-      display: flex;
-      justify-content: center;
-    }
-    .myPageContainer {
-      width: 1500px;
-      color: red;
-    }
-  </style>
-
+<head>
+  <!-- 페이지 전용 스타일시트 추가 -->
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+  </th:block>
+</head>
   <div layout:fragment="main">
     <div class="cccccc">
-      <div class="myPageContainer">아 그지같네ㅇㅇㅇㅇ</div>
+      <div class="myPageContainer">
+        <div class="menuArea">
+          <div>Home</div>
+        </div>
+        <div class="contentArea">
+          <h2 class="myRoomH2">내 강의실</h2>
+          <div>
+            <div th:if="${myCourses != null and !myCourses.isEmpty()}" class="courses-grid">
+                <div th:each="course : ${myCourses}" class="course-card">
+                    <img th:if="${course.thumbnail}" th:src="@{${course.thumbnail}}" class="course-thumbnail" alt="강의 썸네일">
+                    <img th:unless="${course.thumbnail}" th:src="@{/images/default-course.jpg}" class="course-thumbnail" alt="기본 썸네일">
+                    
+                    <div class="course-info">
+                        <div class="course-title" th:text="${course.title}">강의 제목</div>
+                        <div class="course-description" th:text="${course.description}">강의 설명</div>
+                        <div class="course-meta">
+                            <div th:text="'강사: ' + ${course.teacherName}">강사명</div>
+                            <div th:text="'카테고리: ' + ${course.category}">카테고리</div>
+                            <div th:text="'구매일: ' + ${#temporals.format(course.orderDate, 'yyyy-MM-dd')}">구매일</div>
+                            <div th:text="'구매가격: ' + ${#numbers.formatInteger(course.orderPrice, 0, 'COMMA')} + '원'">구매가격</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div th:if="${myCourses == null or myCourses.isEmpty()}" class="no-courses">
+                <p>수강 중인 강의가 없습니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </html>
