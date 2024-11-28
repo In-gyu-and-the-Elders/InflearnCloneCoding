@@ -1,8 +1,12 @@
 package inflearn_clone.springboot.controller;
 
+import inflearn_clone.springboot.config.JwtTokenProvider;
 import inflearn_clone.springboot.dto.sign.SignDTO;
 import inflearn_clone.springboot.dto.sign.SignInDTO;
 import inflearn_clone.springboot.service.sign.SignServiceImpl;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,6 +24,7 @@ import java.util.Map;
 public class SignController {
 
   private final SignServiceImpl signService;
+  private final JwtTokenProvider jwtTokenProvider;
 
   // 회원가입
   @PostMapping("/signUp")
@@ -30,15 +35,32 @@ public class SignController {
 
   // 로그인
   @PostMapping("/signIn")
-  public ResponseEntity<Map<String, String>> signIn(@Valid @RequestBody SignInDTO signInDTO) {
-      String token = signService.signIn(signInDTO.getMemberId(), signInDTO.getPwd());
-      // SignDTO memberInfo = signService.getMemberInfo((String)signInDTO.getMemberId());
-      Map<String, String> response = new HashMap<>();
-      response.put("token", token);
-      // response.put("memberId", memberInfo.getMemberId());
-      // response.put("name", memberInfo.getName());
-      // response.put("memberType", memberInfo.getMemberType());
-      return ResponseEntity.ok(response);
+  public ResponseEntity<Map<String, String>> signIn(
+          @Valid @RequestBody SignInDTO signInDTO,
+          HttpServletResponse response,
+          HttpSession session) {
+    
+    // 로그인 처리 및 토큰 생성
+    String token = signService.signIn(signInDTO.getMemberId(), signInDTO.getPwd(), signInDTO.getMemberType());
+    
+    // 쿠키에 토큰 저장
+    Cookie tokenCookie = new Cookie("token", token);
+    tokenCookie.setPath("/");
+    tokenCookie.setMaxAge(3600);
+    response.addCookie(tokenCookie);
+    
+    // 세션에 토큰과 회원 정보 저장
+    session.setAttribute("token", token);
+    session.setAttribute("memberId", jwtTokenProvider.getMemberId(token));
+    session.setAttribute("memberType", jwtTokenProvider.getMemberType(token));
+    session.setAttribute("name", jwtTokenProvider.getName(token));
+    session.setAttribute("email", jwtTokenProvider.getEmail(token));
+    session.setAttribute("phone", jwtTokenProvider.getPhone(token));
+    
+    Map<String, String> responseBody = new HashMap<>();
+    responseBody.put("message", "로그인 성공");
+    
+    return ResponseEntity.ok(responseBody);
   }
 
   // 회원 정보 조회
@@ -79,5 +101,24 @@ public class SignController {
   @GetMapping("/check-duplicate-id")
   public ResponseEntity<Map<String, Boolean>> checkDuplicateId(@RequestParam String memberId) {
     return ResponseEntity.ok(Map.of("available", signService.checkDuplicateId(memberId)));
+  }
+
+  // 로그아웃
+  @PostMapping("/signOut")
+  public ResponseEntity<Map<String, String>> signOut(
+          HttpServletResponse response,
+          HttpSession session) {
+    
+    Cookie tokenCookie = new Cookie("token", null);
+    tokenCookie.setPath("/");
+    tokenCookie.setMaxAge(0);
+    response.addCookie(tokenCookie);
+    
+    session.invalidate();
+    
+    Map<String, String> responseBody = new HashMap<>();
+    responseBody.put("message", "로그아웃 성공");
+    
+    return ResponseEntity.ok(responseBody);
   }
 }

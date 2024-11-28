@@ -14,4 +14,7 @@ public class SignInDTO {
 
     @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
     private String pwd;
+
+    @NotBlank(message = "회원타입을 선택해주세요.")
+    private String memberType;
 }

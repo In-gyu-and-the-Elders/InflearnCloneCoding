@@ -22,4 +22,7 @@ public class MainController {
   public String signIn() {
     return "sign/signIn";
   }
+
+  @GetMapping("/member/myPage")
+  public String myPage(Model model) {return "member/myPage";}
 }

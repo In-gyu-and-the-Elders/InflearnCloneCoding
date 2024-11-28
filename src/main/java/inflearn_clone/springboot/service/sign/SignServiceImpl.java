@@ -27,11 +27,11 @@ public class SignServiceImpl {
   }
 
   // 로그인
-  public String signIn(String memberId, String rawPassword) {
-    log.info("로그인 시도: memberId={}", memberId);
+  public String signIn(String memberId, String rawPassword, String memberType) {
+    log.info("로그인 시도: memberId={}", memberId, memberType);
 
     // 1. 사용자 정보 조회
-    SignVO signVO = signMapper.signIn(memberId);
+    SignVO signVO = signMapper.signIn(memberId, memberType);
     if (signVO == null) {
       log.error("로그인 실패: 존재하지 않는 사용자 ID - memberId=-{}-", memberId);
       throw new IllegalArgumentException("존재하지 않는 사용자 ID입니다.");
@@ -45,8 +45,14 @@ public class SignServiceImpl {
 
     log.info("로그인 성공: memberId={}", memberId);
 
-    // 3. JWT 토큰 생성 및 반환
-    return jwtTokenProvider.createToken(memberId, signVO.getMemberType());
+    // 3. JWT 토큰 생성 및 반환 (추가 정보 포함)
+    return jwtTokenProvider.createToken(
+        signVO.getMemberId(),
+        signVO.getMemberType(),
+        signVO.getName(),
+        signVO.getEmail(),
+        signVO.getPhone()
+    );
   }
 
   // 회원 정보 조회

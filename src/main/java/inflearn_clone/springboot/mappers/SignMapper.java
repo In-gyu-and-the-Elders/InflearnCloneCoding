@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface SignMapper {
-  SignVO signIn(String memberId);
+  SignVO signIn(String memberId, String memberType);
   void signUp(SignVO memberVO);
   SignVO getMemberInfo(String memberId);
   int modifyMemberInfo(SignVO memberVO);
