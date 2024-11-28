@@ -81,4 +81,9 @@ public class OrderServiceImpl implements OrderService  {
         return cnt == 0;
     }
 
+    @Override
+    public boolean refundOrder(int idx) {
+        return orderMapper.refundOrder(idx) == 0;
+    }
+
 }
