@@ -30,7 +30,6 @@ public class OrderController {
     public void registOrder(@RequestParam List<Integer> courseIdxList,
                             @RequestParam List<Integer> priceList,
                             HttpServletRequest request, HttpServletResponse response) {
-        // 로그인 후 삭제
         String memberId = (String) request.getSession().getAttribute("memberId");
         String orderNumber = generateOrderNumber();
 

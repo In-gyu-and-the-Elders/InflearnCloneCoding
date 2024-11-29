@@ -41,7 +41,6 @@
                 <input type="hidden" name="courseIdx" th:value="${course.idx}">
                 <button type="submit" class="btn1">수강신청하기</button>
             </form>
-
             <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
                 <input type="hidden" name="courseIdx" th:value="${course.idx}">
                 <button type="submit" class="btn2">장바구니 담기</button>

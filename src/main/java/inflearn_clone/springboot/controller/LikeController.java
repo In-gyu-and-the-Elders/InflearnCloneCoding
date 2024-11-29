@@ -1,6 +1,8 @@
 package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.service.like.LikeService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
@@ -21,11 +23,12 @@ public class LikeController {
 
     @PostMapping("/regist")
     @ResponseBody
-    public Map<String, Object> toggleLike(@RequestParam("courseIdx") int courseIdx) {
+    public Map<String, Object> toggleLike(@RequestParam("courseIdx") int courseIdx,
+                                          HttpServletRequest request) {
 //        log.info("courseIdx: " + courseIdx);
         // 로그인 후 삭제
-        //String memberId = (String) request.getSession().getAttribute("memberId");
-        String memberId = "user1";
+        String memberId = (String) request.getSession().getAttribute("memberId");
+//        String memberId = "user1";
         // 좋아요 토글
         likeService.toggleLike(courseIdx, memberId);
 

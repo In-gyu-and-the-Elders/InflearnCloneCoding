@@ -48,6 +48,22 @@
         text-align: center;
         margin-top: 10px;
     }
+
+    .modal2 {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .modal2.open {
+        display: block;
+    }
 </style>
 <div class="review-container">
     <!-- 정렬 드롭다운 -->
@@ -81,38 +97,54 @@
             </div>
 
             <!-- 수정 및 삭제 버튼 -->
-<!--            <div class="review-actions" th:if="${review.memberId == MemberId}">-->
-            <div class="review-actions">
-                <button class="edit-btn" data-idx="${review.idx}" onclick="openEditModal(this)">수정</button>                <form action="/review/delete" method="POST" style="display:inline;">
-                    <input type="hidden" name="idx" th:value="${review.idx}">
-                    <input type="hidden" name="courseIdx" th:value="${courseIdx}">
-                    <button type="submit" onclick="return confirm('정말로 이 리뷰를 삭제하시겠습니까?');">삭제</button>
-                </form>
+            <div class="review-actions" th:if="${review.memberId == memberId}">
+                <div class="review-actions">
+                    <p th:text="${review.idx}"></p>
+                    <button class="edit-btn" th:attr="data-review-idx=${review.idx}" id="modifyBtn">수정</button>
+                    <form action="/review/delete" method="POST" style="display:inline;">
+                        <input type="hidden" name="idx" th:value="${review.idx}">
+                        <input type="hidden" name="courseIdx" th:value="${courseIdx}">
+                        <button type="submit" onclick="return confirm('정말로 이 리뷰를 삭제하시겠습니까?');">삭제</button>
+                    </form>
+                </div>
             </div>
         </div>
-
-    <!-- 수정 모달 창 -->
-    <div id="editModal" class="modal4" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('editModal')">&times;</span>
-            <form id="editForm" method="POST" action="/review/modify">
-                <input type="hidden" id="idx" name="idx">
-                <input type="hidden" name="courseIdx" th:value="${courseIdx}">
-                <label for="content">내용:</label>
-                <textarea id="content" name="content" rows="4"></textarea>
-                <label for="rating">평점:</label>
-                <input type="number" id="rating" name="rating" min="1" max="5">
-                <button type="submit">수정</button>
-            </form>
-        </div>
     </div>
-
-
     <!-- 더보기 버튼 -->
     <div class="review-more">
         <button id="loadMore" onclick="loadMoreReviews()">더 보기</button>
     </div>
 
+<!--    수정모달-->
+    <div id="reviewModal" class="modal2">
+        <div class="modal-content">
+            <form id="reviewForm" method="POST" action="/review/modify">
+                <h3>수강평을 수정해주세요!</h3>
+                <div class="rating-stars">
+                    <span data-star="1">★</span>
+                    <span data-star="2">★</span>
+                    <span data-star="3">★</span>
+                    <span data-star="4">★</span>
+                    <span data-star="5">★</span>
+                </div>
+                <input type="hidden" name="reviewIdx" id="reviewIdx">
+                <input type="hidden" name="rating" id="ratingInput">
+                <textarea id="reviewText" name="content" maxlength="500" minlength="5"
+                          placeholder="수강평을 작성해보세요!"></textarea>
+                <div class="char-count">
+                    <span id="charCount">0</span>/500
+                </div>
+                <p id="alertMessage" class="hidden">500자를 초과할 수 없습니다.</p>
+                <div class="modal-actions">
+                    <button id="submitButton" class="btn-submit" type="submit">수정하기</button>
+                </div>
+            </form>
+            <button id="cancelButton" class="btn-cancel">취소</button>
+        </div>
+    </div>
+
+
+<!--    수정모달-->
     <script>
         function sortReviews() {
             const sortBy = document.getElementById("sortBy").value;
@@ -121,31 +153,66 @@
             window.location.href = `/course/tab/review/${courseIdx}?sortBy=${sortBy}`;
         }
 
-        function modifyGo(reviewIdx) {
-            window.location.href = `/review/edit/${reviewIdx}`;
-        }
+        // 별점 선택 시, rating 값 업데이트
+        document.querySelectorAll('.rating-stars span').forEach(star => {
+            star.addEventListener('click', () => {
+                const selectedRating = star.getAttribute('data-star'); // 클릭한 별의 숫자 값
+                document.getElementById('ratingInput').value = selectedRating; // rating hidden input에 값 할당
 
-        // function openModal(modalId) {
-        //     console.log("어픈확인")
-        //     document.getElementById(modalId).style.display = "block";
-        // }
-        //
-        // function openEditModal(idx) {
-        //     fetch(`/review/${idx}`)
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             document.getElementById("editForm").action = "/review/modify";
-        //             document.getElementById("idx").value = data.idx;
-        //             document.getElementById("content").value = data.content;
-        //             document.getElementById("rating").value = data.rating;
-        //             openModal('editModal');
-        //         })
-        //         .catch(error => console.error("Error loading review:", error));
-        // }
-        //
-        // function closeModal(modalId) {
-        //     document.getElementById(modalId).style.display = "none";
-        // }
+                // 별 색 변경
+                document.querySelectorAll('.rating-stars span').forEach(s => {
+                    if (parseInt(s.getAttribute('data-star')) <= selectedRating) {
+                        s.style.color = 'gold';
+                    } else {
+                        s.style.color = 'black';
+                    }
+                });
+            });
+        });
+
+
+        // 수정 버튼 클릭 이벤트
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const reviewIdx = button.getAttribute('data-review-idx'); // 리뷰 ID 가져오기
+                console.log(reviewIdx)
+                fetch(`/review/${reviewIdx}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('데이터를 가져오는데 실패했습니다.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // 데이터 모달에 채우기
+                        document.getElementById('reviewIdx').value = data.idx;
+                        document.getElementById('courseIdx').value = data.courseIdx;
+                        document.getElementById('reviewText').value = data.content;
+
+                        const ratingValue = data.rating;
+                        document.getElementById('ratingInput').value = ratingValue;
+
+                        document.querySelectorAll('.rating-stars span').forEach(star => {
+                            if (parseInt(star.getAttribute('data-star')) <= data.rating) {
+                                star.style.color = 'gold';
+                            } else {
+                                star.style.color = 'black';
+                            }
+                        });
+                        // 모달 열기
+                        document.getElementById('reviewModal').classList.add('open');
+                    })
+                    .catch(err => {
+                        console.error('Error:', err);
+                        alert('수강평 데이터를 불러올 수 없습니다.');
+                    });
+            });
+        });
+
+        // 모달 닫기 버튼
+        document.getElementById('cancelButton').addEventListener('click', () => {
+            document.getElementById('reviewModal').classList.remove('open');
+        });
 
     </script>
 </div>

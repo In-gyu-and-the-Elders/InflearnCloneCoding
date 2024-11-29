@@ -43,7 +43,7 @@
 
 <!--    특정글확인-->
     <select id="viewReview">
-        SELECT idx, courseIdx, content, rating
+        SELECT idx, courseIdx, content, rating, memberId
         FROM tbl_review
         WHERE idx=#{idx}
     </select>
