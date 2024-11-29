@@ -25,9 +25,7 @@ public class CartController {
 
     @PostMapping("/regist")
     public void addCartItem(@ModelAttribute CartOrderDTO cartOrderDTO, HttpServletRequest request, HttpServletResponse response) {
-        // 로그인 후 삭제
-        //String memberId = (String) request.getSession().getAttribute("memberId");
-        String memberId = "user1";
+        String memberId = (String) request.getSession().getAttribute("memberId");
 
         cartOrderDTO.setMemberId(memberId);
         boolean cnt = cartService.cartCnt(cartOrderDTO.getCourseIdx(), cartOrderDTO.getMemberId());
@@ -53,13 +51,13 @@ public class CartController {
 
     // 장바구니 리스트 확인
     @GetMapping("/list")
-    public String cartList(Model model) {
-        // 로그인 후 삭제
-        //String memberId = (String) request.getSession().getAttribute("memberId");
-        String memberId = "user1";
+    public String cartList(Model model, HttpServletRequest request) {
+        String memberId = (String) request.getSession().getAttribute("memberId");
         List<CartOrderDTO> cartList = cartService.cartList(memberId);
+        int totalCount = cartService.getCartCount(memberId);
 //        log.info("cartList{}", cartList);
         model.addAttribute("cartList", cartList);
+        model.addAttribute("totalCount", totalCount);
         return "mypage/cartList";
     }
 
@@ -80,9 +78,7 @@ public class CartController {
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
 //        log.info("삭제할 항목들: {}", idxList);
-        // 로그인 후 삭제
-        //String memberId = (String) request.getSession().getAttribute("memberId");
-        String memberId = "user1";
+        String memberId = (String) request.getSession().getAttribute("memberId");
         boolean success = false;
         try {
             cartService.delete(idxList, memberId);

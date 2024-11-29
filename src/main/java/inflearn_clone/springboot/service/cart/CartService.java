@@ -11,4 +11,5 @@ public interface CartService {
     List<CartOrderDTO> cartList(String memberId);
 //    List<CartOrderDTO> goOrder(List<Integer> idxList, String memberId);
     int delete(List<Integer> idxList, String memberId);
+    int getCartCount(String memberId);
 }

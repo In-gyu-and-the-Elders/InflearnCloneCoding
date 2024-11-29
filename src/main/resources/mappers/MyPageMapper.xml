@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="inflearn_clone.springboot.mappers.MyPageMapper">
+
+  <!-- 내 강의 리스트 -->
+  <select id="getMyCourses" parameterType="map">
+    SELECT
+      c.idx AS courseIdx,
+      c.title,
+      c.description,
+      c.category,
+      c.price,
+      c.thumbnail,
+      c.teacherId,
+      t.name AS teacherName,
+      o.orderDate,
+      o.orderPrice,
+      (SELECT COUNT(l.idx)
+       FROM tbl_section s
+              JOIN tbl_lesson l ON s.idx = l.sectionIdx
+       WHERE s.courseIdx = c.idx) AS totalLessonCount
+    FROM
+      tbl_order o
+        JOIN
+      tbl_course c ON o.courseIdx = c.idx
+        JOIN
+      tbl_member t ON c.teacherId = t.memberId
+    WHERE
+      o.memberId = #{memberId}
+    ORDER BY
+      CASE #{sortType}
+        WHEN 'latest' THEN o.orderDate
+        WHEN 'title' THEN c.title
+      END
+      <choose>
+        <when test="sortType == 'latest'">DESC</when>
+        <when test="sortType == 'title'">ASC</when>
+      </choose>
+  </select>
+
+  <!-- 좋아요한 강의 목록 -->
+  <select id="getLikedCourses" parameterType="map">
+    SELECT 
+        c.idx,
+        c.category,
+        c.title,
+        c.description,
+        c.teacherId,
+        c.regDate,
+        c.displayDate,
+        c.modifyDate,
+        c.deleteDate,
+        c.status,
+        c.price,
+        c.thumbnail,
+        m.name as teacherName,
+        (SELECT COUNT(l.idx)
+         FROM tbl_section s
+         JOIN tbl_lesson l ON s.idx = l.sectionIdx
+         WHERE s.courseIdx = c.idx) AS totalLessonCount,
+        (SELECT COUNT(o.idx)
+         FROM tbl_order o
+         WHERE o.courseIdx = c.idx
+         AND o.status = 'Y') AS studentCount,
+        COALESCE((SELECT AVG(rating)
+                  FROM tbl_review r
+                  WHERE r.courseIdx = c.idx), 0) AS avgRating
+    FROM tbl_course c
+    INNER JOIN tbl_like l ON c.idx = l.courseIdx
+    INNER JOIN tbl_member m ON c.teacherId = m.memberId
+    WHERE l.memberId = #{memberId}
+    AND c.status = 'Y'
+    ORDER BY 
+    <choose>
+        <when test="sortType == 'latest'">l.idx DESC</when>
+        <when test="sortType == 'title'">c.title ASC</when>
+        <when test="sortType == 'student'">studentCount DESC, c.regDate DESC</when>
+        <when test="sortType == 'rating'">avgRating DESC, studentCount DESC, c.regDate DESC</when>
+        <otherwise>l.idx DESC</otherwise>
+    </choose>
+  </select>
+
+<!-- 회원 정보 조회-->
+  <select id="accountInfo">
+    SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType, leaveReason, leaveReasonRegDate FROM tbl_member
+    WHERE memberId = #{memberId}
+  </select>
+
+  <!-- 회원 정보 업데이트 -->
+    <update id="updateMemberInfo" parameterType="inflearn_clone.springboot.dto.member.MemberDTO">
+        UPDATE tbl_member
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            modifyDate = NOW()
+        </set>
+        WHERE memberId = #{memberId}
+    </update>
+  <select id="getReview">
+    SELECT
+      r.idx,
+      r.courseIdx,
+      r.memberId,
+      r.content,
+      r.rating,
+      r.regDate,
+      r.modifyDate,
+      c.title as courseTitle
+    FROM
+      tbl_review r
+        INNER JOIN tbl_course c ON r.courseIdx = c.idx
+    WHERE
+      r.memberId = #{memberId};
+  </select>
+
+  <!-- 리뷰 수정 -->
+  <update id="updateReview" parameterType="map">
+    UPDATE tbl_review
+    SET 
+        content = #{content},
+        rating = #{rating},
+        modifyDate = NOW()
+    WHERE 
+        idx = #{reviewIdx}
+        AND memberId = #{memberId}
+  </update>
+
+  <!-- 리뷰 삭제 -->
+  <delete id="deleteReview" parameterType="map">
+    DELETE FROM tbl_review
+    WHERE 
+        idx = #{reviewIdx}
+        AND memberId = #{memberId}
+  </delete>
+
+  <!-- 특정 리뷰 조회 (수정 시 사용) -->
+  <select id="getReviewById" parameterType="int" resultType="inflearn_clone.springboot.dto.mypage.MyPageDTO">
+    SELECT
+        r.idx,
+        r.courseIdx,
+        r.memberId,
+        r.content,
+        r.rating,
+        r.regDate,
+        r.modifyDate,
+        c.title as courseTitle
+    FROM
+        tbl_review r
+        INNER JOIN tbl_course c ON r.courseIdx = c.idx
+    WHERE
+        r.idx = #{reviewIdx}
+  </select>
+</mapper>

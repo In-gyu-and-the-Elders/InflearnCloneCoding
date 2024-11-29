@@ -54,14 +54,14 @@ public class SignServiceImpl {
     );
   }
 
-  // 회원 정보 조회
-  public SignDTO getMemberInfo(String memberId) {
-    SignVO signVO = signMapper.getMemberInfo(memberId);
-    if (signVO == null) {
-        throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
-    }
-    return SignMapperUtil.toDTO(signVO);
-  }
+  // // 회원 정보 조회
+  // public SignDTO getMemberInfo(String memberId) {
+  //   SignVO signVO = signMapper.getMemberInfo(memberId);
+  //   if (signVO == null) {
+  //       throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+  //   }
+  //   return SignMapperUtil.toDTO(signVO);
+  // }
 
   // 회원 정보 수정
   public void modifyMemberInfo(SignDTO signDTO) {

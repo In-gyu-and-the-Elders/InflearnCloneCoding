@@ -89,7 +89,7 @@ public class OrderServiceImpl implements OrderService  {
         System.out.println("idx" + idx);
         List<OrderVO> list = orderMapper.refundByDeleteCourse(idx);
         return list.stream()
-                .map(vo -> modelMapper.map(vo, OrderRefundDTO.class)).collect(Collectors.toList());
+            .map(vo -> modelMapper.map(vo, OrderRefundDTO.class)).collect(Collectors.toList());
     }
     @Override
     public boolean refundOrder(int idx) {
