@@ -4,108 +4,203 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/layout.html}"
 >
+<!--<div>-->
 <div layout:fragment="main">
-<!--    <div >-->
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="/css/course/courseViewStyle.css">
-        <div class="content2">
-            <!-- 상단: 강의명 + 썸네일 -->
-            <div class="header">
-                <div class="course-info">
-                    <h1 th:text="${course.title}">강의명</h1>
-                    <p>⭐별점<span></span>  수강생:<span th:text="${studentCnt}"></span>명</p>
-                    <p>👤 강사명: <span th:text="${course.teacherId}"></span></p>
-                </div>
-                <div class="thumbnail">
-                    <img th:src="${course.thumbnail}" alt="강의 썸네일">
-                </div>
+    <div class="content2">
+        <!-- 상단: 강의명 + 썸네일 -->
+        <div class="header">
+            <div class="course-info">
+                <h1 th:text="${course.title}">강의명</h1>
+                <p>⭐별점<span></span> 수강생:<span th:text="${studentCnt}"></span>명</p>
+                <p>👤 강사명: <span th:text="${course.teacherId}"></span></p>
             </div>
-
-            <!-- 중앙: 탭 영역 -->
-            <div class="tabs">
-                <button class="tab" data-tab="info">강의소개</button>
-                <button class="tab" data-tab="curriculum">커리큘럼</button>
-                <button class="tab" data-tab="qna">Q&A</button>
-                <button class="tab" data-tab="review">수강평</button>
-                <button class="tab" data-tab="notice">공지사항</button>
+            <div class="thumbnail">
+                <img th:src="${course.thumbnail}" alt="강의 썸네일">
             </div>
+        </div>
 
-            <!-- 중앙: 변경될 콘텐츠 영역 -->
-            <div class="tab-content">
-                <!-- 동적으로 로드될 콘텐츠 -->
-            </div>
+        <!-- 중앙: 탭 영역 -->
+        <div class="tabs">
+            <button class="tab" data-tab="info">강의소개</button>
+            <button class="tab" data-tab="curriculum">커리큘럼</button>
+            <!--                <button class="tab" data-tab="qna">Q&A</button>-->
+            <button class="tab" data-tab="review">수강평</button>
+            <!--                <button class="tab" data-tab="notice">공지사항</button>-->
+        </div>
 
-            <!-- 우측: 사이드바 -->
-            <div class="sidebar">
-                <h2 th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}"> 가격</h2>
-                <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
-                    <input type="hidden" name="courseIdx" th:value="${course.idx}">
-                    <button type="submit" class="btn1">수강신청하기</button>
-                </form>
+        <!-- 중앙: 변경될 콘텐츠 영역 -->
+        <div class="tab-content">
+            <!-- 동적으로 로드될 콘텐츠 -->
+        </div>
 
-                <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
-                    <input type="hidden" name="courseIdx" th:value="${course.idx}">
-                    <button type="submit" class="btn2">장바구니 담기</button>
-                </form>
-                <form action="/cart/list" method="get" th:if="${!isCartPossible && isOrderPossible}">
-                    <button type="submit" class="btn2">장바구니 이동</button>
-                </form>
+        <!-- 우측: 사이드바 -->
+        <div class="sidebar">
+            <h2 th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}"> 가격</h2>
+            <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
+                <input type="hidden" name="courseIdx" th:value="${course.idx}">
+                <button type="submit" class="btn1">수강신청하기</button>
+            </form>
 
-                <form action="/review/regit" method="get" th:if="${!isOrderPossible}">
-                    <button type="submit" class="btn2">수강평 작성하기</button>
-                </form>
-                <div class="like">
-                  <span class="heart" data-liked="[[${isLiked}]]">
-                    <span class="heart-icon">[[${isLiked ? '❤️' : '🤍'}]]</span>
-                </span>
-                    <span id="likeCount" th:text="${likeCount}"></span>
-                </div>
+            <form action="/cart/regist" method="post" th:if="${isCartPossible && isOrderPossible}">
+                <input type="hidden" name="courseIdx" th:value="${course.idx}">
+                <button type="submit" class="btn2">장바구니 담기</button>
+            </form>
+            <form action="/cart/list" method="get" th:if="${!isCartPossible && isOrderPossible}">
+                <button type="submit" class="btn2">장바구니 이동</button>
+            </form>
+
+            <form th:if="${!isOrderPossible}">
+                <button id="review" class="btn2">수강평 작성하기</button>
+            </form>
+            <div class="like">
+                <span class="heart" data-liked="[[${isLiked}]]" th:text="${isLiked ? '❤️' : '🤍'}"></span>
+                <span id="likeCount" th:text="${likeCount}"></span>
             </div>
         </div>
     </div>
+<!--    모달영역-->
+    <div id="reviewModal" class="modal123">
+        <div class="modal-content">
+            <form id="reviewForm" method="POST" action="/review/regist">
+            <h3>힘이 되는 수강평을 남겨주세요!</h3>
+            <div class="rating-stars">
+                <!-- 별점을 위한 아이콘 -->
+                <span data-star="1">★</span>
+                <span data-star="2">★</span>
+                <span data-star="3">★</span>
+                <span data-star="4">★</span>
+                <span data-star="5">★</span>
+            </div>
+            <input type="hidden" name="courseIdx" th:value="${course.idx}">
+            <input type="hidden" name="rating" id="ratingInput">
+            <textarea id="reviewText" name="content" placeholder="수강평을 작성해보세요!" maxlength="500" minlength="5"></textarea>
+            <div class="char-count">
+                <span id="charCount">0</span>/500
+            </div>
+            <p id="alertMessage" class="hidden">500자를 초과할 수 없습니다.</p>
+            <div class="modal-actions">
+                <button id="submitButton" class="btn-submit" type="submit" disabled>저장하기</button>
+            </div>
+            </form>
+            <button id="cancelButton" class="btn-cancel">취소</button>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const courseIdx = [[${course.idx}]];
 
-
-</html>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    const courseIdx = [[${course.idx}]];
-
-    $(document).ready(function() {
-        $('.tab[data-tab="info"]').click();
-    });
-    // 탭 클릭 이벤트
-    $('.tab').on('click', function () {
-        const tabName = $(this).data('tab');
-        const idx = courseIdx;
-        $.get(`/course/tab/${tabName}/${idx}`, function (data) {
-            $('.tab-content').html(data);
+        $(document).ready(function () {
+            $('.tab[data-tab="info"]').click();
         });
-    });
+        // 탭 클릭 이벤트
+        $('.tab').on('click', function () {
+            const tabName = $(this).data('tab');
+            const idx = courseIdx;
+            const sortBy = "latest";  // 정렬 기준
+            const page = 0;
+            $.get(`/course/tab/${tabName}/${idx}`, { sortBy: sortBy, page: page }, function (data) {
+                $('.tab-content').html(data);
+            });
+        });
 
-    // 좋아요 버튼 클릭
-    $(document).ready(function () {
-        $('.heart').on('click', function () {
-            const isLiked = $(this).data('liked') === 'true';
+        // 좋아요 버튼 클릭
+        $(document).ready(function () {
+            $('.heart').on('click', function () {
+                const $heart = $(this);
+                const isLiked = $heart.data('liked') === 'true';
 
-            $.post('/like/regist', { courseIdx: courseIdx}, function (response) {
-                if (response.success) {
-                    const newLikeState = !isLiked;
-                    $(this).data('liked', newLikeState);
-                    if (newLikeState) {
-                        $(this).text('❤️').css('color', 'red');
+                $.post('/like/regist', {courseIdx: courseIdx}, function (response) {
+                    if (response.success) {
+                        $heart.data('liked', response.isLiked);
+
+                        const icon = response.isLiked ? '❤️' : '🤍';
+                        $heart.text(icon);
+
+                        $('#likeCount').text(response.likeCount);
                     } else {
-                        $(this).text('🤍').css('color', 'gray');
+                        alert('좋아요 처리에 실패했습니다.');
                     }
-
-                    $('#likeCount').text(response.likeCount);
-
-                } else {
-                    alert('좋아요 처리에 실패했습니다.');
-                }
-            }.bind(this));
+                });
+            });
         });
-    });
-</script>
+
+        // 리뷰 작성 스크립트
+        const stars = document.querySelectorAll(".rating-stars span");
+        const reviewText = document.getElementById("reviewText");
+        const charCount = document.getElementById("charCount");
+        const alertMessage = document.getElementById("alertMessage");
+        const submitButton = document.getElementById("submitButton");
+        const cancelButton = document.getElementById("cancelButton");
+        const reviewModal = document.getElementById("reviewModal");
+        const reviewButton = document.querySelector("#review");
+
+        let selectedStar = 0;
+
+        // 별점 선택 이벤트
+        stars.forEach((star) => {
+            star.addEventListener("click", () => {
+                selectedStar = parseInt(star.getAttribute("data-star"), 10);
+                stars.forEach((s, index) => {
+                    s.classList.toggle("selected", index < selectedStar);
+                });
+                document.getElementById("ratingInput").value = selectedStar;  // rating 값을 설정
+                validateForm();
+            });
+        });
+
+        // 글자수 체크 이벤트
+        reviewText.addEventListener("input", () => {
+            const textLength = reviewText.value.length;
+            charCount.textContent = textLength;
+
+            if (textLength > 500) {
+                alertMessage.classList.remove("hidden");
+            } else {
+                alertMessage.classList.add("hidden");
+            }
+            validateForm();
+        });
+
+        // 폼 유효성 검사
+        function validateForm() {
+            const textLength = reviewText.value.length;
+            const isTextValid = textLength >= 5 && textLength <= 500;
+            const isFormValid = isTextValid && selectedStar > 0;
+
+            submitButton.disabled = !isFormValid;
+
+        }
+
+        // '저장하기' 버튼 클릭 시 폼 제출
+        submitButton.addEventListener("click", function(event) {
+            event.preventDefault();  // 기본 동작을 방지
+            const form = document.getElementById("reviewForm");
+            form.submit();  // 폼 제출
+        });
+
+        // 취소 버튼 이벤트
+        cancelButton.addEventListener("click", () => {
+            closeModal(); // 모달을 닫는 함수 호출
+        });
+
+        // 모달을 열기 위한 함수
+        function openModal() {
+            // console.log("모달오픈")
+            reviewModal.style.display = "block";
+        }
+
+        // 모달을 닫기 위한 함수
+        function closeModal() {
+            reviewModal.style.display = "none";
+        }
+
+        // 모달을 열 때, 버튼 클릭 이벤트를 설정
+        reviewButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            openModal();
+            event.stopPropagation();
+        });
+    </script>
+</div>
+</html>

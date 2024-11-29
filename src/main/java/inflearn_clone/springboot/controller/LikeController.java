@@ -39,6 +39,7 @@ public class LikeController {
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("likeCount", likeCount);
+        response.put("isLiked", isLiked);
         return response;
     }
 }

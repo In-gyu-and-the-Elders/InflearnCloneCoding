@@ -1,6 +1,7 @@
 package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.course.CourseTotalDTO;
+import inflearn_clone.springboot.dto.review.ReviewListDTO;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
@@ -8,6 +9,7 @@ import inflearn_clone.springboot.service.cart.CartService;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.like.LikeService;
 import inflearn_clone.springboot.service.order.OrderService;
+import inflearn_clone.springboot.service.review.ReviewService;
 import inflearn_clone.springboot.utils.Paging;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,6 +36,8 @@ public class CourseController {
     private final CartService cartService;
     private final OrderService orderService;
     private final LikeService likeService;
+    private final ReviewService reviewService;
+
     @GetMapping("/list")
     public String list(Model model,
                        @RequestParam(defaultValue = "1") int pageNo,
@@ -101,8 +105,10 @@ public class CourseController {
 
     @GetMapping("/tab/{tabName}/{idx}")
     public String getTabContent(@PathVariable String tabName,
-                                @PathVariable int idx
-                                ,Model model) {
+                                @PathVariable int idx, //강좌idx
+                                @RequestParam(defaultValue = "latest") String sortBy,
+                                @RequestParam(defaultValue = "0") int page,
+                                Model model) {
         switch (tabName) {
             case "info":
                 CourseDTO course = courseSerivce.courseView(idx);
@@ -110,15 +116,24 @@ public class CourseController {
                 return "course/tabs/info";
             case "curriculum":
                 return "course/tabs/curriculum";
-            case "qna":
-//                model.addAttribute("qnaList", qnaService.getQnAList());
-                return "course/tabs/qna";
+//            case "qna":
+////                model.addAttribute("qnaList", qnaService.getQnAList());
+//                return "course/tabs/qna";
             case "review":
-//                model.addAttribute("reviewList", reviewService.getReviewList());
+                log.info("실제 idx"+idx);
+                log.info("실제 sortBy"+sortBy);
+                log.info("실제 page"+page);
+                List<ReviewListDTO> reviews = reviewService.getReviewList(idx, sortBy, page);
+
+                model.addAttribute("reviews", reviews);
+                model.addAttribute("courseIdx", idx);
+                model.addAttribute("currentPage", page);
+
+                log.info("reviews{}",reviews);
                 return "course/tabs/review";
-            case "notice":
-//                model.addAttribute("noticeList", noticeService.getNoticeList());
-                return "course/tabs/notice";
+//            case "notice":
+////                model.addAttribute("noticeList", noticeService.getNoticeList());
+//                return "course/tabs/notice";
             default:
                 return "/";
         }
