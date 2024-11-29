@@ -27,8 +27,8 @@ public class CourseServiceImpl implements CourseSerivce {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<CourseDTO> courseList() {
-        List<CourseVO> voList = courseMapper.courseList();
+    public List<CourseDTO> courseList(String memberId) {
+        List<CourseVO> voList = courseMapper.courseList(memberId);
         return voList.stream()
                 .map(vo -> modelMapper.map(vo, CourseDTO.class))
                 .collect(Collectors.toList());

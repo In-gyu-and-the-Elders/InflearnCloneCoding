@@ -13,7 +13,7 @@ import java.util.Map;
 @Mapper
 public interface MemberMapper {
     List<MemberVO> selectAllMember(Map<String, Object> map);
-    int memberTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue, @Param("memberType") String memberType);
+    int memberTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue, @Param("memberType") String memberType, @Param("status") String status);
 
     int teacherRequestTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue, @Param("memberType") String memberType);
 

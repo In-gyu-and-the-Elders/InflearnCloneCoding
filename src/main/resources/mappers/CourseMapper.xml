@@ -7,7 +7,7 @@
         SELECT
             idx, category, title, description, teacherId, regDate, displayDate, status, price, thumbnail
         FROM tbl_course
-        WHERE status = 'Y'
+        WHERE status = 'Y' AND teacherId = #{memberId}
         ORDER BY regDate DESC;
     </select>
 

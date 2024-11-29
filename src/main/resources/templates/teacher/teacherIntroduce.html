@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="~{teacher/layout}">
+<th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+</th:block>
+<div layout:fragment="main">
+    <div class="cccccc">
+        <div class="myPageContainer">
+            <div class="menuArea">
+                <div>
+                    <img src="/images/person.jpg" width="200px" height="220px">
+                    <br>
+                    <p>[[${info.name}]]</p>
+                    <ul class="myPageNav">
+                        <li><a th:href="@{/teacher/viewIntroduce(memberId=${memberId})}">소개</a></li>
+                        <li><a href="/cart/list">강의 목록</a></li>
+                        <li><a href="#">수강평</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="contentArea">
+                <div>
+                    <p>[[${info.teacherDesc}]]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+

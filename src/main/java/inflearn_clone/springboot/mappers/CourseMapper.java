@@ -12,7 +12,7 @@ import java.util.Map;
 @Mapper
 public interface CourseMapper {
     // 전체강좌 리스트
-    List<CourseVO> courseList();
+    List<CourseVO> courseList(String memberId);
 
     CourseVO courseView1(int idx);
 

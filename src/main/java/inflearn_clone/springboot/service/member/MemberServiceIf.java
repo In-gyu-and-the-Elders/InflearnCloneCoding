@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface MemberServiceIf {
     // 전체 회원 수
-    int memberTotalCnt(String searchCategory, String searchValue, String memberType);
+    int memberTotalCnt(String searchCategory, String searchValue, String memberType, String status);
 
     // 탈퇴 요청 선생님 회원 수
     int teacherRequestTotalCnt(String searchCategory, String searchValue, String memberType);
@@ -17,7 +17,7 @@ public interface MemberServiceIf {
     int memberStatusTotalCnt(String status, String memberType, LocalDateTime startDate, LocalDateTime endDate);
 
     //전체 회원 조회
-    List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String memberType);
+    List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String memberType, String status);
 
     //선생님 조회(탈퇴 요청 상태일 때)
     List<MemberDTO> selectTeacherRequest(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);

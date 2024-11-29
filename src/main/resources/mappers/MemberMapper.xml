@@ -18,6 +18,9 @@
                     </when>
                 </choose>
             </if>
+            <if test="status == null">
+                AND status IN('D', 'N', 'Y', 'R')
+            </if>
             AND memberType = #{memberType}
         </where>
     </select>
@@ -77,7 +80,10 @@
                     </when>
                 </choose>
             </if>
-        AND memberType = #{memberType}
+            <if test="status == null">
+                AND status IN('D', 'N', 'Y', 'R')
+            </if>
+            AND memberType = #{memberType}
         </where>
         ${sortQuery}
         LIMIT #{offset}, #{limit}
@@ -106,7 +112,7 @@
 
     <!-- 아이디로 회원 정보 찾기-->
     <select id="selectMemberInfo" resultType="inflearn_clone.springboot.domain.MemberVO">
-        SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType
+        SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType, teacherDesc
         FROM tbl_member
         WHERE memberId = #{memberId}
     </select>
@@ -132,4 +138,5 @@
         SET status = 'D', leaveDate = now()
         WHERE memberId = #{memberId}
     </update>
+
 </mapper>

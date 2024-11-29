@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout.html}"
+>
+<head>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+        <!-- <link rel="stylesheet" th:href="@{/css/teacher/teacherStyle.css}"> -->
+    </th:block>
+    <th:block layout:fragment="css">
+        <style>
+            .courses-grid {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr); /* 한 줄에 5개 */
+                gap: 20px; /* 카드 간격 */
+                justify-items: center; /* 카드 가운데 정렬 */
+            }
+
+            .course-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding-top: 8px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                text-decoration: none;
+                color: #000;
+                transition: transform 0.3s, box-shadow 0.3s;
+                background-color: #fff;
+            }
+
+            .course-card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .course-card img {
+                width: 130px; /* 이미지 크기 */
+                height: 130px;
+                margin-bottom: 10px;
+            }
+
+            .course-info {
+                font-size: 14px;
+            }
+
+            .no-data-message {
+                text-align: center;
+                color: #777;
+                font-size: 16px;
+                margin-top: 20px;
+            }
+        </style>
+    </th:block>
+</head>
+<div layout:fragment="main">
+    <div class="cccccc">
+        <div class="myPageContainer">
+            <div class="contentArea">
+                <div>
+                    <div th:if="${teacherList != null and !teacherList.isEmpty()}" class="courses-grid">
+                        <a th:each="dto : ${teacherList}" class="course-card" th:href="@{/teacher/viewIntroduce(memberId=${dto.memberId})}">
+                            <img src="/images/person.jpg" alt="강사 이미지" width="200px">
+                            <div class="course-info">
+                                <div class="course-meta">
+                                    <div class="instructor" >[[${dto.name}]]</div>
+                                    <div class="course-stats">
+                                        <span>평점</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <p class="no-data-message" th:if="${teacherList == null or teacherList.isEmpty()}">
+                        표시할 데이터가 없습니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><div th:replace="~{/common/paging :: paging}"></div>
+</div>
+</html>

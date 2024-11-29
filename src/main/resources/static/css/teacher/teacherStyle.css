@@ -1,0 +1,43 @@
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 한 줄에 5개 */
+    gap: 20px; /* 카드 간격 */
+    justify-items: center; /* 카드 가운데 정렬 */
+}
+
+.course-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding-top: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: #000;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+}
+
+.course-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.course-card img {
+    width: 130px; /* 이미지 크기 */
+    height: 130px;
+    margin-bottom: 10px;
+}
+
+.course-info {
+    font-size: 14px;
+}
+
+.no-data-message {
+    text-align: center;
+    color: #777;
+    font-size: 16px;
+    margin-top: 20px;
+}

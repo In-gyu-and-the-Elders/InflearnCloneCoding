@@ -2,13 +2,17 @@ package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.lesson.LessonDTO;
+import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.dto.section.SectionDTO;
 import inflearn_clone.springboot.mappers.SectionMapper;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.lesson.LessonServiceIf;
+import inflearn_clone.springboot.service.member.MemberServiceIf;
 import inflearn_clone.springboot.service.section.SectionServiceIf;
+import inflearn_clone.springboot.service.teacher.TeacherServiceIf;
 import inflearn_clone.springboot.utils.CommonFileUtil;
 import inflearn_clone.springboot.utils.JSFunc;
+import inflearn_clone.springboot.utils.Paging;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,6 +27,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import static inflearn_clone.springboot.utils.QueryUtil.generateSortQuery;
+
 @Controller
 @Log4j2
 @RequestMapping("/teacher")
@@ -33,6 +39,8 @@ public class TeacherController {
     private final SectionServiceIf sectionService;
     private final SectionMapper sectionMapper;
     private final LessonServiceIf lessonService;
+    private final TeacherServiceIf teacherService;
+    private final MemberServiceIf memberService;
 
     @GetMapping("/course/insert")
     public String insert() {
@@ -150,5 +158,56 @@ public class TeacherController {
         model.addAttribute("section", sectionDTOList.get(currentIndex+1)); //다음 섹션을 넘김
         model.addAttribute("hasNextNext", hasNextNext);
         return "teacher/course/insert_l";
+    }
+
+    @GetMapping("/list")
+    public String teacherList(Model model,
+                              @RequestParam(defaultValue = "1") int pageNo,
+                              @RequestParam(required = false) String searchCategory,
+                              @RequestParam(required = false) String searchValue,
+                              @RequestParam(required = false) String sortType,
+                              @RequestParam(required = false) String sortOrder){
+        String sortQuery = generateSortQuery(sortType, sortOrder);
+        int totalCnt = teacherService.teacherTotalCnt(searchCategory, searchValue, "T", "Y");
+        Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
+        List<MemberDTO> teacherList = teacherService.selectAllTeacher(pageNo, 10, searchCategory, searchValue, sortQuery, "T", "Y");
+        System.out.println(teacherList.size());
+        model.addAttribute("teacherList", teacherList);
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchCategory", searchCategory);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("uri", "/teacher/list");
+        return "teacher/list";
+    }
+
+    @GetMapping("/viewIntroduce")
+    public String teacherView(Model model, @RequestParam String memberId){
+        if(memberId != null && !memberId.isEmpty()){
+            MemberDTO memberInfo = memberService.selectMemberInfo(memberId);
+            model.addAttribute("info", memberInfo);
+            return "teacher/teacherIntroduce";
+        }else{
+            log.info("회원 아이디 없음");
+            return null;
+        }
+    }
+
+    @GetMapping("/viewCourseList")
+    public String CourseListView(Model model, @RequestParam String memberId){
+        if(memberId != null && !memberId.isEmpty()){
+            MemberDTO memberInfo = memberService.selectMemberInfo(memberId);
+            String name = memberInfo.getName();
+            model.addAttribute("name", name);
+            List<CourseDTO> courseInfo = courseSerivce.courseList(memberId);
+            System.out.println(memberInfo.toString());
+            model.addAttribute("info", courseInfo);
+            model.addAttribute("memberId", memberId);
+        }else{
+            log.info("회원 아이디 없음");
+            return null;
+        }
+        return "teacher/teacherCourseList";
     }
 }

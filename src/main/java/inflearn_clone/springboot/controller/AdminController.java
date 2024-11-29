@@ -128,12 +128,13 @@ public class AdminController {
                        @RequestParam(required = false) String searchCategory,
                        @RequestParam(required = false) String searchValue,
                        @RequestParam(required = false) String sortType,
-                       @RequestParam(required = false) String sortOrder){
+                       @RequestParam(required = false) String sortOrder,
+                       @RequestParam(required = false) String status){
         String sortQuery = generateSortQuery(sortType, sortOrder);
-        int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "S");
+        int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "S", "");
         log.info("Member list totalCnt" + totalCnt); // 100
         Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
-        List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery, "S");
+        List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery, "S", "");
         model.addAttribute("members", members);
         model.addAttribute("paging", paging);
         model.addAttribute("searchCategory", searchCategory);
@@ -154,12 +155,16 @@ public class AdminController {
                        @RequestParam(required = false) String searchCategory,
                        @RequestParam(required = false) String searchValue,
                        @RequestParam(required = false) String sortType,
-                       @RequestParam(required = false) String sortOrder){
+                       @RequestParam(required = false) String sortOrder,
+                         @RequestParam(required = false) String status){
         String sortQuery = generateSortQuery(sortType, sortOrder);
-        int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "T");
-        log.info("Member list totalCnt" + totalCnt); // 100
+
+        int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "T", "");
+        log.info("Member list totalCnt" + totalCnt);
+        log.info("searchCategory" + searchCategory);
+        log.info("searchValue" + searchValue);
         Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
-        List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery, "T");
+        List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery, "T", "");
         model.addAttribute("members", members);
         model.addAttribute("paging", paging);
         model.addAttribute("searchCategory", searchCategory);

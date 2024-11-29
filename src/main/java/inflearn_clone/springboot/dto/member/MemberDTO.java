@@ -21,4 +21,5 @@ public class MemberDTO {
     private LocalDateTime modifyDate;
     private LocalDateTime leaveDate;
     private String memberType; // Member type (S: Student, T: Teacher)
+    private String teacherDesc;
 }

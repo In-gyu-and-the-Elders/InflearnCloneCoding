@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CourseSerivce {
     // 강의 목록 가져오기
-    List<CourseDTO> courseList();
+    List<CourseDTO> courseList(String memberId);
     // 강의 상세 정보 가져오기
 
     CourseDTO courseView1(int idx);
