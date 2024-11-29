@@ -4,14 +4,17 @@ import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.course.TeacherCourseDTO;
 import inflearn_clone.springboot.dto.lesson.LessonDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
+import inflearn_clone.springboot.dto.review.ReviewListDTO;
 import inflearn_clone.springboot.dto.section.SectionDTO;
 import inflearn_clone.springboot.dto.section.SectionWithLessonListDTO;
 import inflearn_clone.springboot.mappers.CourseMapper;
+import inflearn_clone.springboot.mappers.ReviewMapper;
 import inflearn_clone.springboot.mappers.SectionMapper;
 import inflearn_clone.springboot.mappers.TeacherMapper;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.lesson.LessonServiceIf;
 import inflearn_clone.springboot.service.member.MemberServiceIf;
+import inflearn_clone.springboot.service.review.ReviewService;
 import inflearn_clone.springboot.service.section.SectionServiceIf;
 import inflearn_clone.springboot.service.teacher.TeacherServiceIf;
 import inflearn_clone.springboot.utils.CommonFileUtil;
@@ -24,6 +27,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -53,6 +57,8 @@ public class TeacherController {
     private final CourseMapper courseMapper;
     private final TeacherMapper teacherMapper;
     private final ModelMapper modelMapper;
+    private final ReviewService reviewService;
+    private final ReviewMapper reviewMapper;
 
     @GetMapping("/course/insert")
     public String insert() {
@@ -466,5 +472,36 @@ public class TeacherController {
             return null;
         }
         return "teacher/teacherCourseList";
+    }
+
+    @GetMapping("/viewReview")
+    public String CourseReviewView(Model model,
+                                   @RequestParam String memberId,
+                                   @RequestParam(defaultValue = "1") int pageNo){
+        if(memberId != null && !memberId.isEmpty()){
+            MemberDTO info = memberService.selectMemberInfo(memberId);
+            model.addAttribute("info", info);
+            int totalCnt = reviewService.reviewCntByTeacher(memberId);
+            System.out.println("total: " + totalCnt);
+            Paging paging = new Paging(pageNo, 10, 5, totalCnt, null, null);
+            List<ReviewListDTO> reviews =  reviewService.reviewListByTeacher(pageNo, 10, memberId);
+            if (reviews != null && !reviews.isEmpty()) {
+                log.info("총 {}개의 리뷰가 조회되었습니다.", reviews.size());
+                for (ReviewListDTO review : reviews) {
+                    System.out.println(review.getContent());
+                    System.out.println(review.getIdx());
+                }
+            } else {
+                log.info("리뷰 데이터가 없습니다.");
+            }
+            model.addAttribute("reviews", reviews);
+            model.addAttribute("paging", paging);
+            model.addAttribute("uri", "/teacher/viewReview");
+            return "teacher/teacherReview";
+        }else{
+            log.info("회원 아이디 없음");
+            return null;
+        }
+
     }
 }
