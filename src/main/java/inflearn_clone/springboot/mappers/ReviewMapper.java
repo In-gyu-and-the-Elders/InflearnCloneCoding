@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.parameters.P;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ReviewMapper {
@@ -18,4 +19,7 @@ public interface ReviewMapper {
     int modifyReview(ReviewListDTO review);
     int deleteReview(@Param("idx") int idx);
     ReviewListDTO viewReview(@Param("idx") int idx);
+
+    int reviewCntByTeacher(@Param("memberId") String memberId);
+    List<ReviewVO> reviewListByTeacher(Map<String, Object> map);
 }
