@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static inflearn_clone.springboot.utils.QueryUtil.generateSortQuery;
 
@@ -83,6 +84,7 @@ public class AdminController {
      */
     @GetMapping("/dashboard")
     public String dashboard(Model model){
+
         // 강사 탈퇴 요청 수 조회
         int teacherTotalCnt = memberService.teacherRequestTotalCnt(null, null, "T");
         model.addAttribute("teacherRequestTotalCnt", teacherTotalCnt);
@@ -107,11 +109,12 @@ public class AdminController {
         model.addAttribute("categoryHTotalCnt", categoryHTotalCnt);
         model.addAttribute("categoryCTotalCnt", categoryCTotalCnt);
 
-        // 최근 등록된 공지사항 상위 리스트
 
+        //최근에 작성된 공지사항
+        int totalCnt = noticeService.noticeTotalCnt(null, null);
+        List<BbsDTO> notice =  noticeService.list(1, 3, null, null, null);
+        model.addAttribute("notice", notice);
 
-
-        //상위 5개 강좌
         return "admin/dashboard";
     }
 
@@ -305,7 +308,7 @@ public class AdminController {
      */
     @GetMapping("/course/delete")
     public String deleteCourse(@RequestParam String idx, @RequestParam String memberId){
-        List<Integer> list = courseSerivce.selectCourseByMemberId(memberId);
+        List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
         if(list.size() > 0){
             // 공지사항 자동 등록 로직
             int insertNotice = noticeService.autoInsert(memberId, list);
@@ -327,17 +330,45 @@ public class AdminController {
      * 회원이 탈퇴 가능한 상태인지 확인
      * 환불 처리 절차가 필요한 경우라면 즉시 탈퇴 처리가 아닌 유예 상태로 변경
      */
+//    @GetMapping("/member/delete")
+//    public String memberDelete(@RequestParam String memberId, @RequestParam String memberType){
+//        if(memberType.equals("T")){
+//            List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
+//            //System.out.println(result.size());
+//            if(list.size() > 0){
+//                // 공지사항 자동 등록 로직
+//                int insertNotice = noticeService.autoInsert(memberId, list);
+//                if(insertNotice > 0){
+//                    // 공지사항 등록 이후 30일 뒤 강좌 삭제되도록 처리해야함 (즉 예약 처리)
+//                    // 예약 로직이 들어가야함
+//                    memberService.deleteMemberInfo(memberId);
+//                    return "강의 삭제 예약 완료";
+//
+//                }else{
+//                    return "예약 설정 중 오류가 발생했습니다.";
+//                }
+//            }else{
+//                // 회원탈퇴 로직 추가
+//                memberService.deleteMemberInfo(memberId);
+//                return "운영 중인 강좌가 없습니다.";
+//            }
+//        }else{
+//            memberService.deleteMemberInfo(memberId);
+//            return "학생 로직 처리";
+//        }
+//    }
     @GetMapping("/member/delete")
     public String memberDelete(@RequestParam String memberId, @RequestParam String memberType){
         if(memberType.equals("T")){
-            List<Integer> list = courseSerivce.selectCourseByMemberId(memberId);
+            List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
+//            List<Integer> idxList = list.stream()
+//                    .map(CourseDTO::getIdx)
+//                    .collect(Collectors.toList());
             //System.out.println(result.size());
             if(list.size() > 0){
                 // 공지사항 자동 등록 로직
                 int insertNotice = noticeService.autoInsert(memberId, list);
                 if(insertNotice > 0){
-                    // 공지사항 등록 이후 30일 뒤 강좌 삭제되도록 처리해야함 (즉 예약 처리)
-                    // 예약 로직이 들어가야함
                     memberService.deleteMemberInfo(memberId);
                     return "강의 삭제 예약 완료";
 
@@ -379,8 +410,15 @@ public class AdminController {
     }
 
     @PostMapping("notice/insert")
-    public String insert(BbsDTO bbsDTO, HttpServletResponse response) {
-        bbsDTO.setWriterId("testUser1"); //아직 세션 없음
+    public String insert(BbsDTO bbsDTO, HttpServletResponse response, HttpSession session) {
+
+        String adminId = (String) session.getAttribute("adminId");
+        if (adminId == null) {
+            response.setCharacterEncoding("utf-8");
+            JSFunc.alertBack("로그인이 필요합니다", response);
+            throw new IllegalStateException("로그인이 필요합니다."); // 예외 처리
+        }
+        bbsDTO.setWriterId(adminId); //아직 세션 없음
 
         bbsDTO.setCategory("N"); // [공지사항]
         //1. 파일 업로드

@@ -52,7 +52,7 @@
             <td>
                 <span class="badge badge-success" th:if="${dto.status == 'Y'}">활성</span>
                 <span class="badge badge-secondary" th:if="${dto.status == 'N'}">비활성</span>
-                <span class="badge badge-secondary" th:if="${dto.status == 'R'}">비활성</span>
+                <span class="badge badge-warning" th:if="${dto.status == 'R'}">삭제 처리 중</span>
                 <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N' and dto.status != 'R'}">삭제</span>
                 <!-- 환불된 명단 조회 가능-->
                 <span class="badge badge-danger" th:if="${dto.status == 'D'}"

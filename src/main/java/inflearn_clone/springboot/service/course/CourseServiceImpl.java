@@ -52,8 +52,12 @@ public class CourseServiceImpl implements CourseSerivce {
 
     //teacherId로 존재하는 강의가 있는지 확인하기
     @Override
-    public List<Integer> selectCourseByMemberId(String memberId) {
-        return courseMapper.selectCourseByMemberId(memberId);
+    public List<CourseDTO> selectCourseByMemberId(String memberId) {
+        List<CourseVO> voList = courseMapper.selectCourseByMemberId(memberId);
+        return voList.stream()
+                .map(vo -> modelMapper.map(vo, CourseDTO.class))
+                .collect(Collectors.toList());
+
     }
 
     // 특정 teacherId의 강의 삭제하기 (지금 필요없음)

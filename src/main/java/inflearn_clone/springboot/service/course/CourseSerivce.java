@@ -13,7 +13,7 @@ public interface CourseSerivce {
     CourseDTO courseView1(int idx);
 
     //아이디에 해당하는 강의 정보 확인하기(관리자 사용)
-    List<Integer> selectCourseByMemberId(String memberId);
+    List<CourseDTO> selectCourseByMemberId(String memberId);
 
     // 지금 필요 없음
     boolean deleteCourseByMemberId(String memberId);

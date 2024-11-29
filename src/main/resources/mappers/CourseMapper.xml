@@ -19,8 +19,8 @@
     </select>
 
     <!--teacherId로 존재하는 강의가 있는지 확인-->
-    <select id="selectCourseByMemberId" resultType="Integer">
-        SELECT idx
+    <select id="selectCourseByMemberId" resultType="inflearn_clone.springboot.domain.CourseVO">
+        SELECT idx, title
         FROM tbl_course
         WHERE teacherId = #{teacherId};
     </select>

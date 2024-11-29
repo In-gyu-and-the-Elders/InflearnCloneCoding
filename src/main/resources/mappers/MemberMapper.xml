@@ -129,7 +129,7 @@
     <!-- 회원 탈퇴 -->
     <update id="deleteMemberInfo">
         UPDATE tbl_member
-        SET status = 'D'
+        SET status = 'D', leaveDate = now()
         WHERE memberId = #{memberId}
     </update>
 </mapper>

@@ -124,6 +124,10 @@
         text-decoration-line: none;
         color: black;
     }
+    th, td {
+        border: 1px solid #ddd !important;
+    }
+
 </style>
 </head>
 <body>
@@ -132,16 +136,31 @@
     <div class="dashboard-overview">
             <div class="stat-card">
                 <a th:href="@{/admin/notice/list}">
-                    <h4>게시판 관리</h4>
+                    <h4>최근 등록된 공지사항</h4>
                 </a>
-                <p id="total-questions">바로가기</p>
+                <table class="table" th:if="${notice}">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">제목</th>
+                        <th scope="col">등록일</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="dto, status:${notice}">
+                        <td>[[${dto.idx}]]</td>
+                        <td>[[${dto.title}]]</td>
+                        <td>[[${dto.regDate}]]</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="stat-card">
-                <a th:href="@{/admin/member/teacherRequestList}">
-                    <h4>강사 탈퇴 요청</h4>
-                </a>
-                <p id="average-score">[[${teacherRequestTotalCnt}]]명</p>
-            </div>
+        <div class="stat-card">
+            <a th:href="@{/admin/member/teacherRequestList}">
+                <h4>강사 탈퇴 요청</h4>
+            </a>
+            <p id="average-score">[[${teacherRequestTotalCnt}]]명</p>
+        </div>
     </div>
     <div class="charts-container">
         <div class="chart-card">

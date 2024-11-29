@@ -17,7 +17,7 @@ public interface CourseMapper {
     CourseVO courseView1(int idx);
 
     // 특정 teacherId로 존재하는 강의가 있는지 확인하기
-    List<Integer> selectCourseByMemberId(String teacherId);
+    List<CourseVO> selectCourseByMemberId(String teacherId);
 
     // 특정 teacherId로 강좌 삭제
     boolean deleteCourseByMemberId(String teacherId);

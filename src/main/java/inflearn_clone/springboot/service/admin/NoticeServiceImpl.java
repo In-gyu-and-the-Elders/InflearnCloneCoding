@@ -2,6 +2,7 @@ package inflearn_clone.springboot.service.admin;
 
 import inflearn_clone.springboot.domain.BbsVO;
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
+import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.mappers.BbsMapper;
 import inflearn_clone.springboot.mappers.CourseMapper;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +11,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +64,7 @@ public class NoticeServiceImpl implements NoticeServiceIf{
     }
 
     @Override
-    public int autoInsert(String memberId, List<Integer> list) {
+    public int autoInsert(String memberId, List<CourseDTO> list) {
         BbsVO bbsVO = new BbsVO();
         bbsVO.setWriterId(memberId);
         bbsVO.setTitle(memberId + "강사님 강좌 폐지 안내");
@@ -68,10 +72,26 @@ public class NoticeServiceImpl implements NoticeServiceIf{
         content.append("30일 이후 다음 강좌들은 폐지됩니다\n");
         content.append("폐지 강좌 목록\n");
 
-        for(Integer idx : list){
-            courseMapper.updateDeleteDate(idx, LocalDateTime.now().plusMonths(3));
-            content.append(idx);
-            content.append("\n");
+        // 강좌 인덱스 조회
+        List<Integer> idxList = list.stream()
+            .map(CourseDTO::getIdx)
+            .collect(Collectors.toList());
+
+        //강좌명 조회
+        List<String> titleList = list.stream()
+                .map(CourseDTO::getTitle)
+                .collect(Collectors.toList());
+
+        for(Integer idx : idxList){
+            for(String title : titleList){
+                courseMapper.updateDeleteDate(idx, LocalDateTime.now().plusDays(30));
+                LocalDateTime month = LocalDateTime.now().plusDays(30);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String formattedDate = month.format(formatter);
+                content.append(title);
+                content.append(formattedDate);
+                content.append("\n");
+            }
         }
         bbsVO.setCategory("N");
         bbsVO.setContent(content.toString());
