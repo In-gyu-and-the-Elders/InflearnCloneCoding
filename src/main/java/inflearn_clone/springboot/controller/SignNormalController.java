@@ -20,4 +20,9 @@ public class SignNormalController {
   public String signIn() {
     return "sign/signIn";
   }
+
+  @GetMapping("/pwChange")
+  public String pwChange() {
+    return "member/pwChange";
+  }
 }

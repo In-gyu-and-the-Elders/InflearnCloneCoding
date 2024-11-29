@@ -1525,7 +1525,7 @@
                     th:if="${isLoggedIn}"
                     style="display: flex; align-items: center; gap: 20px"
                   >
-                    <a class="cart-icon" href="/cart/list">
+                    <a class="cart-icon" href="/cart/list" th:if="${session.memberType == 'S'}">
                       <img
                         src="/public/shopingCart.png"
                         alt="장바구니"
@@ -1570,7 +1570,7 @@
                                 </div>
                               </div>
                               <div class="right_content">
-                                <a th:href="@{/member/myPage}">
+                                <a th:href="${session.memberType == 'S' ? '/member/myPage' : '/teacher/course/list'}">
                                   <span class="name" style="display: flex; align-items: center;">
                                       <img src="/public/house.png" 
                                            alt="" 
@@ -1598,59 +1598,51 @@
                           </div>
                           <div class="list_content">
                             <div class="tab_list active" data-id="0">
-                              <div class="list_el">
-                                <a
-                                  href="/member/myPage"
-                                  class="title e-go_my_courses"
-                                >
-                                      <span class="icon"
-                                      ><img
-                                        src="/public/learning.png"
-                                        alt="learning"
-                                        style="width: 20px"
-                                      /></span>
-                                  <span class="name">내 강의실</span>
-                                </a>
-                              </div>
+                              <th:block th:if="${session.memberType == 'S'}">
+                                <div class="list_el">
+                                    <a href="/member/myPage" class="title e-go_my_courses">
+                                        <span class="icon"><img src="/public/learning.png" alt="learning" style="width: 20px"/></span>
+                                        <span class="name">내 강의실</span>
+                                    </a>
+                                </div>
 
-                              <div class="list_el">
-                                <a href="/order/list" class="title">
-                                      <span class="icon"
-                                      ><img
-                                        src="/public/payment.png"
-                                        alt="payment"
-                                        style="width: 20px"
-                                      /></span>
-                                  <span class="name">구매 내역</span>
-                                </a>
-                              </div>
+                                <div class="list_el">
+                                    <a href="/order/list" class="title">
+                                        <span class="icon"><img src="/public/payment.png" alt="payment" style="width: 20px"/></span>
+                                        <span class="name">구매 내역</span>
+                                    </a>
+                                </div>
 
-                              <div class="list_el">
-                                <a href="/member/likedCourses" class="title">
-                                      <span class="icon"
-                                      ><img
-                                        src="/public/circleHeart.png"
-                                        alt="circleHeart"
-                                        style="width: 20px"
-                                      /></span>
-                                  <span class="name">좋아요</span>
-                                </a>
-                              </div>
+                                <div class="list_el">
+                                    <a href="/member/likedCourses" class="title">
+                                        <span class="icon"><img src="/public/circleHeart.png" alt="circleHeart" style="width: 20px"/></span>
+                                        <span class="name">좋아요</span>
+                                    </a>
+                                </div>
 
-                              <div class="list_el">
-                                <a
-                                  href="/member/accountInfo"
-                                  class="title"
-                                >
-                                      <span class="icon"
-                                      ><img
-                                        src="/public/setting.png"
-                                        alt="setting"
-                                        style="width: 20px"
-                                      /></span>
-                                  <span class="name">설정</span>
-                                </a>
+                                <div class="list_el">
+                                    <a href="/member/accountInfo" class="title">
+                                        <span class="icon"><img src="/public/setting.png" alt="setting" style="width: 20px"/></span>
+                                        <span class="name">설정</span>
+                                    </a>
+                                </div>
+                              </th:block>
+
+                              <!-- 강사용 메뉴 -->
+                              <th:block th:unless="${session.memberType == 'S'}">
+                                <div class="list_el">
+                                  <a href="/teacher/course/list" class="title e-go_my_courses">
+                                      <span class="icon"><img src="/public/learning.png" alt="learning" style="width: 20px"/></span>
+                                      <span class="name">내 강의실</span>
+                                  </a>
                               </div>
+                              <div class="list_el">
+                                <a href="/teacher/modifyInfo" class="title">
+                                    <span class="icon"><img src="/public/setting.png" alt="setting" style="width: 20px"/></span>
+                                    <span class="name">설정</span>
+                                </a>
+                            </div>
+                              </th:block>
                             </div>
                           </div>
                         </div>

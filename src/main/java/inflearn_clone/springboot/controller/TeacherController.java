@@ -12,6 +12,7 @@ import inflearn_clone.springboot.mappers.TeacherMapper;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.lesson.LessonServiceIf;
 import inflearn_clone.springboot.service.member.MemberServiceIf;
+import inflearn_clone.springboot.service.myPage.MyPageService;
 import inflearn_clone.springboot.service.section.SectionServiceIf;
 import inflearn_clone.springboot.service.teacher.TeacherServiceIf;
 import inflearn_clone.springboot.utils.CommonFileUtil;
@@ -53,6 +54,7 @@ public class TeacherController {
     private final CourseMapper courseMapper;
     private final TeacherMapper teacherMapper;
     private final ModelMapper modelMapper;
+    private final MyPageService myPageService;
 
     @GetMapping("/course/insert")
     public String insert() {
@@ -466,5 +468,16 @@ public class TeacherController {
             return null;
         }
         return "teacher/teacherCourseList";
+    }
+
+    @GetMapping("/modifyInfo")
+    public String accountInfo(Model model, HttpSession session) {
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId != null) {
+            MemberDTO memberInfo = myPageService.accountInfo(memberId);
+            model.addAttribute("memberInfo", memberInfo);
+            return "teacher/teacherModify";
+        }
+        return "redirect:/";
     }
 }
