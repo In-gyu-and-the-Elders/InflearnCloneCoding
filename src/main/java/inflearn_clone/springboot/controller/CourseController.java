@@ -86,8 +86,8 @@ public class CourseController {
     public String courseView(@PathVariable int idx, Model model,
                              HttpServletRequest request, HttpServletResponse response) {
         // 로그인 후 삭제
-        //String memberId = (String) request.getSession().getAttribute("memberId");
-        String memberId = "user1";
+        String memberId = (String) request.getSession().getAttribute("memberId");
+//        String memberId = "user1";
         // 상세보기
         CourseDTO course = courseSerivce.courseView(idx);
         // 장바구니 중복확인
@@ -115,6 +115,7 @@ public class CourseController {
                                 @PathVariable int idx, //강좌idx
                                 @RequestParam(defaultValue = "latest") String sortBy,
                                 @RequestParam(defaultValue = "0") int page,
+                                HttpServletRequest request,
                                 Model model) {
         switch (tabName) {
             case "info":
@@ -148,8 +149,9 @@ public class CourseController {
                 log.info("실제 idx"+idx);
                 log.info("실제 sortBy"+sortBy);
                 log.info("실제 page"+page);
+                String memberId = (String) request.getSession().getAttribute("memberId");
                 List<ReviewListDTO> reviews = reviewService.getReviewList(idx, sortBy, page);
-
+                model.addAttribute("memberId", memberId);
                 model.addAttribute("reviews", reviews);
                 model.addAttribute("courseIdx", idx);
                 model.addAttribute("currentPage", page);

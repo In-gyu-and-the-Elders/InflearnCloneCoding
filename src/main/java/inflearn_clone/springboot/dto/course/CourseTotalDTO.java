@@ -22,6 +22,9 @@ public class CourseTotalDTO {
 
     private LocalDateTime displayDate;
     private LocalDateTime modifyDate;
+
+
+
     private LocalDateTime deleteDate;
     private String status; // (Y: Active, N: Inactive, D: Deleted)
     private int price;
