@@ -552,4 +552,9 @@ public class TeacherController {
         }
         return "redirect:/";
     }
+
+    @GetMapping("/pwChangeTeacher")
+    public String pwChangeTeacher() {
+        return "teacher/teacherModifyPw";
+    }
 }

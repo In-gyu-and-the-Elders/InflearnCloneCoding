@@ -102,7 +102,6 @@ public class SignServiceImpl {
   // 비밀번호 변경
   public boolean updatePassword(String memberId, String currentPassword, String newPassword) {
     try {
-        // 현재 사용자 정보 조회
         SignVO signVO = signMapper.getMemberInfo(memberId);
         if (signVO == null) {
             log.error("비밀번호 변경 실패: 존재하지 않는 사용자 - memberId={}", memberId);
@@ -121,7 +120,7 @@ public class SignServiceImpl {
         // 비밀번호 업데이트
         Map<String, String> params = new HashMap<>();
         params.put("memberId", memberId);
-        params.put("currentPassword", signVO.getPwd()); // 암호화된 현재 비밀번호
+        params.put("currentPassword", signVO.getPwd());
         params.put("newPassword", encodedNewPassword);
 
         int result = signMapper.updatePassword(params);
