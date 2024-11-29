@@ -1,11 +1,13 @@
 package inflearn_clone.springboot.controller;
 
+import inflearn_clone.springboot.dto.admin.AdminLoginDTO;
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.member.LeaveReasonDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.dto.order.OrderDTO;
 import inflearn_clone.springboot.dto.order.OrderRefundDTO;
+import inflearn_clone.springboot.service.admin.AdminServiceIf;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.admin.NoticeServiceIf;
 import inflearn_clone.springboot.service.member.MemberServiceIf;
@@ -15,6 +17,7 @@ import inflearn_clone.springboot.utils.JSFunc;
 import inflearn_clone.springboot.utils.Paging;
 import inflearn_clone.springboot.utils.QueryUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
@@ -22,7 +25,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static inflearn_clone.springboot.utils.QueryUtil.generateSortQuery;
 
@@ -36,6 +41,7 @@ public class AdminController {
     private final NoticeServiceIf noticeService;
     private final CourseSerivce courseSerivce;
     private final OrderService orderService;
+    private final AdminServiceIf adminService;
 
     /**
      * 관리자 로그인 페이지 이동
@@ -51,17 +57,25 @@ public class AdminController {
      *
      */
     @PostMapping("/login")
-    public String login(){
-        return "admin/index";
+    public String loginProcess(AdminLoginDTO loginDTO,
+                               HttpSession session,
+                               Model model) {
+        if(adminService.loginAdmin(loginDTO)) {
+            session.setAttribute("adminId", loginDTO.getAdminId());
+            return "redirect:/admin/dashboard";
+        }
+        model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
+        return "admin/login";
     }
 
     /**
      * 관리자 로그아웃
      *
      */
-    @PostMapping("/logout")
-    public String logout(){
-        return "admin/login";
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/admin/login";
     }
 
     /**
@@ -70,14 +84,15 @@ public class AdminController {
      */
     @GetMapping("/dashboard")
     public String dashboard(Model model){
+
         // 강사 탈퇴 요청 수 조회
         int teacherTotalCnt = memberService.teacherRequestTotalCnt(null, null, "T");
         model.addAttribute("teacherRequestTotalCnt", teacherTotalCnt);
 
         // 일반 회원 상태 별 조회
-        int statusYTotalCnt = memberService.memberStatusTotalCnt("Y", "S");
-        int statusNTotalCnt = memberService.memberStatusTotalCnt("N", "S");
-        int statusDTotalCnt = memberService.memberStatusTotalCnt("D", "S");
+        int statusYTotalCnt = memberService.memberStatusTotalCnt("Y", "S", LocalDateTime.now().minusMonths(1), LocalDateTime.now());
+        int statusNTotalCnt = memberService.memberStatusTotalCnt("N", "S", LocalDateTime.now().minusMonths(1), LocalDateTime.now());
+        int statusDTotalCnt = memberService.memberStatusTotalCnt("D", "S", LocalDateTime.now().minusMonths(1), LocalDateTime.now());
         model.addAttribute("statusYTotalCnt", statusYTotalCnt);
         model.addAttribute("statusNTotalCnt", statusNTotalCnt);
         model.addAttribute("statusDTotalCnt", statusDTotalCnt);
@@ -88,12 +103,18 @@ public class AdminController {
         int categoryMTotalCnt =  courseSerivce.categoryTotalCnt("M");
         int categoryHTotalCnt =  courseSerivce.categoryTotalCnt("H");
         int categoryCTotalCnt =  courseSerivce.categoryTotalCnt("C");
-
         model.addAttribute("categoryDTotalCnt", categoryDTotalCnt);
         model.addAttribute("categoryATotalCnt", categoryATotalCnt);
         model.addAttribute("categoryMTotalCnt", categoryMTotalCnt);
         model.addAttribute("categoryHTotalCnt", categoryHTotalCnt);
         model.addAttribute("categoryCTotalCnt", categoryCTotalCnt);
+
+
+        //최근에 작성된 공지사항
+        int totalCnt = noticeService.noticeTotalCnt(null, null);
+        List<BbsDTO> notice =  noticeService.list(1, 3, null, null, null);
+        model.addAttribute("notice", notice);
+
         return "admin/dashboard";
     }
 
@@ -102,17 +123,18 @@ public class AdminController {
      *
      */
     @GetMapping("/member/sList")
-    public String list(Model model,
+    public String studentlist(Model model,
                        @RequestParam(defaultValue = "1") int pageNo,
                        @RequestParam(required = false) String searchCategory,
                        @RequestParam(required = false) String searchValue,
                        @RequestParam(required = false) String sortType,
-                       @RequestParam(required = false) String sortOrder){
+                       @RequestParam(required = false) String sortOrder,
+                       @RequestParam(required = false) String status){
         String sortQuery = generateSortQuery(sortType, sortOrder);
-        int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "S");
+        int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "S", "");
         log.info("Member list totalCnt" + totalCnt); // 100
         Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
-        List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery, "S");
+        List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery, "S", "");
         model.addAttribute("members", members);
         model.addAttribute("paging", paging);
         model.addAttribute("searchCategory", searchCategory);
@@ -133,12 +155,16 @@ public class AdminController {
                        @RequestParam(required = false) String searchCategory,
                        @RequestParam(required = false) String searchValue,
                        @RequestParam(required = false) String sortType,
-                       @RequestParam(required = false) String sortOrder){
+                       @RequestParam(required = false) String sortOrder,
+                         @RequestParam(required = false) String status){
         String sortQuery = generateSortQuery(sortType, sortOrder);
-        int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "T");
-        log.info("Member list totalCnt" + totalCnt); // 100
+
+        int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "T", "");
+        log.info("Member list totalCnt" + totalCnt);
+        log.info("searchCategory" + searchCategory);
+        log.info("searchValue" + searchValue);
         Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
-        List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery, "T");
+        List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery, "T", "");
         model.addAttribute("members", members);
         model.addAttribute("paging", paging);
         model.addAttribute("searchCategory", searchCategory);
@@ -287,7 +313,7 @@ public class AdminController {
      */
     @GetMapping("/course/delete")
     public String deleteCourse(@RequestParam String idx, @RequestParam String memberId){
-        List<Integer> list = courseSerivce.selectCourseByMemberId(memberId);
+        List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
         if(list.size() > 0){
             // 공지사항 자동 등록 로직
             int insertNotice = noticeService.autoInsert(memberId, list);
@@ -309,17 +335,45 @@ public class AdminController {
      * 회원이 탈퇴 가능한 상태인지 확인
      * 환불 처리 절차가 필요한 경우라면 즉시 탈퇴 처리가 아닌 유예 상태로 변경
      */
+//    @GetMapping("/member/delete")
+//    public String memberDelete(@RequestParam String memberId, @RequestParam String memberType){
+//        if(memberType.equals("T")){
+//            List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
+//            //System.out.println(result.size());
+//            if(list.size() > 0){
+//                // 공지사항 자동 등록 로직
+//                int insertNotice = noticeService.autoInsert(memberId, list);
+//                if(insertNotice > 0){
+//                    // 공지사항 등록 이후 30일 뒤 강좌 삭제되도록 처리해야함 (즉 예약 처리)
+//                    // 예약 로직이 들어가야함
+//                    memberService.deleteMemberInfo(memberId);
+//                    return "강의 삭제 예약 완료";
+//
+//                }else{
+//                    return "예약 설정 중 오류가 발생했습니다.";
+//                }
+//            }else{
+//                // 회원탈퇴 로직 추가
+//                memberService.deleteMemberInfo(memberId);
+//                return "운영 중인 강좌가 없습니다.";
+//            }
+//        }else{
+//            memberService.deleteMemberInfo(memberId);
+//            return "학생 로직 처리";
+//        }
+//    }
     @GetMapping("/member/delete")
     public String memberDelete(@RequestParam String memberId, @RequestParam String memberType){
         if(memberType.equals("T")){
-            List<Integer> list = courseSerivce.selectCourseByMemberId(memberId);
+            List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
+//            List<Integer> idxList = list.stream()
+//                    .map(CourseDTO::getIdx)
+//                    .collect(Collectors.toList());
             //System.out.println(result.size());
             if(list.size() > 0){
                 // 공지사항 자동 등록 로직
                 int insertNotice = noticeService.autoInsert(memberId, list);
                 if(insertNotice > 0){
-                    // 공지사항 등록 이후 30일 뒤 강좌 삭제되도록 처리해야함 (즉 예약 처리)
-                    // 예약 로직이 들어가야함
                     memberService.deleteMemberInfo(memberId);
                     return "강의 삭제 예약 완료";
 
@@ -345,7 +399,6 @@ public class AdminController {
     public String selectRefundList(Model model, @RequestParam int idx){
         List<OrderRefundDTO> orderList = orderService.refundByDeleteCourse(idx);
         model.addAttribute("list", orderList);
-        System.out.println(orderList.size());
         return "admin/course/refundList";
     }
 
@@ -353,6 +406,7 @@ public class AdminController {
 
     //여기부터 아래는 인규가 작업한 부분입니다.
     // [관리자 공지사항]
+    // 2024.11.28 송수미 수정
 
     // 11261051 --> validation 아직 안 됨
     @GetMapping("notice/insert")
@@ -361,8 +415,15 @@ public class AdminController {
     }
 
     @PostMapping("notice/insert")
-    public String insert(BbsDTO bbsDTO, HttpServletResponse response) {
-        bbsDTO.setWriterId("testUser1"); //아직 세션 없음
+    public String insert(BbsDTO bbsDTO, HttpServletResponse response, HttpSession session) {
+
+        String adminId = (String) session.getAttribute("adminId");
+        if (adminId == null) {
+            response.setCharacterEncoding("utf-8");
+            JSFunc.alertBack("로그인이 필요합니다", response);
+            throw new IllegalStateException("로그인이 필요합니다."); // 예외 처리
+        }
+        bbsDTO.setWriterId(adminId); //아직 세션 없음
 
         bbsDTO.setCategory("N"); // [공지사항]
         //1. 파일 업로드
@@ -405,13 +466,28 @@ public class AdminController {
     }
 
     @GetMapping("notice/list")
-    public String list(Model model) {
-        List<BbsDTO> list = noticeService.list();
-        for( BbsDTO bbsDTO : list){
+    public String list(Model model,
+                       @RequestParam(defaultValue = "1") int pageNo,
+                       @RequestParam(required = false) String searchCategory,
+                       @RequestParam(required = false) String searchValue,
+                       @RequestParam(required = false) String sortType,
+                       @RequestParam(required = false) String sortOrder) {
+
+        String sortQuery = generateSortQuery(sortType, sortOrder);
+        int totalCnt = noticeService.noticeTotalCnt(searchCategory, searchValue);
+        Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
+        List<BbsDTO> notice =  noticeService.list(pageNo, 10, searchCategory, searchValue, sortQuery);
+        for( BbsDTO bbsDTO : notice){
             bbsDTO.setFileName();
             bbsDTO.setExt();
         }
-        model.addAttribute("notice", list);
+        model.addAttribute("notice", notice);
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchCategory", searchCategory);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("uri", "/admin/notice/list");
         return "admin/notice/list";
     }
 

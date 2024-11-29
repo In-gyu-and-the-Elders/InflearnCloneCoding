@@ -1,15 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<form>
-    <label for="inputId" class="form-label">Id</label>
-    <input type="text" id="inputId" class="form-control" aria-describedby="passwordHelpBlock">
-    <label for="inputPassword5" class="form-label">Password</label>
-    <input type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock">
+<body>
+<h2>관리자 로그인</h2>
+
+
+<th:if test="${error != null}">
+    <div style="color: red;">[[${error}]]</div>
+</th:if>
+<form action="/admin/login" method="post">
+    <div>
+        <label for="adminId">관리자 ID</label>
+        <input type="text" id="adminId" name="adminId" required>
+    </div>
+
+    <div>
+        <label for="adminPwd">비밀번호</label>
+        <input type="password" id="adminPwd" name="adminPwd" required>
+    </div>
+
+    <button type="submit">로그인</button>
 </form>
+</body>
 </body>
 </html>

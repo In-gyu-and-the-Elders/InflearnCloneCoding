@@ -1,6 +1,12 @@
 package inflearn_clone.springboot.mappers;
 
 import inflearn_clone.springboot.domain.CourseVO;
+import inflearn_clone.springboot.domain.LessonVO;
+import inflearn_clone.springboot.domain.MemberVO;
+import inflearn_clone.springboot.domain.SectionVO;
+import inflearn_clone.springboot.dto.course.CourseDTO;
+import inflearn_clone.springboot.dto.lesson.LessonDTO;
+import inflearn_clone.springboot.dto.section.SectionDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,12 +17,12 @@ import java.util.Map;
 @Mapper
 public interface CourseMapper {
     // 전체강좌 리스트
-    List<CourseVO> courseList();
+    List<CourseVO> courseList(String memberId);
 
     CourseVO courseView1(int idx);
 
     // 특정 teacherId로 존재하는 강의가 있는지 확인하기
-    List<Integer> selectCourseByMemberId(String teacherId);
+    List<CourseVO> selectCourseByMemberId(String teacherId);
 
     // 특정 teacherId로 강좌 삭제
     boolean deleteCourseByMemberId(String teacherId);
@@ -52,5 +58,11 @@ public interface CourseMapper {
     void finishInsert(@Param("courseIdx") int courseIdx);
 
     int updateCourse(CourseVO courseVO);
+
+    CourseVO selectCourse(int idx);
+    List<SectionVO> selectSection(int idx);
+    List<LessonVO> selectLesson(@Param("sectionIdx") List<Integer> sectionIdx);
+
+
 
 }

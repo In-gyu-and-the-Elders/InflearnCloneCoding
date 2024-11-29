@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="~{teacher/layout}">
+<head>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+    </th:block>
+</head>
+<div layout:fragment="main">
+    <div class="cccccc">
+        <div class="myPageContainer">
+            <div class="menuArea">
+                <div>
+                    <img src="/images/person.jpg" width="200px" height="220px">
+                    <br>
+                    <p>[[${info.name}]]</p>
+                    <ul class="myPageNav">
+                        <li><a th:href="@{/teacher/viewIntroduce(memberId=${info.memberId})}">소개</a></li>
+                        <li><a th:href="@{/teacher/viewCourseList(memberId=${info.memberId})}">강의 목록</a></li>
+                        <li><a href="#">수강평</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="contentArea">
+                <div>
+                    <div th:if="${courseInfo != null and !courseInfo.isEmpty()}" class="courses-grid">
+                        <a th:each="course : ${courseInfo}" class="course-card" th:href="@{/course/detail/{idx}(idx=${course.idx})}">
+                            <img th:if="${course.thumbnail}" th:src="@{${course.thumbnail}}" class="course-thumbnail" alt="강의 썸네일">
+                            <img th:unless="${course.thumbnail}" th:src="@{/images/default-course.jpg}" class="course-thumbnail" alt="기본 썸네일">
+
+                            <div class="course-info">
+                                <div class="course-title" th:text="${course.title}">강의 제목</div>
+                                <div class="course-meta">
+                                    <div class="instructor" th:text="${#numbers.formatDecimal(course.price, 0, 'COMMA', 0, 'POINT')} + '원'">금액</div>
+    <!--                                <div class="course-stats">-->
+    <!--                                    <span th:text="'평점 ' + ${#numbers.formatDecimal(course.avgRating, 1, 1)}">평점</span>-->
+    <!--                                    &nbsp;|&nbsp;-->
+    <!--                                    <span th:text="'수강생 ' + ${course.studentCount} + '명'">수강생 수</span>-->
+    <!--                                </div>-->
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <p class="no-data-message" th:if="${courseInfo == null or courseInfo.isEmpty()}">
+                        등록된 강좌가 없습니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+

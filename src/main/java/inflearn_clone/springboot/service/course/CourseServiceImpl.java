@@ -1,18 +1,18 @@
 package inflearn_clone.springboot.service.course;
-
-
 import inflearn_clone.springboot.domain.CourseVO;
+import inflearn_clone.springboot.domain.LessonVO;
+import inflearn_clone.springboot.domain.SectionVO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
+import inflearn_clone.springboot.dto.course.CourseTotalDTO;
+import inflearn_clone.springboot.dto.lesson.LessonDTO;
+import inflearn_clone.springboot.dto.section.SectionDTO;
 import inflearn_clone.springboot.mappers.CourseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
-
 import inflearn_clone.springboot.utils.CategoryMapper;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +27,12 @@ public class CourseServiceImpl implements CourseSerivce {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<CourseDTO> courseList() {
-        List<CourseVO> voList = courseMapper.courseList();
+    public List<CourseDTO> courseList(String memberId) {
+        List<CourseVO> voList = courseMapper.courseList(memberId);
         return voList.stream()
-                .map(vo -> modelMapper.map(vo, CourseDTO.class))
-                .collect(Collectors.toList());
+            .map(vo -> modelMapper.map(vo, CourseDTO.class))
+            .collect(Collectors.toList());
     }
-
     @Override
     public CourseDTO courseView(int idx) {
         CourseVO courseVO = courseMapper.courseView(idx);
@@ -42,26 +41,26 @@ public class CourseServiceImpl implements CourseSerivce {
         }
         return null;
     }
-
     @Override
     public CourseDTO courseView1(int idx) {
-            CourseVO vo = courseMapper.courseView1(idx);
-            CourseDTO courseInfo = modelMapper.map(vo, CourseDTO.class);
-            return courseInfo;
+        CourseVO vo = courseMapper.courseView1(idx);
+        CourseDTO courseInfo = modelMapper.map(vo, CourseDTO.class);
+        return courseInfo;
     }
-
     //teacherId로 존재하는 강의가 있는지 확인하기
     @Override
-    public List<Integer> selectCourseByMemberId(String memberId) {
-        return courseMapper.selectCourseByMemberId(memberId);
-    }
+    public List<CourseDTO> selectCourseByMemberId(String memberId) {
+        List<CourseVO> voList = courseMapper.selectCourseByMemberId(memberId);
+        return voList.stream()
+                .map(vo -> modelMapper.map(vo, CourseDTO.class))
+                .collect(Collectors.toList());
 
+    }
     // 특정 teacherId의 강의 삭제하기 (지금 필요없음)
     @Override
     public boolean deleteCourseByMemberId(String memberId) {
         return courseMapper.deleteCourseByMemberId(memberId);
     }
-
 
     @Override
     public boolean updateCourseStatusToDeleted(LocalDateTime now) {
@@ -81,7 +80,6 @@ public class CourseServiceImpl implements CourseSerivce {
             log.info("강좌가 삭제 상태로 변경되지 않았습니다.");
             return false;
         }
-
     }
 
     @Override
@@ -117,11 +115,10 @@ public class CourseServiceImpl implements CourseSerivce {
 
         List<CourseVO> voList =  courseMapper.allCourseList(map);
         return voList.stream()
-                .map(vo -> modelMapper.map(vo, CourseDTO.class)).collect(Collectors.toList());
+            .map(vo -> modelMapper.map(vo, CourseDTO.class)).collect(Collectors.toList());
     }
-
     @Override
-    public List<CourseDTO> getCourses(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
+    public List<CourseTotalDTO> getCourses(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
         Map<String, Object> map = new HashMap<>();
         map.put("offset", (pageNo - 1) * pageSize);
         map.put("limit", pageSize);
@@ -133,7 +130,7 @@ public class CourseServiceImpl implements CourseSerivce {
         map.put("sortQuery", sortQuery);
 
         List<CourseVO> voList = courseMapper.selectAllCourse(map);
-        return voList.stream().map(vo -> modelMapper.map(vo, CourseDTO.class)).collect(Collectors.toList());
+        return voList.stream().map(vo -> modelMapper.map(vo, CourseTotalDTO.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -149,6 +146,13 @@ public class CourseServiceImpl implements CourseSerivce {
         return courseMapper.courseTotalCnt(searchCategory, searchValue);
     }
 
+
+    @Override
+    public int updateCourse(CourseDTO courseDTO) {
+        CourseVO courseVO = modelMapper.map(courseDTO, CourseVO.class);
+        return courseMapper.updateCourse(courseVO);
+    }
+
     @Override
     public int insertCourse(CourseDTO courseDTO) {
         CourseVO courseVO = modelMapper.map(courseDTO, CourseVO.class);
@@ -161,9 +165,45 @@ public class CourseServiceImpl implements CourseSerivce {
     }
 
     @Override
-    public int updateCourse(CourseDTO courseDTO) {
-        CourseVO courseVO = modelMapper.map(courseDTO, CourseVO.class);
-        return courseMapper.updateCourse(courseVO);
+    public CourseDTO curriculum(int idx) {
+        CourseVO course = courseMapper.selectCourse(idx);
+
+        //섹션 정보 가져오기
+        List<SectionVO> sections = courseMapper.selectSection(idx);
+
+        //섹션별 강의 정보 가져오기
+        List<Integer> sectionIdx = sections.stream()
+                .map(SectionVO::getIdx)
+                .collect(Collectors.toList());
+        List<LessonVO> lessons = courseMapper.selectLesson(sectionIdx);
+
+        //섹션과 강의 조합
+//        Map<Integer, List<LessonVO>> lessonMap = lessons.stream()
+//                .collect(Collectors.groupingBy(LessonVO::getSectionIdx));
+//        sections.forEach(section -> section.setLessons(lessonMap.get(section.getIdx())));
+        return null;
     }
+
+    @Override
+    public CourseDTO selectCourse(int courseIdx) {
+        CourseVO courseVO = courseMapper.selectCourse(courseIdx);
+        if (courseVO != null) {
+            return modelMapper.map(courseVO, CourseDTO.class);
+        }
+        return null;
+    }
+
+    @Override
+    public List<SectionDTO> selectSection(int courseIdx) {
+        List<SectionVO> voList =  courseMapper.selectSection(courseIdx);
+        return voList.stream().map(vo -> modelMapper.map(vo, SectionDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LessonDTO> selectLesson(List<Integer> sectionIdx) {
+        List<LessonVO> voList =  courseMapper.selectLesson(sectionIdx);
+        return voList.stream().map(vo -> modelMapper.map(vo, LessonDTO.class)).collect(Collectors.toList());
+    }
+
 
 }

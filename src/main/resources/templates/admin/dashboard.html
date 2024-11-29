@@ -124,23 +124,43 @@
         text-decoration-line: none;
         color: black;
     }
+    th, td {
+        border: 1px solid #ddd !important;
+    }
+
 </style>
 </head>
 <body>
+<a th:href="@{/admin/logout}"  onclick="return confirm('로그아웃 하시겠습니까?')">로그아웃</a>
 <div class="analytics-report">
     <div class="dashboard-overview">
             <div class="stat-card">
                 <a th:href="@{/admin/notice/list}">
-                    <h4>게시판 관리</h4>
+                    <h4>최근 등록된 공지사항</h4>
                 </a>
-                <p id="total-questions">바로가기</p>
+                <table class="table" th:if="${notice}">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">제목</th>
+                        <th scope="col">등록일</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="dto, status:${notice}">
+                        <td>[[${dto.idx}]]</td>
+                        <td>[[${dto.title}]]</td>
+                        <td>[[${dto.regDate}]]</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="stat-card">
-                <a th:href="@{/admin/member/teacherRequestList}">
-                    <h4>강사 탈퇴 요청</h4>
-                </a>
-                <p id="average-score">[[${teacherRequestTotalCnt}]]명</p>
-            </div>
+        <div class="stat-card">
+            <a th:href="@{/admin/member/teacherRequestList}">
+                <h4>강사 탈퇴 요청</h4>
+            </a>
+            <p id="average-score">[[${teacherRequestTotalCnt}]]명</p>
+        </div>
     </div>
     <div class="charts-container">
         <div class="chart-card">
@@ -168,7 +188,6 @@
         </div>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
@@ -179,9 +198,9 @@ const ctxPerformance = document.getElementById('performance-chart').getContext('
 const performanceChart = new Chart(ctxPerformance, {
     type: 'bar',
     data: {
-        labels: ['활성', '비활성', '탈퇴'],
+        labels: ['가입', '비활성', '탈퇴'],
         datasets: [{
-            label: '회원 상태',
+            label: '한 달 동안의 일반 회원 변동',
             data: [ [[${statusYTotalCnt}]], [[${statusNTotalCnt}]], [[${statusDTotalCnt}]] ],
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',

@@ -23,4 +23,5 @@ public class MemberVO {
     private String memberType; // Member type (S: Student, T: Teacher)
     private String leaveReason;
     private LocalDateTime leaveReasonRegDate;
+    private String teacherDesc;
 }

@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +26,12 @@ public class MemberServiceImpl implements MemberServiceIf{
     private final ModelMapper modelMapper;
 
     @Override
-    public int memberTotalCnt(String searchCategory, String searchValue, String memberType) {
+    public int memberTotalCnt(String searchCategory, String searchValue, String memberType, String status) {
         log.info("searchCategory", searchCategory);
         log.info("searchValue", searchValue);
         log.info("memberType", memberType);
-        return memberMapper.memberTotalCnt(searchCategory, searchValue, memberType);
+        log.info("status", status);
+        return memberMapper.memberTotalCnt(searchCategory, searchValue, memberType, status);
     }
 
     @Override
@@ -41,14 +43,16 @@ public class MemberServiceImpl implements MemberServiceIf{
     }
 
     @Override
-    public int memberStatusTotalCnt(String status, String memberType){
+    public int memberStatusTotalCnt(String status, String memberType, LocalDateTime startDate, LocalDateTime endDate){
         log.info("stauts" +status);
         log.info("memberType" +memberType);
-        return memberMapper.memberStatusTotalCnt(status, memberType);
+        log.info("startDate" +startDate);
+        log.info("endDate" +endDate);
+        return memberMapper.memberStatusTotalCnt(status, memberType, startDate, endDate);
     }
 
     @Override
-    public List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String memberType) {
+    public List<MemberDTO> selectAllMember(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String memberType, String status) {
         Map<String, Object> map = new HashMap<>();
         map.put("offset", (pageNo - 1) * pageSize);
         map.put("limit", pageSize);
@@ -56,6 +60,7 @@ public class MemberServiceImpl implements MemberServiceIf{
         map.put("searchValue", searchValue);
         map.put("sortQuery", sortQuery);
         map.put("memberType", memberType);
+        map.put("status", status);
 
         List<MemberVO> voList =  memberMapper.selectAllMember(map);
         return voList.stream()

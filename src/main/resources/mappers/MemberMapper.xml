@@ -18,6 +18,9 @@
                     </when>
                 </choose>
             </if>
+            <if test="status == null">
+                AND status IN('D', 'N', 'Y', 'R')
+            </if>
             AND memberType = #{memberType}
         </where>
     </select>
@@ -48,7 +51,17 @@
     <select id="memberStatusTotalCnt" resultType="int">
         SELECT COUNT(*)
         FROM tbl_member
-        WHERE status = #{status} AND memberType = #{memberType}
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="memberType != null">
+                AND memberType = #{memberType}
+            </if>
+            <if test="startDate != null and endDate != null">
+                AND regDate BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
     </select>
 
 
@@ -67,7 +80,10 @@
                     </when>
                 </choose>
             </if>
-        AND memberType = #{memberType}
+            <if test="status == null">
+                AND status IN('D', 'N', 'Y', 'R')
+            </if>
+            AND memberType = #{memberType}
         </where>
         ${sortQuery}
         LIMIT #{offset}, #{limit}
@@ -96,7 +112,7 @@
 
     <!-- 아이디로 회원 정보 찾기-->
     <select id="selectMemberInfo" resultType="inflearn_clone.springboot.domain.MemberVO">
-        SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType
+        SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType, teacherDesc
         FROM tbl_member
         WHERE memberId = #{memberId}
     </select>
@@ -119,7 +135,8 @@
     <!-- 회원 탈퇴 -->
     <update id="deleteMemberInfo">
         UPDATE tbl_member
-        SET status = 'D'
+        SET status = 'D', leaveDate = now()
         WHERE memberId = #{memberId}
     </update>
+
 </mapper>

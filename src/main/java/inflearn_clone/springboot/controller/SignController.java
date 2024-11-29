@@ -63,11 +63,11 @@ public class SignController {
     return ResponseEntity.ok(responseBody);
   }
 
-  // 회원 정보 조회
-  @GetMapping("/member/{memberId}")
-  public ResponseEntity<SignDTO> getMemberInfo(@PathVariable String memberId) {
-    return ResponseEntity.ok(signService.getMemberInfo(memberId));
-  }
+//  // 회원 정보 조회
+//  @GetMapping("/member/{memberId}")
+//  public ResponseEntity<SignDTO> getMemberInfo(@PathVariable String memberId) {
+//    return ResponseEntity.ok(signService.getMemberInfo(memberId));
+//  }
 
   // 회원 정보 수정
   @PutMapping("/member")

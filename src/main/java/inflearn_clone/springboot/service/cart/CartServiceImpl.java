@@ -46,4 +46,9 @@ public class CartServiceImpl implements CartService {
     public int delete(List<Integer> idxList, String memberId) {
         return cartMapper.delete(idxList, memberId);
     }
+
+    @Override
+    public int getCartCount(String memberId) {
+        return cartMapper.getCartCount(memberId);
+    }
 }

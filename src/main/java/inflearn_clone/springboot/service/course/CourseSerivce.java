@@ -1,19 +1,26 @@
 package inflearn_clone.springboot.service.course;
 
+import inflearn_clone.springboot.domain.CourseVO;
+import inflearn_clone.springboot.domain.LessonVO;
+import inflearn_clone.springboot.domain.SectionVO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
+import inflearn_clone.springboot.dto.lesson.LessonDTO;
+import inflearn_clone.springboot.dto.section.SectionDTO;
+import org.apache.ibatis.annotations.Param;
 
+import inflearn_clone.springboot.dto.course.CourseTotalDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CourseSerivce {
     // 강의 목록 가져오기
-    List<CourseDTO> courseList();
+    List<CourseDTO> courseList(String memberId);
     // 강의 상세 정보 가져오기
 
     CourseDTO courseView1(int idx);
 
     //아이디에 해당하는 강의 정보 확인하기(관리자 사용)
-    List<Integer> selectCourseByMemberId(String memberId);
+    List<CourseDTO> selectCourseByMemberId(String memberId);
 
     // 지금 필요 없음
     boolean deleteCourseByMemberId(String memberId);
@@ -35,12 +42,15 @@ public interface CourseSerivce {
     // 강의 상세 정보 가져오기
     CourseDTO courseView(int idx);
 
-    List<CourseDTO> getCourses(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);
+    List<CourseTotalDTO> getCourses(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);
     int getTotalCourses(String searchCategory, String searchValue);
-
     int insertCourse(CourseDTO courseDTO);
-
     CourseDTO viewMyLastCourse(String memberId);
+
+    CourseDTO curriculum(int idx);
+    CourseDTO selectCourse(int courseIdx);
+    List<SectionDTO> selectSection(int courseIdx);
+    List<LessonDTO> selectLesson(@Param("sectionIdx") List<Integer> sectionIdx);
 
     int updateCourse(CourseDTO courseDTO);
 }

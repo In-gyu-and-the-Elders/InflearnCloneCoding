@@ -3,6 +3,7 @@ package inflearn_clone.springboot.controller;
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.course.TeacherCourseDTO;
 import inflearn_clone.springboot.dto.lesson.LessonDTO;
+import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.dto.section.SectionDTO;
 import inflearn_clone.springboot.dto.section.SectionWithLessonListDTO;
 import inflearn_clone.springboot.mappers.CourseMapper;
@@ -10,12 +11,14 @@ import inflearn_clone.springboot.mappers.SectionMapper;
 import inflearn_clone.springboot.mappers.TeacherMapper;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.lesson.LessonServiceIf;
+import inflearn_clone.springboot.service.member.MemberServiceIf;
 import inflearn_clone.springboot.service.section.SectionServiceIf;
 import inflearn_clone.springboot.service.teacher.TeacherServiceIf;
 import inflearn_clone.springboot.utils.CommonFileUtil;
 import inflearn_clone.springboot.utils.JSFunc;
 import inflearn_clone.springboot.utils.Paging;
 import jakarta.servlet.http.HttpServlet;
+import inflearn_clone.springboot.utils.Paging;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +49,7 @@ public class TeacherController {
     private final SectionMapper sectionMapper;
     private final LessonServiceIf lessonService;
     private final TeacherServiceIf teacherService;
+    private final MemberServiceIf memberService;
     private final CourseMapper courseMapper;
     private final TeacherMapper teacherMapper;
     private final ModelMapper modelMapper;
@@ -483,6 +487,56 @@ public class TeacherController {
 
 
         return "teacher/course/modify_l";
+
+
+
     }
 
+    @GetMapping("/list")
+    public String teacherList(Model model,
+                              @RequestParam(defaultValue = "1") int pageNo,
+                              @RequestParam(required = false) String searchCategory,
+                              @RequestParam(required = false) String searchValue,
+                              @RequestParam(required = false) String sortType,
+                              @RequestParam(required = false) String sortOrder){
+        String sortQuery = generateSortQuery(sortType, sortOrder);
+        int totalCnt = teacherService.teacherTotalCnt(searchCategory, searchValue, "T", "Y");
+        Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
+        List<MemberDTO> teacherList = teacherService.selectAllTeacher(pageNo, 10, searchCategory, searchValue, sortQuery, "T", "Y");
+        System.out.println(teacherList.size());
+        model.addAttribute("teacherList", teacherList);
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchCategory", searchCategory);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("uri", "/teacher/list");
+        return "teacher/list";
+    }
+
+    @GetMapping("/viewIntroduce")
+    public String teacherView(Model model, @RequestParam String memberId){
+        if(memberId != null && !memberId.isEmpty()){
+            MemberDTO memberInfo = memberService.selectMemberInfo(memberId);
+            model.addAttribute("info", memberInfo);
+            return "teacher/teacherIntroduce";
+        }else{
+            log.info("회원 아이디 없음");
+            return null;
+        }
+    }
+
+    @GetMapping("/viewCourseList")
+    public String CourseListView(Model model, @RequestParam String memberId){
+        if(memberId != null && !memberId.isEmpty()){
+            MemberDTO info = memberService.selectMemberInfo(memberId);
+            model.addAttribute("info", info);
+            List<CourseDTO> courseInfo = courseSerivce.courseList(memberId);
+            model.addAttribute("courseInfo", courseInfo);
+        }else{
+            log.info("회원 아이디 없음");
+            return null;
+        }
+        return "teacher/teacherCourseList";
+    }
 }

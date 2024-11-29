@@ -37,10 +37,10 @@
                 <div class="content">
                     <h3 class="title" th:text="${course.title}"></h3>
                     <p class="instructor" th:text="'강사: ' + ${course.teacherId}"></p>
-                    <p class="price" th:text="'₩' + ${course.price}"></p>
+                    <p class="price" th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}"></p>
                     <div class="rating">
-                        <span>★ 4.9</span>
-                        <span>(594)</span>
+                        <span th:text="'⭐'"> 4.9</span>
+                        <span th:text="'👤'+${course.studentCount}"></span>
                     </div>
                 </div>
                 </a>
