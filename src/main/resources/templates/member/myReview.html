@@ -88,18 +88,21 @@
                 const reviewItem = this.closest('.review-item');
                 const reviewId = this.getAttribute('data-review-id');
                 const content = reviewItem.querySelector('.review-content p').textContent;
-                const rating = reviewItem.querySelector('.rating span').textContent;
+                const rating = reviewItem.querySelector('.rating span:last-child').textContent;
+                
+                // 수정/삭제 버튼 숨기기
+                reviewItem.querySelector('.review-actions').style.display = 'none';
                 
                 const originalContent = reviewItem.querySelector('.review-content').innerHTML;
                 reviewItem.querySelector('.review-content').innerHTML = `
                     <div class="edit-form">
                         <div class="rating-edit" style="margin-bottom: 8px;">
                             <select class="rating-select" style="padding: 5px; border-radius: 4px; border: 1px solid #e9ecef;">
-                                <option value="1" ${rating === '1' ? 'selected' : ''}>1점</option>
-                                <option value="2" ${rating === '2' ? 'selected' : ''}>2점</option>
-                                <option value="3" ${rating === '3' ? 'selected' : ''}>3점</option>
-                                <option value="4" ${rating === '4' ? 'selected' : ''}>4점</option>
-                                <option value="5" ${rating === '5' ? 'selected' : ''}>5점</option>
+                                <option value="1" ${rating == 1 ? 'selected' : ''}>1점</option>
+                                <option value="2" ${rating == 2 ? 'selected' : ''}>2점</option>
+                                <option value="3" ${rating == 3 ? 'selected' : ''}>3점</option>
+                                <option value="4" ${rating == 4 ? 'selected' : ''}>4점</option>
+                                <option value="5" ${rating == 5 ? 'selected' : ''}>5점</option>
                             </select>
                         </div>
                         <textarea style="width: 100%; padding: 10px; border: 1px solid #e9ecef; border-radius: 4px; margin-bottom: 10px;">${content}</textarea>
@@ -109,6 +112,13 @@
                         </div>
                     </div>
                 `;
+
+                // 취소 버튼 클릭 시
+                reviewItem.querySelector('.cancel-edit').addEventListener('click', function() {
+                    reviewItem.querySelector('.review-content').innerHTML = originalContent;
+                    // 수정/삭제 버튼 다시 표시
+                    reviewItem.querySelector('.review-actions').style.display = 'flex';
+                });
 
                 reviewItem.querySelector('.save-edit').addEventListener('click', function() {
                     const newContent = reviewItem.querySelector('textarea').value;
@@ -137,11 +147,6 @@
                         console.error('Error:', error);
                         alert('리뷰 수정 중 오류가 발생했습니다.');
                     });
-                });
-
-                // 취소 버튼 클릭 시
-                reviewItem.querySelector('.cancel-edit').addEventListener('click', function() {
-                    reviewItem.querySelector('.review-content').innerHTML = originalContent;
                 });
             });
         });
