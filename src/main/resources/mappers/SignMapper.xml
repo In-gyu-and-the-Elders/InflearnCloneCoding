@@ -37,8 +37,8 @@
   </select>
 
   <!-- 회원 정보 조회 -->
-  <select id="getMemberInfo" resultType="inflearn_clone.springboot.dto.sign.SignDTO">
-    SELECT memberId, name, phone, email, status, regDate, modifyDate, leaveDate, memberType
+  <select id="getMemberInfo">
+    SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType
     FROM tbl_member
     WHERE memberId = #{memberId}
   </select>

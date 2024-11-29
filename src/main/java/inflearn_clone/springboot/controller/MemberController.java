@@ -192,7 +192,7 @@ public class MemberController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            log.error("리뷰 수정 중 오류 발생", e);
+            log.error("리뷰 수정 중 ��류 발생", e);
             response.put("success", false);
             response.put("message", "리뷰 수정 중 오류가 발생했습니다.");
             return ResponseEntity.internalServerError().body(response);
@@ -252,10 +252,18 @@ public class MemberController {
             String currentPassword = params.get("currentPassword");
             String newPassword = params.get("newPassword");
             
+            // 다 안쳤을 때
             if (currentPassword == null || newPassword == null || 
                 currentPassword.trim().isEmpty() || newPassword.trim().isEmpty()) {
                 response.put("success", false);
                 response.put("message", "현재 비밀번호와 새 비밀번호를 모두 입력해주세요.");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            // 같은거 쳤을 때
+            if (currentPassword.equals(newPassword)) {
+                response.put("success", false);
+                response.put("message", "현재 비밀번호와 다른 비밀번호를 입력해주세요.");
                 return ResponseEntity.badRequest().body(response);
             }
 
