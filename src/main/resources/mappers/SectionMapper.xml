@@ -22,4 +22,9 @@
         WHERE idx = #{sectionIdx}
         LIMIT 1
     </select>
+    <update id="updateSection">
+        UPDATE tbl_section
+        SET section = #{section}
+        WHERE idx = #{idx}
+    </update>
 </mapper>    

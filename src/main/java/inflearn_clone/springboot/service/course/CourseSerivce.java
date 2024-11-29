@@ -42,4 +42,5 @@ public interface CourseSerivce {
 
     CourseDTO viewMyLastCourse(String memberId);
 
+    int updateCourse(CourseDTO courseDTO);
 }

@@ -160,4 +160,10 @@ public class CourseServiceImpl implements CourseSerivce {
         return modelMapper.map(courseMapper.viewMyLastCourse(memberId), CourseDTO.class);
     }
 
+    @Override
+    public int updateCourse(CourseDTO courseDTO) {
+        CourseVO courseVO = modelMapper.map(courseDTO, CourseVO.class);
+        return courseMapper.updateCourse(courseVO);
+    }
+
 }

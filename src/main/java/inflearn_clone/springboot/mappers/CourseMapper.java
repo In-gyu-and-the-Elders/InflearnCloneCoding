@@ -1,7 +1,6 @@
 package inflearn_clone.springboot.mappers;
 
 import inflearn_clone.springboot.domain.CourseVO;
-import inflearn_clone.springboot.domain.MemberVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -50,5 +49,8 @@ public interface CourseMapper {
 
     int insertCourse(CourseVO courseVO);
     CourseVO viewMyLastCourse(@Param("memberId") String memberId);
+    void finishInsert(@Param("courseIdx") int courseIdx);
+
+    int updateCourse(CourseVO courseVO);
 
 }

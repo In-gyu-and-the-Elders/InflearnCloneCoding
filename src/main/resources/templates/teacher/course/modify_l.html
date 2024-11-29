@@ -2,20 +2,34 @@
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
 <div layout:fragment="main">
   <div class="container">
-    <h3>섹션명 : <span th:text="${section.section}"></span></h3>
+    <h3>섹션명 : <span th:text="${sections.section}"></span></h3>
 
     <div>
-      <form id="lectureForm" action="/teacher/course/insert_l" method="POST" enctype="multipart/form-data">
+      <form id="lectureForm" action="/teacher/course/modify_l" method="POST" enctype="multipart/form-data">
         <div id="lectureInputs">
+          <!-- 여기에는 기존에 있던 강의 리스트가 뜸! -->
+          <div class="mb-3 lecture-item" th:each="lesson,status : ${sections.lessons}">
+            <span class="lecture-number" th:text="${status.index+1}"></span>
+            <input type="text" name="title" class="form-control" th:value="${lesson.title}"/>
+            <video width="320" height="240" controls th:poster="${lesson.video}">
+              <source th:src="${lesson.video}" type="video/mp4">
+            </video>
+            <span style="color:mediumvioletred">새로운 동영상을 등록 시 기존의 동영상은 삭제됩니다</span>
+            <input type="file" name="videoFile" class="form-control" />
+            <input type="hidden" name="lessonIdx" th:value="${lesson.idx}">
+            <!-- 첫 번째 강의는 삭제 불가 -->
+          </div>
+
           <!-- 첫 번째 강의 입력 필드 (삭제 불가) -->
           <div class="mb-3 lecture-item" id="lecture-1">
-            <span class="lecture-number">1</span>
+            <span class="lecture-number" th:text="${sections.lessonCount+1}"></span>
             <input type="text" name="title" class="form-control" placeholder="강의 제목" />
             <input type="file" name="videoFile" class="form-control" />
             <!-- 첫 번째 강의는 삭제 불가 -->
           </div>
         </div>
-        <input type="hidden" th:value="${section.idx}" name="sectionIdx">
+        <input type="hidden" th:value="${sections.idx}" name="sectionIdx">
+        <input type="hidden" th:value="${sections.lessonCount}" name="lessonCount">
 
         <!-- 강의 추가 버튼 -->
         <button type="button" class="btn btn-primary" id="addLectureBtn" onclick="addLecture()">강의 추가</button>
@@ -30,8 +44,8 @@
 
 
   <script>
-    // 강의 번호를 추적하기 위한 변수 (첫 번째 강의는 고정)
-    let lectureCount = 1;
+    // 기존 강의 번호를 추적 (현재 lessonCount는 3이라 가정)
+    let lectureCount = [[${sections.lessonCount}]] + 1;
 
     // 강의 추가 함수
     function addLecture() {
@@ -45,11 +59,11 @@
 
       // 새로운 강의 입력 필드 내용
       newLecture.innerHTML = `
-      <span class="lecture-number">${lectureCount}</span>
-      <input type="text" name="title" class="form-control" placeholder="강의 제목" />
-      <input type="file" name="videoFile" class="form-control" />
-      <button type="button" class="btn btn-danger delete-lecture-btn" onclick="deleteLecture(this)">X</button>
-    `;
+        <span class="lecture-number">${lectureCount}</span>
+        <input type="text" name="title" class="form-control" placeholder="강의 제목" />
+        <input type="file" name="videoFile" class="form-control" />
+        <button type="button" class="btn btn-danger delete-lecture-btn" onclick="deleteLecture(this)">X</button>
+      `;
 
       // lectureInputs 컨테이너에 새 강의 추가
       document.getElementById('lectureInputs').appendChild(newLecture);
@@ -70,19 +84,14 @@
       // 번호 다시 정렬
       const lectures = document.querySelectorAll('.lecture-item');
       lectures.forEach((lecture, index) => {
-        lecture.id = 'lecture-' + (index + 1);
-        // 번호를 올바르게 유지하기 위해 입력 필드 수정
-        const inputs = lecture.querySelectorAll('input');
-        inputs[0].name = 'title';
-        inputs[1].name = 'videoFile';
-
-        // 강의 번호 업데이트
-        const lectureNumber = lecture.querySelector('.lecture-number');
-        lectureNumber.textContent = index + 1;
+        if (lecture.id !== 'lecture-1') {  // 첫 번째 강의는 제외
+          const lectureNumber = lecture.querySelector('.lecture-number');
+          lectureNumber.textContent = index + 1;
+        }
       });
 
       // lectureCount 재설정 (현재 마지막 강의 번호로)
-      lectureCount = lectures.length;
+      lectureCount = lectures.length; // 삭제 후 강의 수가 lectureCount로 설정됨
     }
   </script>
 

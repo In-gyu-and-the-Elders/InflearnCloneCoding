@@ -151,8 +151,8 @@
 
     <!-- 강좌 등록 -->
     <insert id="insertCourse">
-        INSERT INTO tbl_course (category, title, description, teacherId, displayDate, price, thumbnail)
-        VALUES (#{category}, #{title}, #{description}, #{teacherId}, #{displayDate}, #{price}, #{thumbnail})
+        INSERT INTO tbl_course (category, title, description, teacherId, displayDate, price, thumbnail, status)
+        VALUES (#{category}, #{title}, #{description}, #{teacherId}, #{displayDate}, #{price}, #{thumbnail}, 'N')
     </insert>
     <select id="viewMyLastCourse" resultType="inflearn_clone.springboot.domain.CourseVO">
         SELECT * FROM tbl_course
@@ -160,5 +160,25 @@
         ORDER BY regDate DESC
         LIMIT 1
     </select>
+    <update id="finishInsert">
+        UPDATE tbl_course
+        SET status = 'Y'
+        WHERE idx = #{courseIdx}
+    </update>
+
+    <update id="updateCourse">
+        UPDATE tbl_course
+        SET category = #{category},
+            title = #{title},
+            description = #{description},
+            displayDate = #{displayDate},
+            price = #{price},
+            <if test="thumbnail != null and thumbnail != ''">
+                thumbnail = #{thumbnail},
+            </if>
+            status = 'N',
+            modifyDate = NOW()
+        WHERE idx = #{idx}
+    </update>
 </mapper>
 
