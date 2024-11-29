@@ -1,5 +1,10 @@
 package inflearn_clone.springboot.service.review;
 
+import inflearn_clone.springboot.domain.BbsVO;
+import inflearn_clone.springboot.domain.MemberVO;
+import inflearn_clone.springboot.domain.ReviewVO;
+import inflearn_clone.springboot.dto.bbs.BbsDTO;
+import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.dto.review.ReviewListDTO;
 import inflearn_clone.springboot.mappers.ReviewMapper;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -50,5 +56,22 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewListDTO viewReview(int idx) {
         return reviewMapper.viewReview(idx);
+    }
+
+    @Override
+    public int reviewCntByTeacher(String memberId) {
+        return reviewMapper.reviewCntByTeacher(memberId);
+    }
+
+    @Override
+    public List<ReviewListDTO> reviewListByTeacher(int pageNo, int pageSize, String memberId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("offset", (pageNo - 1) * pageSize);
+        map.put("limit", pageSize);
+        map.put("memberId", memberId);
+        List<ReviewVO> voList =  reviewMapper.reviewListByTeacher(map);
+        return voList.stream()
+                .map(vo -> modelMapper.map(vo, ReviewListDTO.class)).collect(Collectors.toList());
+
     }
 }

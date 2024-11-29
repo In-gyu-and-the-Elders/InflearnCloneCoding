@@ -9,7 +9,7 @@ public interface NoticeServiceIf {
     public int insert(BbsDTO bbsDTO);
     public int update(BbsDTO bbsDTO);
     public int delete(int idx);
-    public List<BbsDTO> list(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery); //페이징, 검색 등 추가 필요
+    public List<BbsDTO> list(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);
 
     BbsDTO view(int idx);
 

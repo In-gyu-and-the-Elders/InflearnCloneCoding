@@ -40,16 +40,13 @@ public class SignController {
           HttpServletResponse response,
           HttpSession session) {
     
-    // 로그인 처리 및 토큰 생성
     String token = signService.signIn(signInDTO.getMemberId(), signInDTO.getPwd(), signInDTO.getMemberType());
     
-    // 쿠키에 토큰 저장
     Cookie tokenCookie = new Cookie("token", token);
     tokenCookie.setPath("/");
     tokenCookie.setMaxAge(3600);
     response.addCookie(tokenCookie);
     
-    // 세션에 토큰과 회원 정보 저장
     session.setAttribute("token", token);
     session.setAttribute("memberId", jwtTokenProvider.getMemberId(token));
     session.setAttribute("memberType", jwtTokenProvider.getMemberType(token));

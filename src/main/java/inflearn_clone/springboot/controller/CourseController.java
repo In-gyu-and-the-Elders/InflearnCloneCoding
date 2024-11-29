@@ -1,20 +1,26 @@
 package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.course.CourseTotalDTO;
+import inflearn_clone.springboot.dto.lesson.LessonDTO;
 import inflearn_clone.springboot.dto.review.ReviewListDTO;
+import inflearn_clone.springboot.dto.section.SectionDTO;
+import inflearn_clone.springboot.dto.section.SectionWithLessonListDTO;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.service.cart.CartService;
 import inflearn_clone.springboot.service.course.CourseSerivce;
+import inflearn_clone.springboot.service.lesson.LessonServiceIf;
 import inflearn_clone.springboot.service.like.LikeService;
 import inflearn_clone.springboot.service.order.OrderService;
 import inflearn_clone.springboot.service.review.ReviewService;
+import inflearn_clone.springboot.service.section.SectionServiceIf;
 import inflearn_clone.springboot.utils.Paging;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +41,9 @@ public class CourseController {
     private final OrderService orderService;
     private final LikeService likeService;
     private final ReviewService reviewService;
+    private final SectionServiceIf sectionService;
+    private final LessonServiceIf lessonService;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/list")
     public String list(Model model,
@@ -114,8 +123,24 @@ public class CourseController {
                 model.addAttribute("course", course);
                 return "course/tabs/info";
             case "curriculum":
-//                CourseDTO  curriculum = courseSerivce.curriculum(idx);
-//                model.addAttribute("course", curriculum);
+
+
+                //여기서 해야 하는 것 --> 이미 이 강좌 뷰에 들어왔으니까, 섹션 리스트가 필요한데, 이 섹션에는 강의 리스트가 포함이 되어 있어야 함!
+                List<SectionDTO> sectionDTOList = sectionService.sectionList(idx); // 강좌 인덱스로 섹션의 리스트를 가져옴.
+                List<SectionWithLessonListDTO> sectionWithLessonListDTOList = new ArrayList<>(); // 강의 리스트가 포함된 섹션 리스트를 생성
+                for(SectionDTO sectionDTO : sectionDTOList){ // 돌면서 이제 sectionDTO에 리스트 정보를 넣어주어야 함.
+                    int sectionIdx1 = sectionDTO.getIdx();
+                    log.info("sectionIdx1:{}",sectionIdx1);
+                    List<LessonDTO> lessons = lessonService.getLessons(sectionIdx1);
+                    log.info("lessons:{}",lessons);
+                    SectionWithLessonListDTO sectionWithLessonListDTO = modelMapper.map(sectionDTO, SectionWithLessonListDTO.class);
+                    log.info("sectionWithLessonListDTO:{}",sectionWithLessonListDTO);
+                    int lessonCount = lessons.size();
+                    sectionWithLessonListDTO.setLessonCount(lessonCount);
+                    sectionWithLessonListDTO.setLessons(lessons);
+                    sectionWithLessonListDTOList.add(sectionWithLessonListDTO);
+                } //여기까지 했으면 이제 섹션과 해당 강의가 같이 말아짐
+                model.addAttribute("sectionList", sectionWithLessonListDTOList);
                 return "course/tabs/curriculum";
 //            case "qna":
 ////                model.addAttribute("qnaList", qnaService.getQnAList());

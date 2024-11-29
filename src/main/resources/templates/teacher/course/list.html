@@ -1,65 +1,86 @@
 <!DOCTYPE html>
 <html
-        lang="en"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        xmlns:th="http://www.thymeleaf.org"
-        layout:decorate="~{layout/layout.html}"
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout.html}"
 >
-  <div layout:fragment="main">
-    <section id="top-area" class="d-flex justify-content-between align-items-center mb-4">
-      <h2>내 강의실</h2>
-      <div class="search-container">
-        <form action="/teacher/course/list" method="get" class="d-flex align-items-center">
-          <input type="search" class="form-control" name="searchValue" placeholder="제목으로 검색">
-          <select class="form-select" name="sortOrder">
-            <option value="">정렬순</option>
-            <option value="DESC" th:selected="${sortOrder == 'DESC'}">내림차순</option>
-            <option value="ASC" th:selected="${sortOrder == 'ASC'}">오름차순</option>
-          </select>
-          <select class="form-select" name="sortType">
-            <option value="">정렬내용</option>
-            <option value="regDate" th:selected="${sortType == 'regDate'}">등록일</option>
-            <option value="title" th:selected="${sortType == 'title'}">제목</option>
-          </select>
-          <button class="btn btn-primary" type="submit">검색</button>
-          <button class="btn btn-secondary" type="reset">취소</button>
-        </form>
-      </div>
-    </section>
-
-    <section id="course-area" class="row g-4 w-75 mx-auto">
-      <div th:each="course : ${list}" class="col-md-4">
-        <div class="course-card card">
-          <div class="courseImage card-img-top" style="height: 200px; background-color: #f0f0f0;">
-              <image th:src="${course.thumbnail}"></image>
-          </div>
-          <div class="courseTitle card-body">
-            <a th:href="@{/course/view/{idx}(idx=${course.idx})}"><h5 class="card-title" th:text="${course.title}">제목</h5></a>
-            <p class="card-text" th:if="${course.category == 'D'}" th:text="'개발'"></p>
-            <p class="card-text" th:if="${course.category == 'A'}" th:text="'인공지능'">가격</p>
-            <p class="card-text" th:if="${course.category == 'H'}" th:text="'하드웨어'">가격</p>
-            <p class="card-text" th:if="${course.category == 'C'}" th:text="'커리어,자기계발'">가격</p>
-            <p class="card-text" th:if="${course.category == 'M'}" th:text="'기획,경영,마케팅'">가격</p>
-            <p class="card-text" th:text="${#numbers.formatCurrency(course.price)}">가격</p>
-            <p class="card-text" th:text="'등록일 : '+${#temporals.format(course.regDate, 'yyyy-MM-dd HH:mm:ss')}">등록일</p>
-            <p class="card-text" th:text="'노출일 : '+${#temporals.format(course.displayDate, 'yyyy-MM-dd HH:mm:ss')}">노출일</p>
-
-            <div class="lessonCnt" th:text="${'섹션 : ' + course.sectionCnt + '   강의 : ' + course.lessonCnt}">섹션/강의 수</div>
-          </div>
-          <button class="btn btn-danger" disabled th:if="${course.displayDate < T(java.time.LocalDateTime).now()}" th:text="'강의 수정 불가'"></button>
-          <a class="btn btn-primary" th:if="${course.displayDate >= T(java.time.LocalDateTime).now()}" th:text="'강의 수정'"
-                  th:href="@{/teacher/course/modify(courseIdx=${course.idx})}"></a>
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+  </th:block>
+</head>
+<div layout:fragment="main">
+  <div class="cccccc">
+    <div class="myPageContainer">
+      <div class="menuArea">
+        <div style="color: #ADB5BD">Home</div>
+        <div>
+          <ul class="myPageNav">
+            <li><a href="/teacher/course/list" style="color:#00c471">내 강의실</a></li>
+            <li><a href="/teacher/modifyInfo">계정 정보</a></li>
+          </ul>
         </div>
       </div>
-      <div th:if="${list == null}">
-        <p>현재 등록된 강의가 없습니다.</p>
-      </div>
-    </section>
+      <div class="contentArea">
+        <section id="top-area" class="d-flex justify-content-between align-items-center mb-4">
+          <h2>내 강의실</h2>
+          <div class="search-container">
+            <form action="/teacher/course/list" method="get" class="d-flex align-items-center">
+              <input type="search" class="form-control" name="searchValue" placeholder="제목으로 검색">
+              <select class="form-select" name="sortOrder">
+                <option value="">정렬순</option>
+                <option value="DESC" th:selected="${sortOrder == 'DESC'}">내림차순</option>
+                <option value="ASC" th:selected="${sortOrder == 'ASC'}">오름차순</option>
+              </select>
+              <select class="form-select" name="sortType">
+                <option value="">정렬내용</option>
+                <option value="regDate" th:selected="${sortType == 'regDate'}">등록일</option>
+                <option value="title" th:selected="${sortType == 'title'}">제목</option>
+              </select>
+              <button class="btn btn-primary" type="submit">검색</button>
+              <button class="btn btn-secondary" type="reset">취소</button>
+            </form>
+          </div>
+        </section>
 
-    <section id="bottom-area" class="mt-4">
-      <div class="text-end">
-        <button class="btn btn-success btn-sm w-25" onclick="location.href='/teacher/course/insert'">강의 등록</button>
+        <section id="course-area" class="row g-4 w-75 mx-auto">
+          <div th:each="course : ${list}" class="col-md-4">
+            <div class="course-card card">
+              <div class="courseImage card-img-top" style="height: 200px; background-color: #f0f0f0;">
+                <image th:src="${course.thumbnail}"></image>
+              </div>
+              <div class="courseTitle card-body">
+                <a th:href="@{/course/view/{idx}(idx=${course.idx})}"><h5 class="card-title" th:text="${course.title}">제목</h5></a>
+                <p class="card-text" th:if="${course.category == 'D'}" th:text="'개발'"></p>
+                <p class="card-text" th:if="${course.category == 'A'}" th:text="'인공지능'">가격</p>
+                <p class="card-text" th:if="${course.category == 'H'}" th:text="'하드웨어'">가격</p>
+                <p class="card-text" th:if="${course.category == 'C'}" th:text="'커리어,자기계발'">가격</p>
+                <p class="card-text" th:if="${course.category == 'M'}" th:text="'기획,경영,마케팅'">가격</p>
+                <p class="card-text" th:text="${#numbers.formatCurrency(course.price)}">가격</p>
+                <p class="card-text" th:text="'등록일 : '+${#temporals.format(course.regDate, 'yyyy-MM-dd HH:mm:ss')}">등록일</p>
+                <p class="card-text" th:text="'노출일 : '+${#temporals.format(course.displayDate, 'yyyy-MM-dd HH:mm:ss')}">노출일</p>
+
+                <div class="lessonCnt" th:text="${'섹션 : ' + course.sectionCnt + '   강의 : ' + course.lessonCnt}">섹션/강의 수</div>
+              </div>
+              <button class="btn btn-danger" disabled th:if="${course.displayDate < T(java.time.LocalDateTime).now()}" th:text="'강의 수정 불가'"></button>
+              <a class="btn btn-primary" th:if="${course.displayDate >= T(java.time.LocalDateTime).now()}" th:text="'강의 수정'"
+                 th:href="@{/teacher/course/modify(courseIdx=${course.idx})}"></a>
+            </div>
+          </div>
+          <div th:if="${list == null}">
+            <p>현재 등록된 강의가 없습니다.</p>
+          </div>
+        </section>
+
+        <section id="bottom-area" class="mt-4">
+          <div class="text-end">
+            <button class="btn btn-success btn-sm w-25" onclick="location.href='/teacher/course/insert'">강의 등록</button>
+          </div>
+          <div th:replace="~{/common/paging :: paging}" class="mt-4"></div>
+        </section>
       </div>
-      <div th:replace="~{/common/paging :: paging}" class="mt-4"></div>
-    </section>
+    </div>
   </div>
+</div>
+</html>
