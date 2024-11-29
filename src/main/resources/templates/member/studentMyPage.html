@@ -6,7 +6,6 @@
   layout:decorate="~{layout/layout.html}"
 >
 <head>
-  <!-- 페이지 전용 스타일시트 추가 -->
   <th:block layout:fragment="css">
     <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
   </th:block>
@@ -15,27 +14,39 @@
     <div class="cccccc">
       <div class="myPageContainer">
         <div class="menuArea">
-          <div>Home</div>
+          <div style="color: #ADB5BD">Home</div>
+          <div>
+            <ul class="myPageNav">
+              <li><a href="/member/myPage" style="color:#00c471">내 강의실</a></li>
+              <li><a href="/cart/list">수강 바구니</a></li>
+              <li><a href="/member/likedCourses">좋아요</a></li>
+              <li><a href="/member/reviews">작성한 게시글</a></li>
+              <li><a href="/order/list">구매 내역</a></li>
+              <li><a href="/member/accountInfo">계정 정보</a></li>
+            </ul>
+          </div>
         </div>
         <div class="contentArea">
-          <h2 class="myRoomH2">내 강의실</h2>
           <div>
+            <div class="header-container">
+              <h2 class="myRoomH2">내 강의실</h2>
+              <select id="sortSelect" class="sort-select" onchange="location.href='/member/myPage?sortType=' + this.value">
+                <option value="latest" th:selected="${currentSort == 'latest'}">최근 구매순</option>
+                <option value="title" th:selected="${currentSort == 'title'}">제목순</option>
+              </select>
+            </div>
             <div th:if="${myCourses != null and !myCourses.isEmpty()}" class="courses-grid">
-                <div th:each="course : ${myCourses}" class="course-card">
+                <a th:each="course : ${myCourses}" class="course-card" href="#">
                     <img th:if="${course.thumbnail}" th:src="@{${course.thumbnail}}" class="course-thumbnail" alt="강의 썸네일">
                     <img th:unless="${course.thumbnail}" th:src="@{/images/default-course.jpg}" class="course-thumbnail" alt="기본 썸네일">
                     
                     <div class="course-info">
                         <div class="course-title" th:text="${course.title}">강의 제목</div>
-                        <div class="course-description" th:text="${course.description}">강의 설명</div>
                         <div class="course-meta">
-                            <div th:text="'강사: ' + ${course.teacherName}">강사명</div>
-                            <div th:text="'카테고리: ' + ${course.category}">카테고리</div>
-                            <div th:text="'구매일: ' + ${#temporals.format(course.orderDate, 'yyyy-MM-dd')}">구매일</div>
-                            <div th:text="'구매가격: ' + ${#numbers.formatInteger(course.orderPrice, 0, 'COMMA')} + '원'">구매가격</div>
+                            <div th:text="${course.totalLessonCount} + '강'">강의 갯수</div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             
             <div th:if="${myCourses == null or myCourses.isEmpty()}" class="no-courses">
