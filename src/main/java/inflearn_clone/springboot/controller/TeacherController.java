@@ -282,6 +282,26 @@ public class TeacherController {
         redirectAttributes.addAttribute("courseIdx", courseIdx);
         return "redirect:/teacher/course/modify_l";
     }
+    @GetMapping("/course/modify_ll")
+    public String modify_ll(Model model, @RequestParam("courseIdx") int courseIdx){
+        List<SectionDTO> sectionDTOList = sectionService.sectionList(courseIdx);
+        List<SectionWithLessonListDTO> sectionWithLessonListDTOList = new ArrayList<>();
+        for(SectionDTO sectionDTO : sectionDTOList){
+            int sectionIdx = sectionDTO.getIdx();
+            List<LessonDTO> lessons = lessonService.getLessons(sectionIdx);
+            SectionWithLessonListDTO sectionWithLessonListDTO = modelMapper.map(sectionDTO, SectionWithLessonListDTO.class);
+            int lessonCount = lessons.size();
+            sectionWithLessonListDTO.setLessonCount(lessonCount);
+            sectionWithLessonListDTO.setLessons(lessons);
+            sectionWithLessonListDTOList.add(sectionWithLessonListDTO);
+        } //여기까지 했으면 이제 섹션과 해당 강의가 같이 말아짐
+
+        log.info("sectionWithLessonListDTOList:{}",sectionWithLessonListDTOList);
+        log.info("sectionListWithLesson : {}", sectionWithLessonListDTOList.get(0));
+        model.addAttribute("sections", sectionWithLessonListDTOList.get(0));
+        model.addAttribute("hasNextNext",true);
+        return "teacher/course/modify_l";
+    }
 
     @GetMapping("/course/modify_l")
     public String modify_l(Model model, @RequestParam("courseIdx") int courseIdx){
@@ -416,6 +436,58 @@ public class TeacherController {
 
         model.addAttribute("sections", sectionWithLessonListDTOList.get(currentIndex+1)); // 여기가 다음 번의 섹션을 넘기는 용도
         model.addAttribute("hasNextNext", hasNextNext);
+        return "teacher/course/modify_l";
+    }
+    @PostMapping("/course/modify_ll")
+    public String modify_ll(@RequestParam("sectionIdx") int sectionIdx, Model model){
+
+        log.info("sectionIdx: {}",sectionIdx);
+        int courseIdx = sectionMapper.getCourseIdBySectionId(sectionIdx); //섹션으로 강좌
+        log.info("courseIdx:{}",courseIdx);
+        List<Integer> sectionIdList = sectionMapper.sectionIdList(courseIdx); //강좌에서 다시 섹션 리스트 조회
+        log.info("sectionIdList:{}",sectionIdList);
+        int currentIndex = sectionIdList.indexOf(sectionIdx); //현재 인덱스를 조회할 수 있음.
+        log.info("currentIndex:{}",currentIndex);
+        boolean hasNext = true;
+        try{
+            hasNext = sectionIdList.contains(sectionIdList.get(currentIndex+1));    // 다음 인덱스가 존재하는지 여부를 체크
+        } catch (Exception e) {
+            log.info(e); //사실상 여기가 끝나는 지점
+            courseMapper.finishInsert(courseIdx);
+            return "redirect:/teacher/course/list";
+        }
+        boolean hasNextNext = false;
+        try {
+            hasNextNext = sectionIdList.contains(sectionIdList.get(currentIndex + 2));
+        } catch (Exception e) {
+            log.error(e);
+        }
+        log.info("hasNextNext:{}",hasNextNext);
+        // 다다음 인덱스가 존재하는지 여부를 체크
+        log.info("hasNext:{}",hasNext);
+        int nextSectionIdx = 0;
+        if(hasNext){
+            nextSectionIdx = sectionIdList.get(currentIndex+1); // 다음 인덱스로 다음 섹션 번호를 가져옴
+        }
+        log.info("nextSectionIdx:{}",nextSectionIdx);
+        List<SectionDTO> sectionDTOList = sectionService.sectionList(courseIdx); // 강좌 인덱스로 섹션의 리스트를 가져옴.
+        List<SectionWithLessonListDTO> sectionWithLessonListDTOList = new ArrayList<>(); // 강의 리스트가 포함된 섹션 리스트를 생성
+        for(SectionDTO sectionDTO : sectionDTOList){ // 돌면서 이제 sectionDTO에 리스트 정보를 넣어주어야 함.
+            int sectionIdx1 = sectionDTO.getIdx();
+            log.info("sectionIdx1:{}",sectionIdx1);
+            List<LessonDTO> lessons = lessonService.getLessons(sectionIdx1);
+            log.info("lessons:{}",lessons);
+            SectionWithLessonListDTO sectionWithLessonListDTO = modelMapper.map(sectionDTO, SectionWithLessonListDTO.class);
+            log.info("sectionWithLessonListDTO:{}",sectionWithLessonListDTO);
+            int lessonCount = lessons.size();
+            sectionWithLessonListDTO.setLessonCount(lessonCount);
+            sectionWithLessonListDTO.setLessons(lessons);
+            sectionWithLessonListDTOList.add(sectionWithLessonListDTO);
+        } //여기까지 했으면 이제 섹션과 해당 강의가 같이 말아짐
+        model.addAttribute("sections", sectionWithLessonListDTOList.get(currentIndex+1)); // 여기가 다음 번의 섹션을 넘기는 용도
+        model.addAttribute("hasNextNext", hasNextNext);
+
+
         return "teacher/course/modify_l";
 
 
