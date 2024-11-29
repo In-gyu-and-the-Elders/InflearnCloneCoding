@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="inflearn_clone.springboot.mappers.TeacherMapper">
+
+    <select id="lessonCount" resultType="java.lang.Integer">
+        SELECT COUNT(l.idx)
+        FROM tbl_course AS c
+                 INNER JOIN tbl_section AS s ON s.courseIdx = c.idx
+                 INNER JOIN tbl_lesson AS l ON l.sectionIdx = s.idx
+        WHERE c.teacherId = #{teacherId} AND c.idx = #{courseIdx}
+    </select>
+    <select id="sectionCount" resultType="java.lang.Integer">
+        SELECT COUNT(s.idx)
+        FROM tbl_course AS c
+            INNER JOIN tbl_section AS s ON s.courseIdx = c.idx
+        WHERE c.teacherId = #{teacherId} AND c.idx = #{courseIdx}
+    </select>
+    <select id="totalCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tbl_course
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                title LIKE CONCAT('%', #{searchValue}, '%')
+            </if>
+            AND teacherId = #{teacherId}
+            AND (status = 'Y' OR status = 'N')
+        </where>
+    </select>
+
+    <select id="getMyCourseList" resultType="inflearn_clone.springboot.dto.course.CourseDTO">
+        SELECT * FROM tbl_course
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                title LIKE CONCAT('%', #{searchValue}, '%')
+            </if>
+            AND teacherId = #{teacherId}
+            AND (status = 'Y' OR status = 'N')
+        </where>
+        ${sortQuery}
+        LIMIT #{offset}, #{limit}
+    </select>
+</mapper>    
