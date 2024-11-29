@@ -41,7 +41,7 @@
                 삭제
               </button>
             </div>
-
+            
             <!-- 강좌 리스트 -->
             <div class="cart-list" th:if="${cartList != null and cartList.size() > 0}">
               <div class="cart-item" th:each="item : ${cartList}" th:data-course-id="${item.idx}" 
@@ -97,5 +97,4 @@
     <script th:src="@{/js/cart/cart.js}"></script>
   </th:block>
   </div>
-
 </html>

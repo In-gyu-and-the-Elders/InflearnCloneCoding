@@ -34,4 +34,10 @@
             leaveDate = NOW()
         WHERE idx = #{idx}
     </update>
+
+    <select id="studentCnt">
+        SELECT COUNT(*)
+        FROM tbl_order
+        WHERE courseIdx = #{courseIdx}
+    </select>
 </mapper>

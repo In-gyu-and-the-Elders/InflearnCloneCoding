@@ -1,11 +1,15 @@
 package inflearn_clone.springboot.controller;
 
+import inflearn_clone.springboot.dto.course.CourseTotalDTO;
+import inflearn_clone.springboot.dto.review.ReviewListDTO;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.service.cart.CartService;
 import inflearn_clone.springboot.service.course.CourseSerivce;
+import inflearn_clone.springboot.service.like.LikeService;
 import inflearn_clone.springboot.service.order.OrderService;
+import inflearn_clone.springboot.service.review.ReviewService;
 import inflearn_clone.springboot.utils.Paging;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,17 +35,9 @@ public class CourseController {
     private final CourseSerivce courseSerivce;
     private final CartService cartService;
     private final OrderService orderService;
-//    @GetMapping("/list")
-//    public String courseList(Model model) {
-//        List<CourseDTO> courseList = courseSerivce.courseList();
-//        model.addAttribute("courseList", courseList);
-////        for (CourseDTO course : courseList) {
-////            log.info(course.getDescription());
-////        }
-////        log.info("Course List Size: {}", courseList.size());
-////        log.info("courseList{}",courseList);
-//        return "course/list";
-//    }
+    private final LikeService likeService;
+    private final ReviewService reviewService;
+
     @GetMapping("/list")
     public String list(Model model,
                        @RequestParam(defaultValue = "1") int pageNo,
@@ -59,12 +55,16 @@ public class CourseController {
         Paging paging = new Paging(pageNo, 8, 5, totalCnt, sortType, sortOrder);
 
         // 강의 리스트 가져오기
-        List<CourseDTO> course = courseSerivce.getCourses(pageNo, 8, searchCategory, searchValue, sortQuery);
+        List<CourseTotalDTO> courseList  = courseSerivce.getCourses(pageNo, 8, searchCategory, searchValue, sortQuery);
 //        log.info("course{}",course);
 //        log.info("searchCategory"+searchCategory);
 //        log.info("searchValue"+searchValue);
-        // Model에 값 전달
-        model.addAttribute("course", course);
+
+        for (CourseTotalDTO course : courseList) {
+            int studentCount = orderService.studentCnt(course.getIdx());
+            course.setStudentCount(studentCount); // 수강생 수를 DTO에 추가
+        }
+        model.addAttribute("course", courseList);
         model.addAttribute("paging", paging);
         model.addAttribute("searchCategory", searchCategory);
         model.addAttribute("searchValue", searchValue);
@@ -81,19 +81,34 @@ public class CourseController {
         // 로그인 후 삭제
         //String memberId = (String) request.getSession().getAttribute("memberId");
         String memberId = "user1";
+        // 상세보기
         CourseDTO course = courseSerivce.courseView(idx);
+        // 장바구니 중복확인
         boolean isCartPossible = cartService.cartCnt(course.getIdx(), memberId);
+        // 결제내역 확인
         boolean isOrderPossible = orderService.orderCnt(course.getIdx(), memberId);
+        // 강의별 수강생 수 확인
+        int studentCnt = orderService.studentCnt(idx);
+        // 좋아요수
+        int likeCount = likeService.getLikeCount(idx);
+        // 좋아요회원확인
+        boolean isLiked = likeService.likeCheck(idx, memberId);
         model.addAttribute("isCartPossible", isCartPossible);
         model.addAttribute("isOrderPossible", isOrderPossible);
+        model.addAttribute("likeCount", likeCount);
+        model.addAttribute("isLiked", isLiked);
+        model.addAttribute("studentCnt", studentCnt);
+        model.addAttribute("memberId", memberId);
         model.addAttribute("course", course);
         return "course/view";
     }
 
     @GetMapping("/tab/{tabName}/{idx}")
     public String getTabContent(@PathVariable String tabName,
-                                @PathVariable int idx
-                                ,Model model) {
+                                @PathVariable int idx, //강좌idx
+                                @RequestParam(defaultValue = "latest") String sortBy,
+                                @RequestParam(defaultValue = "0") int page,
+                                Model model) {
         switch (tabName) {
             case "info":
                 CourseDTO course = courseSerivce.courseView(idx);
@@ -101,15 +116,24 @@ public class CourseController {
                 return "course/tabs/info";
             case "curriculum":
                 return "course/tabs/curriculum";
-            case "qna":
-//                model.addAttribute("qnaList", qnaService.getQnAList());
-                return "course/tabs/qna";
+//            case "qna":
+////                model.addAttribute("qnaList", qnaService.getQnAList());
+//                return "course/tabs/qna";
             case "review":
-//                model.addAttribute("reviewList", reviewService.getReviewList());
+                log.info("실제 idx"+idx);
+                log.info("실제 sortBy"+sortBy);
+                log.info("실제 page"+page);
+                List<ReviewListDTO> reviews = reviewService.getReviewList(idx, sortBy, page);
+
+                model.addAttribute("reviews", reviews);
+                model.addAttribute("courseIdx", idx);
+                model.addAttribute("currentPage", page);
+
+                log.info("reviews{}",reviews);
                 return "course/tabs/review";
-            case "notice":
-//                model.addAttribute("noticeList", noticeService.getNoticeList());
-                return "course/tabs/notice";
+//            case "notice":
+////                model.addAttribute("noticeList", noticeService.getNoticeList());
+//                return "course/tabs/notice";
             default:
                 return "/";
         }

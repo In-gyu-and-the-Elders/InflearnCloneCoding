@@ -15,7 +15,7 @@
         SELECT
             idx, category, title, description, teacherId, regDate, displayDate, modifyDate, price, thumbnail
         FROM tbl_course
-        WHERE idx = #{idx} AND status = 'Y';
+        WHERE idx = #{idx};
     </select>
 
     <!--teacherId로 존재하는 강의가 있는지 확인-->
@@ -118,8 +118,9 @@
         SELECT COUNT(*)
         FROM tbl_course
         <where>
+            status = 'Y'
             <if test="searchCategory != null and searchCategory != ''">
-                category = #{searchCategory}
+               AND category = #{searchCategory}
             </if>
             <if test="searchValue != null and searchValue != ''">
                 AND (
@@ -135,8 +136,9 @@
         idx, category, title, description, teacherId, regDate, displayDate, status, price, thumbnail
         FROM tbl_course
         <where>
+            status = 'Y'
             <if test="searchCategory != null and searchCategory != ''">
-                category = #{searchCategory}
+               AND category = #{searchCategory}
             </if>
             <if test="searchValue != null and searchValue != ''">
                 AND (

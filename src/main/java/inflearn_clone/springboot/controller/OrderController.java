@@ -36,7 +36,7 @@ public class OrderController {
 
         List<Integer> successOrderedList = new ArrayList<>();
         List<Integer> alreadyOrderedList = new ArrayList<>();
-
+        log.info("courseIdxList{}: ", courseIdxList);
         for (int i = 0; i < courseIdxList.size(); i++) {
             int courseIdx = courseIdxList.get(i);
             int price = priceList.get(i);
@@ -74,7 +74,6 @@ public class OrderController {
                 log.info(alreadyOrderedList);
                 message = "모든 강좌가 이미 결제된 상태입니다.";
             }
-
             response.setCharacterEncoding("utf-8");
             JSFunc.alertLocation(message, request.getHeader("Referer"), response);
         }
