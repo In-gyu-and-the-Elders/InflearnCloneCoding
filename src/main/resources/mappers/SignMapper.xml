@@ -47,8 +47,8 @@
   <update id="modifyMemberInfo">
     UPDATE tbl_member
     SET name = #{name},
-        phone = #{phone},
         email = #{email},
+        phone = #{phone},
         modifyDate = NOW()
     WHERE memberId = #{memberId}
   </update>

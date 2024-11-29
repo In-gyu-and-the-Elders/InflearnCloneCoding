@@ -30,14 +30,13 @@ public class OrderController {
     public void registOrder(@RequestParam List<Integer> courseIdxList,
                             @RequestParam List<Integer> priceList,
                             HttpServletRequest request, HttpServletResponse response) {
-        String memberId = "user1"; // 테스트용
         // 로그인 후 삭제
-        //String memberId = (String) request.getSession().getAttribute("memberId");
+        String memberId = (String) request.getSession().getAttribute("memberId");
         String orderNumber = generateOrderNumber();
 
         List<Integer> successOrderedList = new ArrayList<>();
         List<Integer> alreadyOrderedList = new ArrayList<>();
-
+        log.info("courseIdxList{}: ", courseIdxList);
         for (int i = 0; i < courseIdxList.size(); i++) {
             int courseIdx = courseIdxList.get(i);
             int price = priceList.get(i);
@@ -54,6 +53,7 @@ public class OrderController {
                 orderService.regist(orderDTO);
                 successOrderedList.add(courseIdx);
             } else {
+                log.info(courseIdx);
                 alreadyOrderedList.add(courseIdx);
             }
         }
@@ -67,13 +67,13 @@ public class OrderController {
             }
 
             response.setCharacterEncoding("utf-8");
-            JSFunc.alertLocation(message, "mypage/courseList", response);
+            JSFunc.alertLocation(message, "member/myPage", response);
         } else {
             String message = "결제 가능한 강좌가 없습니다.";
             if (!alreadyOrderedList.isEmpty()) {
+                log.info(alreadyOrderedList);
                 message = "모든 강좌가 이미 결제된 상태입니다.";
             }
-
             response.setCharacterEncoding("utf-8");
             JSFunc.alertLocation(message, request.getHeader("Referer"), response);
         }
@@ -89,10 +89,8 @@ public class OrderController {
     }
 
     @GetMapping("/list")
-    public String orderList(Model model) {
-        String memberId = "user1"; // 테스트용
-        // 로그인 후 삭제
-        //String memberId = (String) request.getSession().getAttribute("memberId");
+    public String orderList(Model model, HttpServletRequest request) {
+        String memberId = (String) request.getSession().getAttribute("memberId");
         List<OrderCourseDTO> orderList = orderService.getOrderList(memberId);
         log.info("orderList{}",orderList);
         model.addAttribute("orderList", orderList);

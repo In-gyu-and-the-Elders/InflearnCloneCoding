@@ -15,7 +15,7 @@
         SELECT
             idx, category, title, description, teacherId, regDate, displayDate, modifyDate, price, thumbnail
         FROM tbl_course
-        WHERE idx = #{idx} AND status = 'Y';
+        WHERE idx = #{idx};
     </select>
 
     <!--teacherId로 존재하는 강의가 있는지 확인-->
@@ -114,7 +114,7 @@
 
     </select>
 
-    <select id="courseTotalCnt" resultType="int">
+    <select id="courseTotalCnt1" resultType="int">
         SELECT COUNT(*)
         FROM tbl_course
         <where>
@@ -129,6 +129,24 @@
             </if>
         </where>
     </select>
+
+    <select id="courseTotalCnt" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_course
+        <where>
+            status = 'Y'
+            <if test="searchCategory != null and searchCategory != ''">
+                AND category = #{searchCategory}
+            </if>
+            <if test="searchValue != null and searchValue != ''">
+                AND (
+                title LIKE CONCAT('%', #{searchValue}, '%') OR
+                teacherId LIKE CONCAT('%', #{searchValue}, '%')
+                )
+            </if>
+        </where>
+    </select>
+
 
     <select id="selectAllCourse" resultType="inflearn_clone.springboot.domain.CourseVO">
         SELECT
@@ -151,8 +169,8 @@
 
     <!-- 강좌 등록 -->
     <insert id="insertCourse">
-        INSERT INTO tbl_course (category, title, description, teacherId, displayDate, price, thumbnail)
-        VALUES (#{category}, #{title}, #{description}, #{teacherId}, #{displayDate}, #{price}, #{thumbnail})
+        INSERT INTO tbl_course (category, title, description, teacherId, displayDate, price, thumbnail, status)
+        VALUES (#{category}, #{title}, #{description}, #{teacherId}, #{displayDate}, #{price}, #{thumbnail}, 'N')
     </insert>
     <select id="viewMyLastCourse" resultType="inflearn_clone.springboot.domain.CourseVO">
         SELECT * FROM tbl_course
@@ -176,8 +194,25 @@
         WHERE sectionIdx IN (SELECT idx FROM tbl_section WHERE courseIdx = #{courseIdx})
     </select>
 
+    <update id="finishInsert">
+        UPDATE tbl_course
+        SET status = 'Y'
+        WHERE idx = #{courseIdx}
+    </update>
 
-
-
+    <update id="updateCourse">
+        UPDATE tbl_course
+        SET category = #{category},
+            title = #{title},
+            description = #{description},
+            displayDate = #{displayDate},
+            price = #{price},
+            <if test="thumbnail != null and thumbnail != ''">
+                thumbnail = #{thumbnail},
+            </if>
+            status = 'N',
+            modifyDate = NOW()
+        WHERE idx = #{idx}
+    </update>
 </mapper>
 

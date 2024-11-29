@@ -19,15 +19,20 @@
       </tr>
       <tr>
         <th class="text-center">카테고리</th>
-        <td th:text="${courseDTO.category}"></td>
+        <td th:if="${courseDTO.category == 'D'}" th:text="${'개발'}"></td>
+        <td th:if="${courseDTO.category == 'A'}" th:text="${'인공지능'}"></td>
+        <td th:if="${courseDTO.category == 'H'}" th:text="${'하드웨어'}"></td>
+        <td th:if="${courseDTO.category == 'C'}" th:text="${'커리어,자기계발'}"></td>
+        <td th:if="${courseDTO.category == 'M'}" th:text="${'기획,경영,마케팅'}"></td>
         <th class="text-center">가격</th>
-        <td th:text="${courseDTO.price}"></td>
+        <td th:text="${#numbers.formatCurrency(courseDTO.price)}"></td>
         <th class="text-center">강좌 노출일</th>
         <td th:text="${#temporals.format(courseDTO.displayDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
       </tr>
       <tr>
         <th class="text-center">강좌 썸네일</th>
-        <td th:text="${courseDTO.thumbnail}" colspan="5"></td>
+
+        <td colspan="5"><img th:src="${courseDTO.thumbnail}" alt="썸네일" width="300px;"></td>
       </tr>
     </table>
   </div>

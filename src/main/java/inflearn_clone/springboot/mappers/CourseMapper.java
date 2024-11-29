@@ -55,6 +55,9 @@ public interface CourseMapper {
 
     int insertCourse(CourseVO courseVO);
     CourseVO viewMyLastCourse(@Param("memberId") String memberId);
+    void finishInsert(@Param("courseIdx") int courseIdx);
+
+    int updateCourse(CourseVO courseVO);
 
     CourseVO selectCourse(int idx);
     List<SectionVO> selectSection(int idx);

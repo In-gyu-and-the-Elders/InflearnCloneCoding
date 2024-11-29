@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface LessonServiceIf {
     int insertLesson(LessonDTO lessonDTO);
+    List<LessonDTO> getLessons(int sectionIdx);
+    int updateLesson(LessonDTO lessonDTO);
 }

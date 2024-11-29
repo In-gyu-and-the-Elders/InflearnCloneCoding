@@ -31,7 +31,6 @@ public interface MemberServiceIf {
     //회원 탈퇴 이유 상세
     LeaveReasonDTO leaveReasonView(String memberId);
 
-    //회원 삭제
+    // 회원 삭제
     boolean deleteMemberInfo(String memberId);
-
 }
