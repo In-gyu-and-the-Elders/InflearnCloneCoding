@@ -580,7 +580,7 @@ public class TeacherController {
             log.info("회원 아이디 없음");
             return null;
         }
-
+}
     @GetMapping("/modifyInfo")
     public String accountInfo(Model model, HttpSession session) {
         String memberId = (String) session.getAttribute("memberId");

@@ -146,9 +146,9 @@ public class CourseController {
 ////                model.addAttribute("qnaList", qnaService.getQnAList());
 //                return "course/tabs/qna";
             case "review":
-                log.info("실제 idx"+idx);
-                log.info("실제 sortBy"+sortBy);
-                log.info("실제 page"+page);
+//                log.info("실제 idx"+idx);
+//                log.info("실제 sortBy"+sortBy);
+//                log.info("실제 page"+page);
                 String memberId = (String) request.getSession().getAttribute("memberId");
                 List<ReviewListDTO> reviews = reviewService.getReviewList(idx, sortBy, page);
                 model.addAttribute("memberId", memberId);
@@ -156,7 +156,7 @@ public class CourseController {
                 model.addAttribute("courseIdx", idx);
                 model.addAttribute("currentPage", page);
 
-                log.info("reviews{}",reviews);
+//                log.info("reviews{}",reviews);
                 return "course/tabs/review";
 //            case "notice":
 ////                model.addAttribute("noticeList", noticeService.getNoticeList());
