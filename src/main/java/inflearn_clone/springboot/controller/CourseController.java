@@ -11,12 +11,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +98,8 @@ public class CourseController {
                 model.addAttribute("course", course);
                 return "course/tabs/info";
             case "curriculum":
+                CourseDTO  curriculum = courseSerivce.curriculum(idx);
+                model.addAttribute("course", curriculum);
                 return "course/tabs/curriculum";
             case "qna":
 //                model.addAttribute("qnaList", qnaService.getQnAList());
@@ -114,4 +114,5 @@ public class CourseController {
                 return "/";
         }
     }
+
 }

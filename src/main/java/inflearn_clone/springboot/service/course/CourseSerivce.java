@@ -1,6 +1,12 @@
 package inflearn_clone.springboot.service.course;
 
+import inflearn_clone.springboot.domain.CourseVO;
+import inflearn_clone.springboot.domain.LessonVO;
+import inflearn_clone.springboot.domain.SectionVO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
+import inflearn_clone.springboot.dto.lesson.LessonDTO;
+import inflearn_clone.springboot.dto.section.SectionDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,5 +47,10 @@ public interface CourseSerivce {
     int insertCourse(CourseDTO courseDTO);
 
     CourseDTO viewMyLastCourse(String memberId);
+
+    CourseDTO curriculum(int idx);
+    CourseDTO selectCourse(int courseIdx);
+    List<SectionDTO> selectSection(int courseIdx);
+    List<LessonDTO> selectLesson(@Param("sectionIdx") List<Integer> sectionIdx);
 
 }

@@ -1,7 +1,22 @@
 <!DOCTYPE html>
 <html lang="ko"
-      xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:th="http://www.thymeleaf.org">
 <div>
-    <h1>커리큐ㅜㄹ럼</h1>
+    <h1>커리큘럼</h1>
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item" th:if="${course != null and !course.isEmpty()}">
+            <div th:each="course : ${course}">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                        [[${course.section.section}]]
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        [[${course.lesson.title}]]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

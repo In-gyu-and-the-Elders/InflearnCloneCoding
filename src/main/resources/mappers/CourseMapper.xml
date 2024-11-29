@@ -160,5 +160,24 @@
         ORDER BY regDate DESC
         LIMIT 1
     </select>
+    <select id="selectCourse">
+    SELECT idx, title
+    FROM tbl_course
+    WHERE idx = #{idx};
+    </select>
+    <select id="selectSection">
+        SELECT idx, `section`, courseIdx
+        FROM tbl_section
+        WHERE courseIdx = #{idx};
+    </select>
+    <select id="selectLesson">
+        SELECT idx, title, sectionIdx
+        FROM tbl_lesson
+        WHERE sectionIdx IN (SELECT idx FROM tbl_section WHERE courseIdx = #{courseIdx})
+    </select>
+
+
+
+
 </mapper>
 

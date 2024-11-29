@@ -2,7 +2,11 @@ package inflearn_clone.springboot.service.course;
 
 
 import inflearn_clone.springboot.domain.CourseVO;
+import inflearn_clone.springboot.domain.LessonVO;
+import inflearn_clone.springboot.domain.SectionVO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
+import inflearn_clone.springboot.dto.lesson.LessonDTO;
+import inflearn_clone.springboot.dto.section.SectionDTO;
 import inflearn_clone.springboot.mappers.CourseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -163,5 +167,47 @@ public class CourseServiceImpl implements CourseSerivce {
     public CourseDTO viewMyLastCourse(String memberId) {
         return modelMapper.map(courseMapper.viewMyLastCourse(memberId), CourseDTO.class);
     }
+
+    @Override
+    public CourseDTO curriculum(int idx) {
+        CourseVO course = courseMapper.selectCourse(idx);
+
+        //섹션 정보 가져오기
+        List<SectionVO> sections = courseMapper.selectSection(idx);
+
+        //섹션별 강의 정보 가져오기
+        List<Integer> sectionIdx = sections.stream()
+                .map(SectionVO::getIdx)
+                .collect(Collectors.toList());
+        List<LessonVO> lessons = courseMapper.selectLesson(sectionIdx);
+
+        //섹션과 강의 조합
+//        Map<Integer, List<LessonVO>> lessonMap = lessons.stream()
+//                .collect(Collectors.groupingBy(LessonVO::getSectionIdx));
+//        sections.forEach(section -> section.setLessons(lessonMap.get(section.getIdx())));
+        return null;
+    }
+
+    @Override
+    public CourseDTO selectCourse(int courseIdx) {
+        CourseVO courseVO = courseMapper.selectCourse(courseIdx);
+        if (courseVO != null) {
+            return modelMapper.map(courseVO, CourseDTO.class);
+        }
+        return null;
+    }
+
+    @Override
+    public List<SectionDTO> selectSection(int courseIdx) {
+        List<SectionVO> voList =  courseMapper.selectSection(courseIdx);
+        return voList.stream().map(vo -> modelMapper.map(vo, SectionDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LessonDTO> selectLesson(List<Integer> sectionIdx) {
+        List<LessonVO> voList =  courseMapper.selectLesson(sectionIdx);
+        return voList.stream().map(vo -> modelMapper.map(vo, LessonDTO.class)).collect(Collectors.toList());
+    }
+
 
 }
