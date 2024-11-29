@@ -114,6 +114,7 @@ public class TeacherController {
         String teacherId = (String) session.getAttribute("memberId");
         int courseIdx = courseSerivce.viewMyLastCourse(teacherId).getIdx();
         List<SectionDTO> sectionDTOList = sectionService.sectionList(courseIdx);
+        model.addAttribute("sectionSize", sectionDTOList.size());
         model.addAttribute("section", sectionDTOList.get(0));
         model.addAttribute("hasNextNext",true);
         return "teacher/course/insert_l";
@@ -279,6 +280,7 @@ public class TeacherController {
                 return null;
             }
         }
+
         redirectAttributes.addAttribute("courseIdx", courseIdx);
         return "redirect:/teacher/course/modify_l";
     }
@@ -296,6 +298,7 @@ public class TeacherController {
             sectionWithLessonListDTOList.add(sectionWithLessonListDTO);
         } //여기까지 했으면 이제 섹션과 해당 강의가 같이 말아짐
 
+        model.addAttribute("sectionSize", sectionDTOList.size());
         log.info("sectionWithLessonListDTOList:{}",sectionWithLessonListDTOList);
         log.info("sectionListWithLesson : {}", sectionWithLessonListDTOList.get(0));
         model.addAttribute("sections", sectionWithLessonListDTOList.get(0));
@@ -319,6 +322,7 @@ public class TeacherController {
 
         log.info("sectionWithLessonListDTOList:{}",sectionWithLessonListDTOList);
         log.info("sectionListWithLesson : {}", sectionWithLessonListDTOList.get(0));
+        model.addAttribute("sectionSize", sectionDTOList.size());
         model.addAttribute("sections", sectionWithLessonListDTOList.get(0));
         model.addAttribute("hasNextNext",true);
         return "teacher/course/modify_l";
