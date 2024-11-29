@@ -13,8 +13,8 @@
                     <br>
                     <p>[[${info.name}]]</p>
                     <ul class="myPageNav">
-                        <li><a th:href="@{/teacher/viewIntroduce(memberId=${memberId})}">소개</a></li>
-                        <li><a href="/cart/list">강의 목록</a></li>
+                        <li><a th:href="@{/teacher/viewIntroduce(memberId=${info.memberId})}">소개</a></li>
+                        <li><a th:href="@{/teacher/viewCourseList(memberId=${info.memberId})}">강의 목록</a></li>
                         <li><a href="#">수강평</a></li>
                     </ul>
                 </div>
@@ -23,6 +23,9 @@
                 <div>
                     <p>[[${info.teacherDesc}]]</p>
                 </div>
+                <p class="no-data-message" th:if="${info.teacherDesc == null or info.teacherDesc.isEmpty()}">
+                    등록된 소개가 없습니다.
+                </p>
             </div>
         </div>
     </div>

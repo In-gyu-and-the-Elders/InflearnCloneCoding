@@ -197,13 +197,10 @@ public class TeacherController {
     @GetMapping("/viewCourseList")
     public String CourseListView(Model model, @RequestParam String memberId){
         if(memberId != null && !memberId.isEmpty()){
-            MemberDTO memberInfo = memberService.selectMemberInfo(memberId);
-            String name = memberInfo.getName();
-            model.addAttribute("name", name);
+            MemberDTO info = memberService.selectMemberInfo(memberId);
+            model.addAttribute("info", info);
             List<CourseDTO> courseInfo = courseSerivce.courseList(memberId);
-            System.out.println(memberInfo.toString());
-            model.addAttribute("info", courseInfo);
-            model.addAttribute("memberId", memberId);
+            model.addAttribute("courseInfo", courseInfo);
         }else{
             log.info("회원 아이디 없음");
             return null;
