@@ -30,4 +30,11 @@ public class SectionServiceImpl implements SectionServiceIf {
         List<SectionVO> sectionVOList = sectionMapper.sectionList(courseIdx);
         return sectionVOList.stream().map(vo -> modelMapper.map(vo, SectionDTO.class)).toList();
     }
+
+    @Override
+    public int updateSection(SectionDTO sectionDTO) {
+        SectionVO sectionVO = modelMapper.map(sectionDTO, SectionVO.class);
+        return sectionMapper.updateSection(sectionVO);
+    }
+
 }

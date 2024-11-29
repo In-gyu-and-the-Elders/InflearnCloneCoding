@@ -14,6 +14,7 @@ public interface CartMapper {
 //    List<CartOrderDTO> goOrder(@Param("idxList") List<Integer> idxList, @Param("memberId") String memberId);
     int delete(@Param("idxList") List<Integer> idxList, @Param("memberId") String memberId);
     int cartCnt(@Param("courseIdx") int courseIdx, @Param("memberId") String memberId);
+    int getCartCount(@Param("memberId") String memberId);
 }
 
 

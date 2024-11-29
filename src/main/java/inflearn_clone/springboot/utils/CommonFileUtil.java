@@ -15,6 +15,10 @@ public class CommonFileUtil {
 
 
     private static final String UPLOAD_DIR = "C:/Users/Jerry/Desktop/java7/project/inflearn_clone_file";
+
+    @Value("${file.upload.path}")
+    private String uploadPath;
+
     // 단일 파일 업로드 메서드
     public static String uploadFile(MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
@@ -33,7 +37,7 @@ public class CommonFileUtil {
             File destinationFile = new File(fullPath);
             file.transferTo(destinationFile);
             // 업로드된 파일의 경로 반환
-            return fullPath;
+            return "/inflearn_clone_file/" + uniqueFileName;
         } else {
             throw new IllegalArgumentException("업로드할 파일이 없습니다.");
         }

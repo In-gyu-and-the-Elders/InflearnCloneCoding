@@ -42,4 +42,9 @@
         </foreach>
     </delete>
 
+    <select id="getCartCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_cart
+        WHERE memberId = #{memberId}
+    </select>
 </mapper>

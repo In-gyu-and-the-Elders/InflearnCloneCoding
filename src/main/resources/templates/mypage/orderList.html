@@ -1,49 +1,89 @@
 <!DOCTYPE html>
 <html lang="ko"
-<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
-<!--      layout:decorate="~{layout/layout.html}"-->
+      layout:decorate="~{layout/layout.html}"
 >
-<div>
-<!--<div layout:fragment="main">-->
-    <h1>결제내역확인</h1>
-    <div class="lecture-container">
-        <!-- orderList 데이터를 반복 출력 -->
-
-        <div class="lecture-item" th:each="order : ${orderList}">
-            <div class="lecture-info">
-                <label>강의 제목</label>
-                <span th:text="${order.title}"></span>
+<head>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+    </th:block>
+</head>
+<div layout:fragment="main">
+    <div class="cccccc">
+        <div class="myPageContainer">
+            <div class="menuArea">
+                <div style="color: #ADB5BD">Home</div>
+                <div>
+                    <ul class="myPageNav">
+                        <li><a href="/member/myPage">내 강의실</a></li>
+                        <li><a href="/cart/list">수강 바구니</a></li>
+                        <li><a href="/member/likedCourses">좋아요</a></li>
+                        <li><a href="/member/reviews">작성한 게시글</a></li>
+                        <li><a href="/order/list" style="color:#00c471">구매 내역</a></li>
+                        <li><a href="/member/accountInfo">계정 정보</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="lecture-info">
-                <label>구매 날짜</label>
-                <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+            <div class="contentArea">
+                <div class="header-container">
+                    <h2 class="myRoomH2">결제내역확인</h2>
+                </div>
+                <div class="lecture-container" style="background: #fff; border-radius: 4px; padding: 20px;">
+                    <!-- orderList 데이터를 반복 출력 -->
+                    <div class="lecture-item" th:each="order : ${orderList}" 
+                         style="display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #f1f3f5; margin-bottom: 10px;">
+                        <div style="flex: 1;">
+                            <div class="lecture-info" style="margin-bottom: 8px;">
+                                <span th:text="${order.title}" 
+                                      style="font-size: 16px; font-weight: 500; color: #1b1c1d; display: block; margin-bottom: 8px;"></span>
+                                <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm:ss')}"
+                                      style="font-size: 14px; color: #abb0b5;"></span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <div class="lecture-price" style="text-align: right;">
+                                <span th:text="'₩' + ${order.orderPrice}" 
+                                      style="font-weight: 600; color: #1b1c1d; font-size: 16px;"></span>
+                            </div>
+                            <button th:if="${order.status != 'D'}" 
+                                    th:data-idx="${order.idx}" 
+                                    class="refund-button" 
+                                    onclick="refund(this)"
+                                    style="padding: 8px 16px; border-radius: 4px; border: 1px solid #e9ecef; background: white; color: #495057; font-size: 14px; cursor: pointer;">
+                                환불
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 구매 내역이 없을 경우 -->
+                    <div th:if="${#lists.isEmpty(orderList)}" 
+                         style="text-align: center; padding: 40px 0; color: #868e96;">
+                        <p>구매 내역이 없습니다.</p>
+                    </div>
+                </div>
             </div>
-            <div class="lecture-price">
-                <span th:text="'₩' + ${#numbers.formatInteger(order.orderPrice, 0, 'COMMA')}"></span>
-            </div>
-            <button th:if="${order.status != 'D'}" th:data-idx="${order.idx}"  class="refund-button" onclick="refund(this)">환불</button>
         </div>
     </div>
-</div>
-<script>
-    function refund(button) {
-        const idx = button.getAttribute('data-idx');
-        if (confirm('환불하시겠습니까?')) {
-            fetch(`/order/refund`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ idx })
-            })
-                .then(response => response.text())
-                .then(result => {
-                    if (result === 'S') {
-                        alert('환불이 처리되었습니다.');
-                        button.style.display = 'none';
-                    } else {
-                        alert('환불에 실패했습니다.');
-                    }
-                });
+    <script>
+        function refund(button) {
+            const idx = button.getAttribute('data-idx');
+            if (confirm('환불하시겠습니까?')) {
+                fetch(`/order/refund`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ idx })
+                })
+                    .then(response => response.text())
+                    .then(result => {
+                        if (result === 'S') {
+                            alert('환불이 처리되었습니다.');
+                            button.style.display = 'none';
+                        } else {
+                            alert('환불에 실패했습니다.');
+                        }
+                    });
+            }
         }
-    }
-</script>
+    </script>
+</div>

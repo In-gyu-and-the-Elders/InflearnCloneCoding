@@ -4,6 +4,18 @@
 <mapper namespace="inflearn_clone.springboot.mappers.LessonMapper">
     <insert id="insertLesson">
         INSERT INTO tbl_lesson (sectionIdx, title, video)
-        VALUES (#{sectionIdx},#{title},#{video})
+        VALUES (#{sectionIdx}, #{title}, #{video})
     </insert>
+    <select id="getLessons" resultType="inflearn_clone.springboot.domain.LessonVO">
+        SELECT * FROM tbl_lesson
+        WHERE sectionIdx = #{sectionIdx}
+    </select>
+    <update id="updateLesson">
+        UPDATE tbl_lesson
+        SET title = #{title}
+        <if test="video != null and video != ''">
+            , video = #{video}
+        </if>
+        WHERE idx = #{idx}
+    </update>
 </mapper>    

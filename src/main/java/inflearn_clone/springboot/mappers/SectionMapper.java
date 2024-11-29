@@ -12,4 +12,6 @@ public interface SectionMapper {
     List<SectionVO> sectionList(@Param("courseIdx") int courseIdx);
     List<Integer> sectionIdList(@Param("courseIdx") int courseIdx);
     int getCourseIdBySectionId(@Param("sectionIdx") int sectionIdx);
+    int updateSection(SectionVO sectionVO);
+
 }

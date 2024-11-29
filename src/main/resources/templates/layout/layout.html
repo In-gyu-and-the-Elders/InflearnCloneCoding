@@ -1525,7 +1525,7 @@
                     th:if="${isLoggedIn}"
                     style="display: flex; align-items: center; gap: 20px"
                   >
-                    <a class="cart-icon" href="#">
+                    <a class="cart-icon" href="/cart/list">
                       <img
                         src="/public/shopingCart.png"
                         alt="장바구니"
@@ -1600,7 +1600,7 @@
                             <div class="tab_list active" data-id="0">
                               <div class="list_el">
                                 <a
-                                  href="/my/courses"
+                                  href="/member/myPage"
                                   class="title e-go_my_courses"
                                 >
                                       <span class="icon"
@@ -1609,12 +1609,12 @@
                                         alt="learning"
                                         style="width: 20px"
                                       /></span>
-                                  <span class="name">내 학습</span>
+                                  <span class="name">내 강의실</span>
                                 </a>
                               </div>
 
                               <div class="list_el">
-                                <a href="/my/orders" class="title">
+                                <a href="/order/list" class="title">
                                       <span class="icon"
                                       ><img
                                         src="/public/payment.png"
@@ -1626,7 +1626,7 @@
                               </div>
 
                               <div class="list_el">
-                                <a href="/my/likes" class="title">
+                                <a href="/member/likedCourses" class="title">
                                       <span class="icon"
                                       ><img
                                         src="/public/circleHeart.png"
@@ -1639,7 +1639,7 @@
 
                               <div class="list_el">
                                 <a
-                                  href="/my/settings/account"
+                                  href="/member/accountInfo"
                                   class="title"
                                 >
                                       <span class="icon"
@@ -2073,7 +2073,7 @@
         >
         <span class="more-action-divider"></span>
         <a
-          href="sign/signUp"
+          href="/sign/signUp"
           class="e-to-sign-up more-action__text more-action__text--sign-up"
         >회원가입</a
         >
