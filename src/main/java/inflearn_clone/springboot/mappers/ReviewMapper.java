@@ -20,6 +20,7 @@ public interface ReviewMapper {
     int deleteReview(@Param("idx") int idx);
     ReviewListDTO viewReview(@Param("idx") int idx);
 
+    int courseCntByTeacher(@Param("memberId") String memberId);
     int reviewCntByTeacher(@Param("memberId") String memberId);
     List<ReviewVO> reviewListByTeacher(Map<String, Object> map);
 }

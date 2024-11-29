@@ -1,10 +1,12 @@
 package inflearn_clone.springboot.service.course;
 import inflearn_clone.springboot.domain.CourseVO;
 import inflearn_clone.springboot.domain.LessonVO;
+import inflearn_clone.springboot.domain.ReviewVO;
 import inflearn_clone.springboot.domain.SectionVO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.course.CourseTotalDTO;
 import inflearn_clone.springboot.dto.lesson.LessonDTO;
+import inflearn_clone.springboot.dto.review.ReviewListDTO;
 import inflearn_clone.springboot.dto.section.SectionDTO;
 import inflearn_clone.springboot.mappers.CourseMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +29,14 @@ public class CourseServiceImpl implements CourseSerivce {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<CourseDTO> courseList(String memberId) {
-        List<CourseVO> voList = courseMapper.courseList(memberId);
+    public List<CourseDTO> courseList(int pageNo, int pageSize, String memberId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("offset", (pageNo - 1) * pageSize);
+        map.put("limit", pageSize);
+        map.put("memberId", memberId);
+        List<CourseVO> voList =  courseMapper.courseList(map);
         return voList.stream()
-            .map(vo -> modelMapper.map(vo, CourseDTO.class))
-            .collect(Collectors.toList());
+                .map(vo -> modelMapper.map(vo, CourseDTO.class)).collect(Collectors.toList());
     }
     @Override
     public CourseDTO courseView(int idx) {

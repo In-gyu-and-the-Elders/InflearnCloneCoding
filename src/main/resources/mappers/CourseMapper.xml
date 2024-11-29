@@ -8,7 +8,8 @@
             idx, category, title, description, teacherId, regDate, displayDate, status, price, thumbnail
         FROM tbl_course
         WHERE status = 'Y' AND teacherId = #{memberId}
-        ORDER BY regDate DESC;
+        ORDER BY regDate DESC
+            LIMIT #{offset}, #{limit}
     </select>
 
     <select id="courseView" parameterType="int" resultType="inflearn_clone.springboot.domain.CourseVO">
