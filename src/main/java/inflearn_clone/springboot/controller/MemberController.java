@@ -232,4 +232,56 @@ public class MemberController {
             return ResponseEntity.internalServerError().body(response);
         }
     }
+
+    @PostMapping("/updatePassword")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updatePassword(
+            @RequestBody Map<String, String> params,
+            HttpSession session) {
+        
+        Map<String, Object> response = new HashMap<>();
+        String memberId = (String) session.getAttribute("memberId");
+        
+        if (memberId == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        try {
+            String currentPassword = params.get("currentPassword");
+            String newPassword = params.get("newPassword");
+            
+            if (currentPassword == null || newPassword == null || 
+                currentPassword.trim().isEmpty() || newPassword.trim().isEmpty()) {
+                response.put("success", false);
+                response.put("message", "현재 비밀번호와 새 비밀번호를 모두 입력해주세요.");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            if (newPassword.length() < 8) {
+                response.put("success", false);
+                response.put("message", "새 비밀번호는 8자 이상이어야 합니다.");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            boolean result = signService.updatePassword(memberId, currentPassword, newPassword);
+            
+            if (result) {
+                response.put("success", true);
+                response.put("message", "비밀번호가 성공적으로 변경되었습니다.");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("success", false);
+                response.put("message", "현재 비밀번호가 일치하지 않습니다.");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+        } catch (Exception e) {
+            log.error("비밀번호 변경 중 오류 발생", e);
+            response.put("success", false);
+            response.put("message", "비밀번호 변경 중 오류가 발생했습니다.");
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
 }

@@ -2,6 +2,9 @@ package inflearn_clone.springboot.mappers;
 
 import inflearn_clone.springboot.domain.MemberVO;
 import inflearn_clone.springboot.domain.SignVO;
+
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -15,4 +18,5 @@ public interface SignMapper {
   String findPassword(String email, String memberId);
   String deleteMember(String memberId);
   boolean checkDuplicateId(String memberId);
+  int updatePassword(Map<String, String> params);
 }

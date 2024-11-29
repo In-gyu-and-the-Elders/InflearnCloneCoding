@@ -44,7 +44,7 @@
             
             <!-- 강좌 리스트 -->
             <div class="cart-list" th:if="${cartList != null and cartList.size() > 0}">
-              <div class="cart-item" th:each="item : ${cartList}" th:data-course-id="${item.idx}" 
+              <div class="cart-item" th:each="item : ${cartList}" th:data-course-id="${item.courseIdx}"
                    style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #e4e4e4;">
                 <div class="item-info" style="display: flex; align-items: center; gap: 15px;">
                   <input type="checkbox" class="course-select" />

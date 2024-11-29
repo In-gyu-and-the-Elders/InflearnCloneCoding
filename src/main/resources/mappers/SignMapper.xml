@@ -67,4 +67,13 @@
     FROM tbl_member
     WHERE memberId = #{memberId}
   </select>
+
+  <!-- 비밀번호 변경 -->
+  <update id="updatePassword" parameterType="map">
+    UPDATE tbl_member
+    SET pwd = #{newPassword},
+        modifyDate = NOW()
+    WHERE memberId = #{memberId}
+    AND pwd = #{currentPassword}
+</update>
 </mapper>

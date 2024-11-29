@@ -5,6 +5,8 @@ import inflearn_clone.springboot.domain.SignVO;
 import inflearn_clone.springboot.dto.sign.SignDTO;
 import inflearn_clone.springboot.mappers.SignMapper;
 import inflearn_clone.springboot.utils.SignMapperUtil;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -95,5 +97,45 @@ public class SignServiceImpl {
   public boolean checkDuplicateId(String memberId) {
     boolean isDuplicate = signMapper.checkDuplicateId(memberId);
     return !isDuplicate;
+  }
+
+  // 비밀번호 변경
+  public boolean updatePassword(String memberId, String currentPassword, String newPassword) {
+    try {
+        // 현재 사용자 정보 조회
+        SignVO signVO = signMapper.getMemberInfo(memberId);
+        if (signVO == null) {
+            log.error("비밀번호 변경 실패: 존재하지 않는 사용자 - memberId={}", memberId);
+            return false;
+        }
+
+        // 현재 비밀번호 검증
+        if (!passwordEncoder.matches(currentPassword, signVO.getPwd())) {
+            log.error("비밀번호 변경 실패: 현재 비밀번호 불일치 - memberId={}", memberId);
+            return false;
+        }
+
+        // 새 비밀번호 암호화
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+
+        // 비밀번호 업데이트
+        Map<String, String> params = new HashMap<>();
+        params.put("memberId", memberId);
+        params.put("currentPassword", signVO.getPwd()); // 암호화된 현재 비밀번호
+        params.put("newPassword", encodedNewPassword);
+
+        int result = signMapper.updatePassword(params);
+        
+        if (result > 0) {
+            log.info("비밀번호 변경 성공 - memberId={}", memberId);
+            return true;
+        } else {
+            log.error("비밀번호 변경 실패: DB 업데이트 실패 - memberId={}", memberId);
+            return false;
+        }
+    } catch (Exception e) {
+        log.error("비밀번호 변경 중 오류 발생 - memberId={}", memberId, e);
+        return false;
+    }
   }
 }
