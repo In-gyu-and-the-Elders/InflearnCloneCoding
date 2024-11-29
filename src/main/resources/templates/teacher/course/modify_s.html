@@ -39,10 +39,17 @@
 
   <div class="container mt-5">
     <h3>섹션 등록</h3>
+
     <form id="sectionForm" method="POST">
-      <div id="sectionList">
+      <input type="hidden" th:value="${sectionCount}" name="sectionCount">
+      <div id="sectionList" >
+        <div class="mb-3 d-flex align-items-center" th:each="section,status : ${sectionList}">
+          <span class="me-2" th:text="${'섹션 '+(status.index+1)}" ></span>
+          <input type="text" class="form-control w-75" name="sections" th:value="${section.section}"  th:disabled="${courseDTO.displayDate < T(java.time.LocalDateTime).now()}"/>
+          <input type="hidden" th:value="${section.idx}" name="sectionIdx">
+        </div>
         <div class="mb-3 d-flex align-items-center" id="section_1">
-          <span class="me-2" id="sectionLabel_1">섹션 1</span>
+          <span class="me-2" id="sectionLabel_1" th:text="${'섹션 '+(sectionCount+1)}">섹션 1</span>
           <input type="text" class="form-control w-75" name="sections" placeholder="섹션명을 입력해주세요" />
         </div>
       </div>
@@ -55,8 +62,8 @@
     </form>
   </div>
 
-  <script>
-    let sectionCount = 1; // 섹션 번호를 추적하는 변수
+  <script th:inline="javascript">
+    let sectionCount = [[${sectionCount ?: ''}]] + 1; // 섹션 번호를 추적하는 변수
 
     function addSection() {
       sectionCount++;
@@ -85,7 +92,7 @@
 
       // 삭제된 후 번호 재정렬
       const sections = document.querySelectorAll('[id^="section_"]');
-      let index = 1;
+      let index = [[${sectionCount ?: ''}]] + 1;
       sections.forEach(section => {
         const label = section.querySelector('span');
         label.textContent = `섹션 ${index}`;

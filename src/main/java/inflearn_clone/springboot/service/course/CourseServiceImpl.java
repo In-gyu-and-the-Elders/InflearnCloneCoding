@@ -122,13 +122,23 @@ public class CourseServiceImpl implements CourseSerivce {
         map.put("searchValue", searchValue);
         return courseMapper.courseTotalCnt(searchCategory, searchValue);
     }
+  
     @Override
     public int insertCourse(CourseDTO courseDTO) {
         CourseVO courseVO = modelMapper.map(courseDTO, CourseVO.class);
         return courseMapper.insertCourse(courseVO);
     }
+
     @Override
     public CourseDTO viewMyLastCourse(String memberId) {
         return modelMapper.map(courseMapper.viewMyLastCourse(memberId), CourseDTO.class);
     }
+}
+
+    @Override
+    public int updateCourse(CourseDTO courseDTO) {
+        CourseVO courseVO = modelMapper.map(courseDTO, CourseVO.class);
+        return courseMapper.updateCourse(courseVO);
+    }
+
 }

@@ -25,5 +25,8 @@ public interface CourseSerivce {
     List<CourseDTO> getCourses(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);
     int getTotalCourses(String searchCategory, String searchValue);
     int insertCourse(CourseDTO courseDTO);
+
     CourseDTO viewMyLastCourse(String memberId);
+
+    int updateCourse(CourseDTO courseDTO);
 }

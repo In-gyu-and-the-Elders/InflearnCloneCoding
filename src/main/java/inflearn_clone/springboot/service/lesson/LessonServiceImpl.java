@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,4 +28,17 @@ public class LessonServiceImpl implements LessonServiceIf {
         LessonVO lessonVO = modelMapper.map(lessonDTO, LessonVO.class);
         return lessonMapper.insertLesson(lessonVO);
     }
+
+    @Override
+    public List<LessonDTO> getLessons(int sectionIdx) {
+        List<LessonVO> lessonVOList = lessonMapper.getLessons(sectionIdx);
+        return lessonVOList.stream().map(vo -> modelMapper.map(vo, LessonDTO.class)).toList();
+    }
+
+    @Override
+    public int updateLesson(LessonDTO lessonDTO) {
+        LessonVO lessonVO = modelMapper.map(lessonDTO, LessonVO.class);
+        return lessonMapper.updateLesson(lessonVO);
+    }
+
 }
