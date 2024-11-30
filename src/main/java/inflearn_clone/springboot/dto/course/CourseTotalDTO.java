@@ -18,6 +18,7 @@ public class CourseTotalDTO {
     private String title;
     private String description;
     private String teacherId;
+    private String teacherName;
     private LocalDateTime regDate;
 
     private LocalDateTime displayDate;

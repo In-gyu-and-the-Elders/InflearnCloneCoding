@@ -18,6 +18,52 @@
         </if>
         WHERE idx = #{idx}
     </update>
+<!--    동영상페이지-->
+    <select id="getLessonById">
+        SELECT * FROM tbl_lesson WHERE idx = #{lessonIdx}
+    </select>
+
+    <select id="getCourseIdxByLessonId">
+        SELECT s.courseIdx
+        FROM tbl_section s
+                 JOIN tbl_lesson l ON s.idx = l.sectionIdx
+        WHERE l.idx = #{lessonIdx}
+    </select>
+
+    <select id="getPreviousLesson">
+    <![CDATA[
+        SELECT l.*
+        FROM tbl_lesson l
+                 JOIN tbl_section s ON l.sectionIdx = s.idx
+        WHERE s.courseIdx = (
+            SELECT s2.courseIdx
+            FROM tbl_section s2
+                     JOIN tbl_lesson l2 ON s2.idx = l2.sectionIdx
+            WHERE l2.idx = #{lessonIdx}
+        )
+          AND l.idx < #{lessonIdx}
+        ORDER BY l.idx DESC
+            LIMIT 1
+        ]]>
+    </select>
+
+    <select id="getNextLesson">
+ <![CDATA[
+        SELECT l.*
+        FROM tbl_lesson l
+                 JOIN tbl_section s ON l.sectionIdx = s.idx
+        WHERE s.courseIdx = (
+            SELECT s2.courseIdx
+            FROM tbl_section s2
+                     JOIN tbl_lesson l2 ON s2.idx = l2.sectionIdx
+            WHERE l2.idx = #{lessonIdx}
+        )
+          AND l.idx > #{lessonIdx}
+        ORDER BY l.idx ASC
+            LIMIT 1
+        ]]>
+    </select>
+  
     <select id="getVideo" resultType="java.lang.String">
         SELECT video FROM tbl_lesson
         WHERE idx=${lessonIdx}
