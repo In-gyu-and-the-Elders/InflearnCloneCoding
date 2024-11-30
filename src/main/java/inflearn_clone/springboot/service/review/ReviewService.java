@@ -11,6 +11,7 @@ public interface ReviewService {
     int deleteReview(int idx);
     ReviewListDTO viewReview(int idx);
 
+    int courseCntByTeacher(String memberId);
     int reviewCntByTeacher(String memberId);
     List<ReviewListDTO> reviewListByTeacher(int pageNo, int pageSize, String memberId);
 }

@@ -27,6 +27,7 @@
             <button class="btn btn-secondary" type="reset">취소</button>
         </form>
     </div>
+    <a class="btn btn-primary" th:if="${course.sectionCnt == 0}" th:text="'강의 등록 재개'" th:href="@{/admin/course/insert_ss(courseIdx=${course.idx})}"></a>
     <table class="table table-bordered table-hover">
         <thead class="thead">
             <tr>

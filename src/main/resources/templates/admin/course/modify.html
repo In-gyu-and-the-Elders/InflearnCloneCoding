@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/common}">
+<div layout:fragment="content">
+    <div>
+        <h2>강좌 수정</h2>
+    </div>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">강좌 수정</h2>
+        <form id="courseForm" method="POST" enctype="multipart/form-data" action="/admin/course/modify">
+            <div class="mb-3">
+                <label for="title" class="form-label">강좌 제목</label>
+                <input type="text" class="form-control" id="title" name="title" th:value="${course.title}" placeholder="강좌 제목" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">강좌 소개</label>
+                <textarea class="form-control" id="description" th:text="${course.description}" name="description" placeholder="강좌 소개" rows="4" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="category" class="form-label">카테고리</label>
+                <select class="form-control" id="category" name="category" required>
+                    <option value="D" th:selected="${course.category == 'D'}">개발</option>
+                    <option value="A" th:selected="${course.category == 'A'}">인공지능</option>
+                    <option value="H" th:selected="${course.category == 'H'}">하드웨어</option>
+                    <option value="C" th:selected="${course.category == 'C'}">커리어,자기계발</option>
+                    <option value="M" th:selected="${course.category == 'M'}">기획,경영,마케팅</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">가격</label>
+                <input type="number" class="form-control" id="price" name="price" th:value="${course.price}" placeholder="가격" required />
+            </div>
+            <div class="mb-3">
+                <label for="displayDate" class="form-label">강좌 노출일</label>
+                <input type="datetime-local" class="form-control" id="displayDate" th:value="${#temporals.format(course.displayDate, 'yyyy-MM-dd HH:mm:ss')}" name="displayDate" required />
+            </div>
+            <div class="mb-3">
+                <label for="thumbnailFile" class="form-label">썸네일 이미지</label>
+                <img th:src="${course.thumbnail}" width="300px;" alt="강의썸네일">
+                <input type="file" class="form-control" id="thumbnailFile" name="thumbnailFile"/>
+                <span style="color:#ff6c6c;">썸네일 재등록 시 기존 썸네일은 삭제됩니다.</span>
+            </div>
+            <input type="hidden" name="idx" th:value="${course.idx}">
+            <input type="hidden" name="teacherId" th:value="${course.teacherId}">
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary">다음</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+

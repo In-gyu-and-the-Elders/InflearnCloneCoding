@@ -17,7 +17,7 @@ import java.util.Map;
 @Mapper
 public interface CourseMapper {
     // 전체강좌 리스트
-    List<CourseVO> courseList(String memberId);
+    List<CourseVO> courseList(Map<String, Object> map);
 
     CourseVO courseView1(int idx);
 

@@ -48,6 +48,13 @@
         WHERE idx=#{idx}
     </select>
 
+    <!-- 강사 강의 수  -->
+    <select id="courseCntByTeacher" resultType="int">
+        SELECT COUNT(idx)
+        FROM tbl_course
+        WHERE teacherId = #{memberId};
+    </select>
+
     <!-- 강사 리뷰 수 -->
     <select id="reviewCntByTeacher" resultType="int">
         SELECT COUNT(r.idx) AS reviewCount
@@ -56,26 +63,20 @@
         WHERE c.teacherId = #{memberId};
     </select>
 
-
     <!-- 강사 리뷰 목록 -->
-<!--    <select id="reviewListByTeacher" resultType="inflearn_clone.springboot.domain.ReviewVO">-->
-<!--        SELECT-->
-<!--            c.idx AS courseIdx,-->
-<!--            r.idx AS reviewIdx,-->
-<!--            r.content AS reviewContent,-->
-<!--            r.rating AS reviewRating,-->
-<!--            r.regDate AS reviewDate-->
-<!--        FROM tbl_course c-->
-<!--        LEFT JOIN tbl_review r ON c.idx = r.courseIdx-->
-<!--        WHERE c.teacherId = #{memberId}-->
-<!--        ORDER BY r.regDate DESC;-->
-<!--    </select>-->
     <select id="reviewListByTeacher" resultType="inflearn_clone.springboot.domain.ReviewVO">
         SELECT
-            c.idx, c.title, r.idx, r.content, r.rating, r.regDate, r.memberId
-        FROM tbl_course AS c
-        LEFT OUTER JOIN tbl_review AS r ON c.idx = r.courseIdx
+            c.idx,
+            c.title,
+            r.idx,
+            r.content,
+            r.rating,
+            r.regDate,
+            r.memberId
+        FROM tbl_review r
+                 LEFT JOIN tbl_course c ON c.idx = r.courseIdx
         WHERE c.teacherId = #{memberId}
-        ORDER BY r.idx DESC
+        ORDER BY r.regDate DESC
+        LIMIT #{offset}, #{limit}
     </select>
 </mapper> 

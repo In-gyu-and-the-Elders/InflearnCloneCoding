@@ -69,6 +69,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public int courseCntByTeacher(String memberId) {
+        return reviewMapper.courseCntByTeacher(memberId);
+    }
+
+    @Override
     public int reviewCntByTeacher(String memberId) {
         return reviewMapper.reviewCntByTeacher(memberId);
     }
