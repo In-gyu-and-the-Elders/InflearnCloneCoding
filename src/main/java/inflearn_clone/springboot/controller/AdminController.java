@@ -143,6 +143,11 @@ public class AdminController {
         log.info("Member list totalCnt" + totalCnt); // 100
         Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
         List<MemberDTO> members =  memberService.selectAllMember(pageNo, 10, searchCategory, searchValue, sortQuery, "S", "");
+        System.out.println(paging.getStartBlockPage());
+        System.out.println(paging.getEndBlockPage());
+        System.out.println(paging.getNextBlock());
+        System.out.println(paging.getPrevBlock());
+
         model.addAttribute("members", members);
         model.addAttribute("paging", paging);
         model.addAttribute("searchCategory", searchCategory);
@@ -419,7 +424,7 @@ public class AdminController {
                                HttpServletResponse response,
                                HttpServletRequest request,
                                HttpSession session){
-            String adminId = (String) session.getAttribute("memberId");
+            String adminId = (String) session.getAttribute("adminId");
             response.setCharacterEncoding("UTF-8");
             CourseDTO info = courseSerivce.courseView1(idx);
             int insertNotice = noticeService.autoInsertOneCourse(adminId, info);
@@ -441,13 +446,13 @@ public class AdminController {
                                @RequestParam String memberType,
                                HttpSession session,
                                HttpServletResponse response){
-        String adminId = (String)session.getAttribute("memberId");
+        String adminId = (String)session.getAttribute("adminId");
         response.setCharacterEncoding("utf-8");
         if(memberType.equals("T")){
             List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
             if(list.size() > 0){
                 // 공지사항 자동 등록 로직
-                int insertNotice = noticeService.autoInsert(adminId, list);
+                int insertNotice = noticeService.autoInsert(memberId, list, adminId);
                 if(insertNotice > 0){
                     memberService.deleteMemberInfo(memberId);
                     JSFunc.alertLocation("공지사항 등록 완료", "/admin/notice/list", response);

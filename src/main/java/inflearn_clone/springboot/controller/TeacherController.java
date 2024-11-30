@@ -603,6 +603,8 @@ public class TeacherController {
         Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
         List<MemberDTO> teacherList = teacherService.selectAllTeacher(pageNo, 10, searchCategory, searchValue, sortQuery, "T", "Y");
         System.out.println(teacherList.size());
+
+
         model.addAttribute("teacherList", teacherList);
         model.addAttribute("paging", paging);
         model.addAttribute("searchCategory", searchCategory);

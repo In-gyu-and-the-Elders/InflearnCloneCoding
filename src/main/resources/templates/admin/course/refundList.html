@@ -29,6 +29,9 @@
                 <span class="badge badge-danger" th:if="${dto.status != 'Y' or dto.status == 'D'}">환불 완료</span>
             </td>
         </tr>
+        <tr th:if="${list == null or list.isEmpty()}">
+            <td colspan="6" class="text-center">등록된 내용이 없습니다.</td>
+        </tr>
         </tbody>
     </table>
 <!--    <div th:replace="~{/common/paging :: paging}"></div>-->

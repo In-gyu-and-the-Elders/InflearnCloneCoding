@@ -61,6 +61,9 @@
                 <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N' and dto.status != 'R' and dto.status != 'P'}">탈퇴</span>
             </td>
         </tr>
+        <tr th:if="${members == null or members.isEmpty()}">
+            <td colspan="7" class="text-center">등록된 내용이 없습니다.</td>
+        </tr>
         </tbody>
     </table>
     <div th:replace="~{/common/paging :: paging}"></div>

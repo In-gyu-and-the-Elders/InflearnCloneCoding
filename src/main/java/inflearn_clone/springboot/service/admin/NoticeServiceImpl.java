@@ -5,6 +5,7 @@ import inflearn_clone.springboot.dto.bbs.BbsDTO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.mappers.BbsMapper;
 import inflearn_clone.springboot.mappers.CourseMapper;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -64,9 +65,9 @@ public class NoticeServiceImpl implements NoticeServiceIf{
     }
 
     @Override
-    public int autoInsert(String memberId, List<CourseDTO> list) {
+    public int autoInsert(String memberId, List<CourseDTO> list, String adminId) {
         BbsVO bbsVO = new BbsVO();
-        bbsVO.setWriterId(memberId);
+        bbsVO.setWriterId(adminId);
         bbsVO.setTitle(memberId + "강사님 강좌 폐지 안내");
         StringBuilder content = new StringBuilder();
         content.append("30일 이후 다음 강좌들은 폐지됩니다\n");
@@ -101,9 +102,10 @@ public class NoticeServiceImpl implements NoticeServiceIf{
 
     @Override
     public int autoInsertOneCourse(String memberId, CourseDTO info) {
+        System.out.println("memberId: " + memberId);
         BbsVO bbsVO = new BbsVO();
         bbsVO.setWriterId(memberId);
-        bbsVO.setTitle(memberId + "강사님 강좌 폐지 안내");
+        bbsVO.setTitle(info.getTeacherId() + "강사님 강좌 폐지 안내");
         StringBuilder content = new StringBuilder();
         content.append("30일 이후 해당 강좌는 폐지됩니다\n");
         content.append(info.getCourseTitle());
