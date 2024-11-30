@@ -11,6 +11,7 @@ import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.service.cart.CartService;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.lesson.LessonServiceIf;
+import inflearn_clone.springboot.service.lessonStatus.LessonStatusServiceImpl;
 import inflearn_clone.springboot.service.like.LikeService;
 import inflearn_clone.springboot.service.order.OrderService;
 import inflearn_clone.springboot.service.review.ReviewService;
@@ -18,6 +19,7 @@ import inflearn_clone.springboot.service.section.SectionServiceIf;
 import inflearn_clone.springboot.utils.Paging;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static inflearn_clone.springboot.utils.QueryUtil.generateSortQuery;
 
@@ -44,6 +47,7 @@ public class CourseController {
     private final SectionServiceIf sectionService;
     private final LessonServiceIf lessonService;
     private final ModelMapper modelMapper;
+    private final LessonStatusServiceImpl lessonStatusService;
 
     @GetMapping("/list")
     public String list(Model model,
@@ -164,6 +168,56 @@ public class CourseController {
             default:
                 return "/";
         }
+    }
+
+    @GetMapping("/study/{lessonIdx}")
+    public String playLesson(@PathVariable int lessonIdx, Model model, HttpServletRequest request) {
+        String memberId = (String) request.getSession().getAttribute("memberId");
+        if (memberId == null) {
+            return "redirect:/login"; // 로그인 페이지로 리다이렉트
+        }
+
+        // 강의 정보 가져오기
+        LessonDTO lesson = lessonService.getLessonById(lessonIdx);
+        if (lesson == null) {
+            return "redirect:/"; // 메인 페이지로 리다이렉트
+        }
+
+        // 해당 강의의 courseIdx 가져오기
+        int courseIdx = lessonService.getCourseIdxByLessonId(lessonIdx);
+
+        // 사용자가 해당 강의를 구매했는지 확인
+        boolean hasOrdered = orderService.orderCnt(courseIdx, memberId);
+        if (hasOrdered) {
+            return "redirect:/course/view/" + courseIdx; // 강의 상세 페이지로 리다이렉트
+        }
+
+        lessonStatusService.updateLessonStatus(lessonIdx, memberId);
+
+        // 이전/다음 강의 가져오기
+        LessonDTO previousLesson = lessonService.getPreviousLesson(lessonIdx);
+        LessonDTO nextLesson = lessonService.getNextLesson(lessonIdx);
+
+        // 커리큘럼 가져오기
+        List<SectionWithLessonListDTO> curriculum = new ArrayList<>();
+        List<SectionDTO> sectionList = sectionService.sectionList(courseIdx);
+        for (SectionDTO sectionDTO : sectionList) {
+            int sectionIdx = sectionDTO.getIdx();
+            List<LessonDTO> lessons = lessonService.getLessons(sectionIdx);
+            SectionWithLessonListDTO sectionWithLessons = modelMapper.map(sectionDTO, SectionWithLessonListDTO.class);
+            sectionWithLessons.setLessons(lessons);
+            curriculum.add(sectionWithLessons);
+        }
+
+        model.addAttribute("lesson", lesson);
+        model.addAttribute("previousLesson", previousLesson);
+        model.addAttribute("nextLesson", nextLesson);
+        model.addAttribute("curriculum", curriculum);
+        model.addAttribute("courseIdx", courseIdx);
+
+        // 동영상 재생 시 lessonFlag 업데이트는 JavaScript에서 AJAX로 처리
+
+        return "course/tabs/viewLesson";
     }
 
 }

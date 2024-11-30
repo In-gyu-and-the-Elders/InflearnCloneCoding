@@ -13,7 +13,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Log4j2
@@ -39,6 +41,30 @@ public class LessonServiceImpl implements LessonServiceIf {
     public int updateLesson(LessonDTO lessonDTO) {
         LessonVO lessonVO = modelMapper.map(lessonDTO, LessonVO.class);
         return lessonMapper.updateLesson(lessonVO);
+    }
+
+    //동영상페이지
+    @Override
+    public LessonDTO getLessonById(int lessonIdx) {
+        LessonVO lessonVO = lessonMapper.getLessonById(lessonIdx);
+        return modelMapper.map(lessonVO, LessonDTO.class);
+    }
+
+    @Override
+    public int getCourseIdxByLessonId(int lessonIdx) {
+        return lessonMapper.getCourseIdxByLessonId(lessonIdx);
+    }
+
+    @Override
+    public LessonDTO getPreviousLesson(int lessonIdx) {
+        LessonVO lessonVO = lessonMapper.getPreviousLesson(lessonIdx);
+        return lessonVO != null ? modelMapper.map(lessonVO, LessonDTO.class) : null;
+    }
+
+    @Override
+    public LessonDTO getNextLesson(int lessonIdx) {
+        LessonVO lessonVO = lessonMapper.getNextLesson(lessonIdx);
+        return lessonVO != null ? modelMapper.map(lessonVO, LessonDTO.class) : null;
     }
 
 }
