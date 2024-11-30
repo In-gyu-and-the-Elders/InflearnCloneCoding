@@ -7,31 +7,26 @@
     </div>
     <div class="search-container">
         <form action="/admin/member/teacherRequestList" method="get" class="d-flex align-items-center">
-            <!-- 셀렉트박스 -->
-            <div>
-                <select class="form-select" name="searchCategory">
-                    <option value="">카테고리</option>
-                    <option value="name" >이름</option>
-                    <option value="memberId">회원 ID</option>
-                    <option value="email">회원 이메일</option>
-                </select>
-            </div>
-            <!-- 검색창 -->
+            <select class="form-select" name="searchCategory">
+                <option value="">카테고리</option>
+                <option value="name" >이름</option>
+                <option value="memberId">회원 ID</option>
+                <option value="email">회원 이메일</option>
+                <option value="status">회원 상태</option>
+            </select>
             <input type="search" class="form-control" name="searchValue" placeholder="내용">
-            <!-- 셀렉트박스 -->
+            <select class="form-select" name="sortType">
+                <option value="">정렬내용</option>
+                <option value="regDate">등록일</option>
+                <option value="name">이름</option>
+                <option value="email">이메일</option>
+                <option value="phone">전화번호</option>
+            </select>
             <select class="form-select" name="sortOrder">
                 <option value="">정렬순</option>
                 <option value="DESC">내림차순</option>
                 <option value="ASC">오름차순</option>
             </select>
-            <div layout:fragment="sortType">
-                <select class="form-select" name="sortType">
-                    <option value="">정렬내용</option>
-                    <option value="regDate">등록일</option>
-                    <option value="name">이름</option>
-                </select>
-            </div>
-            <!-- 버튼 -->
             <button class="btn btn-primary" type="submit">검색</button>
             <button class="btn btn-secondary" type="reset">취소</button>
         </form>

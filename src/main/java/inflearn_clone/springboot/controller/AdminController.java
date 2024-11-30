@@ -25,6 +25,7 @@ import inflearn_clone.springboot.service.review.ReviewService;
 import inflearn_clone.springboot.service.section.SectionServiceIf;
 import inflearn_clone.springboot.service.teacher.TeacherServiceIf;
 import inflearn_clone.springboot.utils.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletResponse;
@@ -158,14 +159,18 @@ public class AdminController {
      */
     @GetMapping("/member/tList")
     public String list_1(Model model,
+                         HttpServletResponse response,
                        @RequestParam(defaultValue = "1") int pageNo,
                        @RequestParam(required = false) String searchCategory,
                        @RequestParam(required = false) String searchValue,
                        @RequestParam(required = false) String sortType,
                        @RequestParam(required = false) String sortOrder,
                          @RequestParam(required = false) String status){
+        response.setCharacterEncoding("utf-8");
+        if (!ValidateList.validateMemberListParameters(pageNo, searchCategory, searchValue, sortType, sortOrder, response)) {
+            return null;
+        }
         String sortQuery = generateSortQuery(sortType, sortOrder);
-
         int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "T", "");
         log.info("Member list totalCnt" + totalCnt);
         log.info("searchCategory" + searchCategory);
@@ -214,15 +219,22 @@ public class AdminController {
      */
     @GetMapping("/member/view")
     public String memberView(Model model,
-                             @RequestParam String memberId){
+                             HttpServletResponse response,
+                             HttpServletRequest request,
+                             @RequestParam String memberId) throws IOException {
+        response.setCharacterEncoding("utf-8");
         MemberDTO memberInfo = memberService.selectMemberInfo(memberId);
-        model.addAttribute("info", memberInfo);
         if(memberInfo != null){
+            model.addAttribute("info", memberInfo);
             return "admin/member/view";
-        }else{
-            log.info("회원 정보 없음");
+        }else {
+            String referer = request.getHeader("Referer");
+            if (referer == null) {
+                referer = "/admin/member/sList";
+            }
+            JSFunc.alertAndRedirect("일치하는 회원 정보가 없습니다.", referer, response);
+            return null;
         }
-        return null;
     }
 
     /**
@@ -231,15 +243,22 @@ public class AdminController {
      */
     @GetMapping("/member/modify")
     public String modifyGet(Model model,
+                            HttpServletRequest request,
+                            HttpServletResponse response,
                             @RequestParam String memberId){
+        response.setCharacterEncoding("utf-8");
         MemberDTO memberInfo = memberService.selectMemberInfo(memberId);
-        model.addAttribute("info", memberInfo);
         if(memberInfo != null){
+            model.addAttribute("info", memberInfo);
             return "admin/member/modify";
         }else{
-            log.info("회원 정보 없음");
+            String referer = request.getHeader("Referer");
+            if (referer == null) {
+                referer = "/admin/member/sList";
+            }
+            JSFunc.alertAndRedirect("일치하는 회원 정보가 없습니다.", referer, response);
+            return null;
         }
-        return null;
     }
 
     /**
@@ -247,53 +266,61 @@ public class AdminController {
      * 회원 수정 후 회원 상세 페이지로 이동
      */
     @PostMapping("/member/modify")
-    public String modifyPost(@ModelAttribute MemberDTO dto){
-        if(dto.getMemberType().equals('T')){
+    public String modifyPost(@ModelAttribute MemberDTO dto,
+                             HttpServletRequest request,
+                             HttpServletResponse response){
+        response.setCharacterEncoding("utf-8");
+        if(dto != null){
             boolean result = memberService.modifyMemberInfo(dto);
             if(result){
-                return "redirect:/admin/member/view?memberId=" + dto.getMemberId();
-            }
-        }else{
-            boolean result = memberService.modifyMemberInfo(dto);
-            if(result){
-                return "redirect:/admin/member/view?memberId=" + dto.getMemberId();
+                JSFunc.alertBack("회원 정보가 수정되었습니다.", response);
+            }else {
+                JSFunc.alertBack("회원 정보 수정 실패", response);
             }
         }
-
         return null;
     }
+
 
     /**
      * 회원 탈퇴 사유 조회
      *
      */
     @GetMapping("/member/leaveReasonView")
-    public String leaveReasonView(Model model, String memberId){
+    public String leaveReasonView(Model model, String memberId, HttpServletResponse response){
+        response.setCharacterEncoding("UTF-8");
         LeaveReasonDTO info = memberService.leaveReasonView(memberId);
         if(info != null){
             model.addAttribute("info", info);
             return "admin/member/leaveReason";
         }else{
-            log.info("조회된 내용이 없습니다."); // 로직추가할것
+            JSFunc.alertBack("조회된 내용이 없습니다.", response);
+            log.info("조회된 내용이 없습니다.");
         }
         return null;
     }
 
     /**
-     * 강의 목록 작성 중
+     * 강좌 목록
      */
     @GetMapping("/course/list")
     public String courseList(Model model,
+                             HttpServletResponse response,
                              @RequestParam(defaultValue = "1") int pageNo,
-                             @RequestParam(defaultValue = "false") String searchCategory,
-                             @RequestParam(defaultValue = "false") String searchValue,
+                             @RequestParam(required = false) String searchCategory,
+                             @RequestParam(required = false) String searchValue,
                              @RequestParam(required = false) String sortType,
                              @RequestParam(required = false) String sortOrder){
+
+        response.setCharacterEncoding("utf-8");
+        if (!ValidateList.validateCourseListParameters(pageNo, searchCategory, searchValue, sortType, sortOrder, response)) {
+            return null;
+        }
         String sortQuery = generateSortQuery(sortType, sortOrder);
-        int totalCnt = courseSerivce.allCourseListTotalCnt(searchCategory, searchValue, "Y");
+        int totalCnt = courseSerivce.allCourseListTotalCnt(searchCategory, searchValue, null);
         log.info("Course list totalCnt" + totalCnt);
         Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
-        List<CourseDTO> courses =  courseSerivce.allCourseList(pageNo, 10, searchCategory, searchValue, sortQuery);
+        List<CourseDTO> courses =  courseSerivce.allCourseList(pageNo, 10, searchCategory, searchValue, sortQuery, null);
         model.addAttribute("courses", courses);
         model.addAttribute("paging", paging);
         model.addAttribute("searchCategory", searchCategory);
@@ -302,6 +329,38 @@ public class AdminController {
         model.addAttribute("sortOrder", sortOrder);
         model.addAttribute("uri", "/admin/course/list");
         return "/admin/course/courseList";
+
+    }
+
+    /**
+     * 삭제 요청된 강좌 목록
+     */
+    @GetMapping("/course/requestedDeleteList")
+    public String listRequestedToDelete(Model model,
+                             HttpServletResponse response,
+                             @RequestParam(defaultValue = "1") int pageNo,
+                             @RequestParam(required = false) String searchCategory,
+                             @RequestParam(required = false) String searchValue,
+                             @RequestParam(required = false) String sortType,
+                             @RequestParam(required = false) String sortOrder){
+
+        response.setCharacterEncoding("utf-8");
+        if (!ValidateList.validateCourseListParameters(pageNo, searchCategory, searchValue, sortType, sortOrder, response)) {
+            return null;
+        }
+        String sortQuery = generateSortQuery(sortType, sortOrder);
+        int totalCnt = courseSerivce.allCourseListTotalCnt(searchCategory, searchValue, "K");
+        log.info("Course list totalCnt" + totalCnt);
+        Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
+        List<CourseDTO> courses =  courseSerivce.allCourseList(pageNo, 10, searchCategory, searchValue, sortQuery, "K");
+        model.addAttribute("courses", courses);
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchCategory", searchCategory);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("uri", "/admin/course/requestedDeleteList");
+        return "/admin/course/requestedDeleteList";
 
     }
 
@@ -325,23 +384,51 @@ public class AdminController {
      * 강좌 삭제
      *
      */
+//    @GetMapping("/course/delete")
+//    public String deleteCourse(@RequestParam String idx,
+//                               HttpServletResponse response,
+//                               HttpServletRequest request,
+//                               @RequestParam String memberId){
+//        List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
+//        if(list.size() > 0){
+//            // 공지사항 자동 등록 로직
+//            int insertNotice = noticeService.autoInsert(memberId, list);
+//            if(insertNotice > 0){
+//                boolean result = memberService.deleteMemberInfo(memberId);
+//                if(result){
+//                    JSFunc.alertLocation("공지사항 등록 완료", "/admin/notice/list", response);
+//                }
+//            }else{
+//                JSFunc.alertBack("공지사항 등록 실패",  response);
+//            }
+//        }else{
+//            // 회원탈퇴 로직 추가
+//            boolean result = memberService.deleteMemberInfo(memberId);
+//            if(result) {
+//                JSFunc.alertLocation("운영 중인 강좌가 없어 정상 탈퇴되었습니다.", "/admin/member/tList", response);
+//                return null;
+//            }else{
+//                JSFunc.alert("회원 탈퇴 실패",response);
+//            }
+//        }
+//        return null;
+//    }
+
     @GetMapping("/course/delete")
-    public String deleteCourse(@RequestParam String idx, @RequestParam String memberId){
-        List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
-        if(list.size() > 0){
-            // 공지사항 자동 등록 로직
-            int insertNotice = noticeService.autoInsert(memberId, list);
+    public String deleteCourse(@RequestParam int idx,
+                               HttpServletResponse response,
+                               HttpServletRequest request,
+                               HttpSession session){
+            String adminId = (String) session.getAttribute("memberId");
+            response.setCharacterEncoding("UTF-8");
+            CourseDTO info = courseSerivce.courseView1(idx);
+            int insertNotice = noticeService.autoInsertOneCourse(adminId, info);
             if(insertNotice > 0){
-                memberService.deleteMemberInfo(memberId);
-                return "강의 삭제 예약 완료";
+                JSFunc.alertLocation("공지사항 등록 완료", "/admin/notice/list", response);
             }else{
-                return "예약 설정 중 오류가 발생했습니다.";
+                JSFunc.alertBack("공지사항 등록 실패",  response);
             }
-        }else{
-            // 회원탈퇴 로직 추가
-            memberService.deleteMemberInfo(memberId);
-            return "운영 중인 강좌가 없습니다.";
-        }
+        return null;
     }
 
     /**
@@ -349,59 +436,35 @@ public class AdminController {
      * 회원이 탈퇴 가능한 상태인지 확인
      * 환불 처리 절차가 필요한 경우라면 즉시 탈퇴 처리가 아닌 유예 상태로 변경
      */
-//    @GetMapping("/member/delete")
-//    public String memberDelete(@RequestParam String memberId, @RequestParam String memberType){
-//        if(memberType.equals("T")){
-//            List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
-//            //System.out.println(result.size());
-//            if(list.size() > 0){
-//                // 공지사항 자동 등록 로직
-//                int insertNotice = noticeService.autoInsert(memberId, list);
-//                if(insertNotice > 0){
-//                    // 공지사항 등록 이후 30일 뒤 강좌 삭제되도록 처리해야함 (즉 예약 처리)
-//                    // 예약 로직이 들어가야함
-//                    memberService.deleteMemberInfo(memberId);
-//                    return "강의 삭제 예약 완료";
-//
-//                }else{
-//                    return "예약 설정 중 오류가 발생했습니다.";
-//                }
-//            }else{
-//                // 회원탈퇴 로직 추가
-//                memberService.deleteMemberInfo(memberId);
-//                return "운영 중인 강좌가 없습니다.";
-//            }
-//        }else{
-//            memberService.deleteMemberInfo(memberId);
-//            return "학생 로직 처리";
-//        }
-//    }
     @GetMapping("/member/delete")
     public String memberDelete(@RequestParam String memberId,
                                @RequestParam String memberType,
+                               HttpSession session,
                                HttpServletResponse response){
+        String adminId = (String)session.getAttribute("memberId");
+        response.setCharacterEncoding("utf-8");
         if(memberType.equals("T")){
             List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
             if(list.size() > 0){
                 // 공지사항 자동 등록 로직
-                int insertNotice = noticeService.autoInsert(memberId, list);
+                int insertNotice = noticeService.autoInsert(adminId, list);
                 if(insertNotice > 0){
                     memberService.deleteMemberInfo(memberId);
-                    JSFunc.alertBack("공지사항이 등록되었습니다.", response);
-                    return "";
-
+                    JSFunc.alertLocation("공지사항 등록 완료", "/admin/notice/list", response);
                 }else{
-                    return "예약 설정 중 오류가 발생했습니다.";
+                    JSFunc.alertBack("공지사항 등록 중 오류가 발생했습니다.", response);
                 }
             }else{
-                // 회원탈퇴 로직 추가
-                memberService.deleteMemberInfo(memberId);
-                return "운영 중인 강좌가 없습니다.";
+                boolean result = memberService.deleteMemberInfo(memberId);
+                JSFunc.alertLocation("운영 중인 강좌가 없어 정상 탈퇴되었습니다.", "/admin/member/tList", response);
             }
         }else{
-            memberService.deleteMemberInfo(memberId);
-            return "학생 로직 처리";
+            boolean result =  memberService.deleteMemberInfo(memberId);
+            if(result){
+                JSFunc.alertLocation("정상 탈퇴되었습니다.", "/admin/member/sList", response);
+            }
         }
+        return null;
     }
 
     /**
@@ -409,10 +472,17 @@ public class AdminController {
      *
      */
     @GetMapping("/course/refundList")
-    public String selectRefundList(Model model, @RequestParam int idx){
+    public String selectRefundList(Model model,
+                                   @RequestParam int idx,
+                                   HttpServletResponse response){
         List<OrderRefundDTO> orderList = orderService.refundByDeleteCourse(idx);
-        model.addAttribute("list", orderList);
-        return "admin/course/refundList";
+        if(orderList.size() > 0){
+            model.addAttribute("list", orderList);
+            return "admin/course/refundList";
+        }else{
+            JSFunc.alertBack("환불자 명단이 없습니다.", response);
+        }
+        return null;
     }
 
     @GetMapping("/course/insert")

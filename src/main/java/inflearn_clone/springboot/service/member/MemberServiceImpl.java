@@ -71,9 +71,13 @@ public class MemberServiceImpl implements MemberServiceIf{
     @Override
     public MemberDTO selectMemberInfo(String memberId) {
         MemberVO vo = memberMapper.selectMemberInfo(memberId);
+        if (vo == null) {
+            return null;
+        }
         MemberDTO memberInfo = modelMapper.map(vo, MemberDTO.class);
         return memberInfo;
     }
+
 
     @Override
     public boolean modifyMemberInfo(MemberDTO dto) {
@@ -91,6 +95,9 @@ public class MemberServiceImpl implements MemberServiceIf{
     @Override
     public LeaveReasonDTO leaveReasonView(String memberId) {
         MemberVO vo = memberMapper.leaveReasonView(memberId);
+        if(vo == null){
+            return null;
+        }
         return modelMapper.map(vo, LeaveReasonDTO.class);
     }
 

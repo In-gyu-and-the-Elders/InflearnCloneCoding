@@ -100,6 +100,20 @@ public class NoticeServiceImpl implements NoticeServiceIf{
     }
 
     @Override
+    public int autoInsertOneCourse(String memberId, CourseDTO info) {
+        BbsVO bbsVO = new BbsVO();
+        bbsVO.setWriterId(memberId);
+        bbsVO.setTitle(memberId + "강사님 강좌 폐지 안내");
+        StringBuilder content = new StringBuilder();
+        content.append("30일 이후 해당 강좌는 폐지됩니다\n");
+        content.append(info.getCourseTitle());
+        bbsVO.setCategory("N");
+        bbsVO.setContent(content.toString());
+        int result = bbsMapper.insert(bbsVO);
+        return result;
+    }
+
+    @Override
     public int noticeTotalCnt(String searchCategory, String searchValue) {
         return bbsMapper.noticeTotalCnt(searchCategory, searchValue);
     }

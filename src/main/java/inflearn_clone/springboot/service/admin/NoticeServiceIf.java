@@ -16,6 +16,8 @@ public interface NoticeServiceIf {
     //수미가 작성한 것
     public int autoInsert(String memberId, List<CourseDTO> list);
 
+    public int autoInsertOneCourse(String memberId, CourseDTO info);
+
     int noticeTotalCnt(String searchCategory, String searchValue);
 
 

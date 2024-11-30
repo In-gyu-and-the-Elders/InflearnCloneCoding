@@ -6,7 +6,7 @@
         <h2>강의 목록</h2>
     </div>
     <div class="search-container">
-        <form action="/admin/course/list" method="get" class="d-flex align-items-center">
+        <form action="/admin/course/requestedDeleteList" method="get" class="d-flex align-items-center">
             <select class="form-select" name="searchCategory">
                 <option value="">카테고리</option>
                 <option value="title" >강좌명</option>
@@ -58,10 +58,10 @@
                 <span class="badge badge-success" th:if="${dto.status == 'Y'}">활성</span>
                 <span class="badge badge-secondary" th:if="${dto.status == 'N'}">비활성</span>
                 <span class="badge badge-warning" th:if="${dto.status == 'R'}">삭제 처리 중</span>
-                <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N' and dto.status != 'R'}">삭제</span>
+                <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N' and dto.status != 'R' and dto.status != 'K'}">삭제</span>
                 <!-- 환불된 명단 조회 가능-->
-                <span class="badge badge-danger" th:if="${dto.status == 'D'}"
-                      th:onclick="|location.href= '@{/admin/course/refundList(idx=${dto.idx})}'|"> 환불 완료
+                <span class="badge badge-warning" th:if="${dto.status == 'K'}"
+                      th:onclick="|location.href= '@{/admin/course/delete(idx=${dto.idx})}'|"> 삭제 요청
                 </span>
             </td>
         </tr>
