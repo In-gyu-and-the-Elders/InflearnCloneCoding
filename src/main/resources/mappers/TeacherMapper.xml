@@ -23,7 +23,7 @@
                 title LIKE CONCAT('%', #{searchValue}, '%')
             </if>
             AND teacherId = #{teacherId}
-            AND (status = 'Y' OR status = 'N')
+            AND (status = 'Y' OR status = 'N' OR status = 'K')
         </where>
     </select>
 
@@ -34,7 +34,7 @@
                 title LIKE CONCAT('%', #{searchValue}, '%')
             </if>
             AND teacherId = #{teacherId}
-            AND (status = 'Y' OR status = 'N')
+            AND (status = 'Y' OR status = 'N' OR status = 'K')
         </where>
         ${sortQuery}
         LIMIT #{offset}, #{limit}

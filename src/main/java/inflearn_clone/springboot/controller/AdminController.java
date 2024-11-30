@@ -28,12 +28,14 @@ import inflearn_clone.springboot.utils.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -854,13 +856,22 @@ public class AdminController {
 
     // 11261051 --> validation 아직 안 됨
     @GetMapping("notice/insert")
-    public String insert() {
+    public String insert(Model model) {
+        model.addAttribute("bbsDTO", new BbsDTO());
         return "admin/notice/insert";
     }
 
     @PostMapping("notice/insert")
-    public String insert(BbsDTO bbsDTO, HttpServletResponse response, HttpSession session) {
-
+    public String insert(@ModelAttribute @Valid BbsDTO bbsDTO,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes,
+                         HttpServletResponse response,
+                         HttpSession session,Model model) {
+        if(bindingResult.hasErrors()){
+            model.addAttribute("bbsDTO", bbsDTO);
+            redirectAttributes.addFlashAttribute("errors", bindingResult);
+            return "admin/notice/insert";
+        }
         String adminId = (String) session.getAttribute("adminId");
         if (adminId == null) {
             response.setCharacterEncoding("utf-8");

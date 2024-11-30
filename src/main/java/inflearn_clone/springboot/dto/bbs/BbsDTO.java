@@ -1,5 +1,8 @@
 package inflearn_clone.springboot.dto.bbs;
 
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,8 +24,14 @@ public class BbsDTO {
     private int idx;
     private String category;
     private int refIdx;
+    @NotNull(message = "제목은 필수입니다.")
+    @Size(min = 5, max = 50, message = "제목은 5자에서 50자 사이여야 합니다.")
     private String title;
+    @NotNull(message = "내용은 필수입니다.")
+    @Size(min = 10, max = 1000, message = "내용은 10자에서 1000자 사이여야 합니다.")
     private String content;
+
+    @FutureOrPresent(message = "디스플레이 날짜는 현재 또는 미래여야 합니다.")
     private LocalDateTime displayDate;
     private LocalDateTime regDate;
     private LocalDateTime modifyDate;

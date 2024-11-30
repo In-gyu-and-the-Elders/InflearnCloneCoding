@@ -9,6 +9,9 @@
     <h2 class="text-center mb-4">강좌 정보</h2>
 
     <table class="table table-bordered table-sm">
+      <colgroup>
+        <col style="background-color: gray; width:15%;">
+      </colgroup>
       <tr>
         <th class="text-center">강좌 제목</th>
         <td th:text="${courseDTO.title}" colspan="5"></td>
@@ -38,24 +41,24 @@
   </div>
 
   <div class="container mt-5">
-    <h3>섹션 등록</h3>
+    <h2 class="text-center mb-4">섹션 등록</h2>
 
     <form id="sectionForm" method="POST">
       <input type="hidden" th:value="${sectionCount}" name="sectionCount">
       <div id="sectionList" >
         <div class="mb-3 d-flex align-items-center" th:each="section,status : ${sectionList}">
-          <span class="me-2" th:text="${'섹션 '+(status.index+1)}" ></span>
-          <input type="text" class="form-control w-75" name="sections" th:value="${section.section}"  th:disabled="${courseDTO.displayDate < T(java.time.LocalDateTime).now()}"/>
+          <span class="me-2" style="width: 80px;" th:text="${'섹션 '+(status.index+1)}" ></span>
+          <input type="text" class="form-control" name="sections" required th:value="${section.section}"  th:disabled="${courseDTO.displayDate < T(java.time.LocalDateTime).now()}"/>
           <input type="hidden" th:value="${section.idx}" name="sectionIdx">
         </div>
         <div class="mb-3 d-flex align-items-center" id="section_1">
-          <span class="me-2" id="sectionLabel_1" th:text="${'섹션 '+(sectionCount+1)}">섹션 1</span>
-          <input type="text" class="form-control w-75" name="sections" placeholder="섹션명을 입력해주세요" />
+          <span class="me-2" style="width: 80px;" id="sectionLabel_1" th:text="${'섹션 '+(sectionCount+1)}">섹션 1</span>
+          <input type="text" class="form-control" required name="sections" placeholder="섹션명을 입력해주세요" />
           <button type="button" class="btn btn-danger btn-sm ms-2" onclick="removeSection('section_1')">&times;</button>
         </div>
       </div>
 
-      <div class="d-flex mb-3">
+      <div class="d-flex justify-content-end mb-3">
         <button type="button" class="btn btn-secondary me-2" onclick="addSection()">섹션 추가</button>
         <button type="submit" class="btn btn-primary">다음</button>
       </div>
@@ -73,8 +76,8 @@
       newSection.classList.add('mb-3', 'd-flex', 'align-items-center');
       newSection.id = 'section_' + sectionCount;  // 각 섹션에 고유 ID를 부여합니다.
       newSection.innerHTML = `
-      <span class="me-2" id="sectionLabel_${sectionCount}">섹션 ${sectionCount}</span>
-      <input type="text" class="form-control w-75" name="sections" placeholder="섹션명을 입력해주세요" />
+      <span class="me-2" style="width: 80px;" id="sectionLabel_${sectionCount}">섹션 ${sectionCount}</span>
+      <input type="text" class="form-control" required name="sections" placeholder="섹션명을 입력해주세요" />
       <button type="button" class="btn btn-danger btn-sm ms-2" onclick="removeSection('section_${sectionCount}')">&times;</button>
     `;
       sectionList.appendChild(newSection);
