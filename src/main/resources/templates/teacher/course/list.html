@@ -64,8 +64,9 @@
                 <div class="lessonCnt" th:text="${'섹션 : ' + course.sectionCnt + '   강의 : ' + course.lessonCnt}">섹션/강의 수</div>
               </div>
               <button class="btn btn-danger" disabled th:if="${course.displayDate < T(java.time.LocalDateTime).now()}" th:text="'강의 수정 불가'"></button>
-              <a class="btn btn-primary" th:if="${course.displayDate >= T(java.time.LocalDateTime).now()}" th:text="'강의 수정'"
+              <a class="btn btn-primary" th:if="${course.displayDate >= T(java.time.LocalDateTime).now() and course.sectionCnt != 0}" th:text="'강의 수정'"
                  th:href="@{/teacher/course/modify(courseIdx=${course.idx})}"></a>
+              <a class="btn btn-primary" th:if="${course.sectionCnt == 0}" th:text="'강의 등록 재개'" th:href="@{/teacher/course/insert_ss(courseIdx=${course.idx})}"></a>
             </div>
           </div>
           <div th:if="${list == null}">

@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static inflearn_clone.springboot.utils.QueryUtil.generateSortQuery;
 
@@ -90,6 +91,18 @@ public class TeacherController {
     public String insert_s(Model model, HttpSession session) {
         String teacherId = (String) session.getAttribute("memberId");
         CourseDTO courseDTO = courseSerivce.viewMyLastCourse(teacherId);
+        model.addAttribute("courseDTO", courseDTO);
+        return "teacher/course/insert_s";
+    }
+    @GetMapping("/course/insert_ss")
+    public String insert_ss(Model model, HttpSession session, @RequestParam int courseIdx,HttpServletResponse response) {
+        String teacherId = (String) session.getAttribute("memberId");
+        CourseDTO courseDTO = courseSerivce.courseView(courseIdx);
+        if(!Objects.equals(courseDTO.getTeacherId(), teacherId)){
+            JSFunc.alertBack("자신의 강좌만 등록 가능합니다.",response);
+            return null;
+        }
+
         model.addAttribute("courseDTO", courseDTO);
         return "teacher/course/insert_s";
     }
@@ -255,7 +268,7 @@ public class TeacherController {
     public String modify_s(@RequestParam("sections") String[] sections,
                            @RequestParam("courseIdx") int courseIdx,
                            @RequestParam("sectionCount") int sectionCount,
-                           @RequestParam("sectionIdx") int[] sectionIdx,
+                           @RequestParam(value = "sectionIdx") int[] sectionIdx,
                            HttpServletResponse response,
                            RedirectAttributes redirectAttributes) {
 
@@ -305,8 +318,8 @@ public class TeacherController {
         } //여기까지 했으면 이제 섹션과 해당 강의가 같이 말아짐
 
         model.addAttribute("sectionSize", sectionDTOList.size());
-        log.info("sectionWithLessonListDTOList:{}",sectionWithLessonListDTOList);
-        log.info("sectionListWithLesson : {}", sectionWithLessonListDTOList.get(0));
+//        log.info("sectionWithLessonListDTOList:{}",sectionWithLessonListDTOList);
+//        log.info("sectionListWithLesson : {}", sectionWithLessonListDTOList.get(0));
         model.addAttribute("sections", sectionWithLessonListDTOList.get(0));
         model.addAttribute("hasNextNext",true);
         return "teacher/course/modify_l";
@@ -325,6 +338,8 @@ public class TeacherController {
             sectionWithLessonListDTO.setLessons(lessons);
             sectionWithLessonListDTOList.add(sectionWithLessonListDTO);
         } //여기까지 했으면 이제 섹션과 해당 강의가 같이 말아짐
+
+
 
         log.info("sectionWithLessonListDTOList:{}",sectionWithLessonListDTOList);
         log.info("sectionListWithLesson : {}", sectionWithLessonListDTOList.get(0));
