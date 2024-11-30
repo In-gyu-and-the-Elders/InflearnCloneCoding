@@ -9,6 +9,7 @@ import inflearn_clone.springboot.dto.review.ReviewListDTO;
 import inflearn_clone.springboot.mappers.ReviewMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +46,16 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public int modifyReview(ReviewListDTO review) {
-        return reviewMapper.modifyReview(review);
+        try {
+            // 수정 쿼리 실행
+            return reviewMapper.modifyReview(review);
+        } catch (PersistenceException e) {
+            log.error("MyBatis 오류 발생: ", e);
+            throw new RuntimeException("리뷰 수정 실패", e); // 필요한 경우 RuntimeException을 던짐
+        } catch (Exception e) {
+            log.error("리뷰 수정 중 알 수 없는 오류 발생: ", e);
+            return 0; // 실패 시 0 반환
+        }
     }
 
     @Override

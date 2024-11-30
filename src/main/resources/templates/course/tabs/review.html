@@ -99,7 +99,6 @@
             <!-- 수정 및 삭제 버튼 -->
             <div class="review-actions" th:if="${review.memberId == memberId}">
                 <div class="review-actions">
-                    <p th:text="${review.idx}"></p>
                     <button class="edit-btn" th:attr="data-review-idx=${review.idx}" id="modifyBtn">수정</button>
                     <form action="/review/delete" method="POST" style="display:inline;">
                         <input type="hidden" name="idx" th:value="${review.idx}">
@@ -108,40 +107,47 @@
                     </form>
                 </div>
             </div>
+            <!--    수정모달-->
+            <div id="reviewModal" class="modal2">
+                <div class="modal-content">
+                    <form id="reviewForm" method="POST" action="/review/modify">
+                        <h3>수강평을 수정해주세요!</h3>
+                        <div class="rating-stars">
+                            <span data-star="1">★</span>
+                            <span data-star="2">★</span>
+                            <span data-star="3">★</span>
+                            <span data-star="4">★</span>
+                            <span data-star="5">★</span>
+                        </div>
+                        <input type="hidden" name="reviewIdx" id="reviewIdx">
+                        <input type="hidden" name="rating" id="ratingInput">
+                        <input type="hidden" name="idx" th:value="${review.idx}">
+                        <input type="hidden" name="memberId" th:value="${memberId}">
+                        <input type="hidden" name="courseIdx" th:value="${courseIdx}">
+
+                        <textarea id="reviewText" name="content" maxlength="500" minlength="5"
+                                  placeholder="수강평을 작성해보세요!"></textarea>
+                        <div class="char-count">
+                            <span id="charCount">0</span>/500
+                        </div>
+                        <p id="alertMessage" class="hidden">500자를 초과할 수 없습니다.</p>
+                        <div class="modal-actions">
+                            <button id="submitButton" class="btn-submit" type="submit">수정하기</button>
+                        </div>
+                    </form>
+                    <button id="cancelButton" class="btn-cancel">취소</button>
+                </div>
+            </div>
+            <!--    수정모달-->
         </div>
+
+
     </div>
     <!-- 더보기 버튼 -->
     <div class="review-more">
         <button id="loadMore" onclick="loadMoreReviews()">더 보기</button>
     </div>
 
-<!--    수정모달-->
-    <div id="reviewModal" class="modal2">
-        <div class="modal-content">
-            <form id="reviewForm" method="POST" action="/review/modify">
-                <h3>수강평을 수정해주세요!</h3>
-                <div class="rating-stars">
-                    <span data-star="1">★</span>
-                    <span data-star="2">★</span>
-                    <span data-star="3">★</span>
-                    <span data-star="4">★</span>
-                    <span data-star="5">★</span>
-                </div>
-                <input type="hidden" name="reviewIdx" id="reviewIdx">
-                <input type="hidden" name="rating" id="ratingInput">
-                <textarea id="reviewText" name="content" maxlength="500" minlength="5"
-                          placeholder="수강평을 작성해보세요!"></textarea>
-                <div class="char-count">
-                    <span id="charCount">0</span>/500
-                </div>
-                <p id="alertMessage" class="hidden">500자를 초과할 수 없습니다.</p>
-                <div class="modal-actions">
-                    <button id="submitButton" class="btn-submit" type="submit">수정하기</button>
-                </div>
-            </form>
-            <button id="cancelButton" class="btn-cancel">취소</button>
-        </div>
-    </div>
 
 
 <!--    수정모달-->

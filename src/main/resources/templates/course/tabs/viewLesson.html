@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>강의 재생</title>
+  <!-- 필요한 CSS와 JS 파일 로드 -->
+</head>
+<body>
+<div style="display: flex;">
+  <!-- 메인 영역: 동영상 -->
+  <div style="flex: 1;">
+    <h1 th:text="${lesson.title}">강의 제목</h1>
+    <video id="videoPlayer" width="640" height="480" controls>
+      <source th:src="@{${lesson.video}}" type="video/mp4">
+    </video>
+    <!-- 이전/다음 버튼 -->
+    <div>
+      <a th:if="${previousLesson != null}" th:href="@{'/course/study/' + ${previousLesson.idx}}" onclick="openPopup(this.href); return false;">이전 강의</a>
+      <a th:if="${nextLesson != null}" th:href="@{'/course/study/' + ${nextLesson.idx}}" onclick="openPopup(this.href); return false;">다음 강의</a>
+    </div>
+  </div>
+  <!-- 우측 영역: 커리큘럼 -->
+  <div style="width: 300px; margin-left: 20px;">
+    <h2>커리큘럼</h2>
+    <div th:each="section : ${curriculum}">
+      <h3 th:text="${section.section}">섹션 제목</h3>
+      <ul>
+        <li th:each="lessonItem : ${section.lessons}">
+          <a th:href="@{'/course/study/' + ${lessonItem.idx}}" th:text="${lessonItem.title}" onclick="openPopup(this.href); return false;"></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
