@@ -31,7 +31,12 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.modelmapper.ModelMapper;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -40,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -489,6 +495,54 @@ public class AdminController {
         }
         return null;
     }
+
+    //엑셀 파일 내보내기
+    @GetMapping("/excel/download")
+    public void downloadExcel(HttpServletResponse response,
+                              @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                              @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) throws IOException {
+        //데이터 조회
+        List<MemberDTO> members = memberService.selectMemberInfoByDate(startDate, endDate);
+
+        //엑셀 생성
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("30일간의 회원 변동 구간 확인");
+        int rowNum = 0;
+
+        //컬럼 생성
+        Row headerRow = sheet.createRow(rowNum++);
+        headerRow.createCell(0).setCellValue("아이디");
+        headerRow.createCell(1).setCellValue("이름");
+        headerRow.createCell(2).setCellValue("전화번호");
+        headerRow.createCell(3).setCellValue("이메일");
+        headerRow.createCell(4).setCellValue("회원상태");
+        headerRow.createCell(5).setCellValue("등록일");
+        headerRow.createCell(6).setCellValue("수정일");
+        headerRow.createCell(7).setCellValue("탈퇴일");
+
+        // 데이터 행 생성
+        for (MemberDTO member : members) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(member.getMemberId());
+            row.createCell(1).setCellValue(member.getName());
+            row.createCell(2).setCellValue(member.getPhone());
+            row.createCell(3).setCellValue(member.getEmail());
+            row.createCell(4).setCellValue(member.getStatus());
+            row.createCell(5).setCellValue(member.getRegDate());
+            row.createCell(6).setCellValue(member.getModifyDate());
+            row.createCell(7).setCellValue(member.getLeaveDate());
+
+        }
+
+        // 컨텐츠 타입과 파일명 지정
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=members.xlsx");
+
+        // 엑셀 파일 출력
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
 
     @GetMapping("/course/insert")
     public String insertCourse() {

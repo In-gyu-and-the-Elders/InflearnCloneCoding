@@ -139,4 +139,10 @@
         WHERE memberId = #{memberId}
     </update>
 
+    <select id="selectMemberInfoByDate" resultType="inflearn_clone.springboot.domain.MemberVO">
+        SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType, teacherDesc
+        FROM tbl_member
+        WHERE regDate BETWEEN #{startDate} AND #{endDate}
+    </select>
+
 </mapper>

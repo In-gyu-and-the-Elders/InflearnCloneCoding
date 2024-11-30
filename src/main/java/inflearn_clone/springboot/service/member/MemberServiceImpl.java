@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +107,7 @@ public class MemberServiceImpl implements MemberServiceIf{
         return memberMapper.deleteMemberInfo(memberId);
     }
 
+
     @Override
     public List<MemberDTO> selectTeacherRequest(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
         Map<String, Object> map = new HashMap<>();
@@ -120,5 +122,17 @@ public class MemberServiceImpl implements MemberServiceIf{
                 .map(vo -> modelMapper.map(vo, MemberDTO.class)).collect(Collectors.toList());
     }
 
+    @Override
+    public List<MemberDTO> selectMemberInfoByDate(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // LocalDateTime -> String 변환
+        String startDate = startDateTime.format(formatter);
+        String endDate = endDateTime.format(formatter);
+
+        List<MemberVO> voList = memberMapper.selectMemberInfoByDate(startDate, endDate);
+        return voList.stream()
+                .map(vo -> modelMapper.map(vo, MemberDTO.class)).collect(Collectors.toList());
+    }
 
 }
