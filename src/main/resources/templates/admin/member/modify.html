@@ -5,6 +5,9 @@
     <h2>회원 조회</h2>
     <div class="container mt-5">
         <form th:action="@{/admin/member/modify}" method="POST">
+<!--            <th:if test="${info.memberType == 'T'">-->
+<!--                <input type="text" class="form-control" id="memberType" name="memberType" th:value="T">-->
+<!--            </th:if>-->
             <!-- Member ID -->
             <div class="mb-3">
                 <label for="memberId" class="form-label">회원 ID</label>

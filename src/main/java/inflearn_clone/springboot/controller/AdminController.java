@@ -24,12 +24,10 @@ import inflearn_clone.springboot.service.order.OrderService;
 import inflearn_clone.springboot.service.review.ReviewService;
 import inflearn_clone.springboot.service.section.SectionServiceIf;
 import inflearn_clone.springboot.service.teacher.TeacherServiceIf;
-import inflearn_clone.springboot.utils.CommonFileUtil;
-import inflearn_clone.springboot.utils.JSFunc;
-import inflearn_clone.springboot.utils.Paging;
-import inflearn_clone.springboot.utils.QueryUtil;
+import inflearn_clone.springboot.utils.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -45,6 +43,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static inflearn_clone.springboot.utils.QueryUtil.generateSortQuery;
@@ -59,7 +58,6 @@ public class AdminController {
     private final NoticeServiceIf noticeService;
     private final CourseSerivce courseSerivce;
     private final OrderService orderService;
-    private final AdminServiceIf adminService;
     private final SectionServiceIf sectionService;
     private final SectionMapper sectionMapper;
     private final LessonServiceIf lessonService;
@@ -76,37 +74,17 @@ public class AdminController {
     }
 
     /**
-     * 관리자 로그인
-     *
-     */
-    @PostMapping("/login")
-    public String loginProcess(AdminLoginDTO loginDTO,
-                               HttpSession session,
-                               Model model) {
-        if(adminService.loginAdmin(loginDTO)) {
-            session.setAttribute("adminId", loginDTO.getAdminId());
-            return "redirect:/admin/dashboard";
-        }
-        model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
-        return "admin/login";
-    }
-
-    /**
-     * 관리자 로그아웃
-     *
-     */
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/admin/login";
-    }
-
-    /**
      * 대시보드
      * 강사 탈퇴 요청 수, 회원분류(활성, 비활성, 탈퇴), 강의관리(과목 별 강의 수)
      */
     @GetMapping("/dashboard")
-    public String dashboard(Model model){
+    public String dashboard(Model model, HttpServletResponse response, HttpSession session){
+        String adminId = (String) session.getAttribute("adminId");
+        if (adminId == null) {
+            response.setCharacterEncoding("utf-8");
+            JSFunc.alertBack("로그인이 필요합니다", response);
+            throw new IllegalStateException("로그인이 필요합니다."); // 예외 처리
+        }
 
         // 강사 탈퇴 요청 수 조회
         int teacherTotalCnt = memberService.teacherRequestTotalCnt(null, null, "T");
@@ -137,7 +115,6 @@ public class AdminController {
         int totalCnt = noticeService.noticeTotalCnt(null, null);
         List<BbsDTO> notice =  noticeService.list(1, 3, null, null, null);
         model.addAttribute("notice", notice);
-
         return "admin/dashboard";
     }
 
@@ -145,14 +122,21 @@ public class AdminController {
      * 학생 회원 리스트
      *
      */
+
+
     @GetMapping("/member/sList")
     public String studentlist(Model model,
+                       HttpServletResponse response,
                        @RequestParam(defaultValue = "1") int pageNo,
                        @RequestParam(required = false) String searchCategory,
                        @RequestParam(required = false) String searchValue,
                        @RequestParam(required = false) String sortType,
                        @RequestParam(required = false) String sortOrder,
                        @RequestParam(required = false) String status){
+        response.setCharacterEncoding("utf-8");
+        if (!ValidateList.validateMemberListParameters(pageNo, searchCategory, searchValue, sortType, sortOrder, response)) {
+            return null;
+        }
         String sortQuery = generateSortQuery(sortType, sortOrder);
         int totalCnt = memberService.memberTotalCnt(searchCategory, searchValue, "S", "");
         log.info("Member list totalCnt" + totalCnt); // 100
@@ -264,11 +248,18 @@ public class AdminController {
      */
     @PostMapping("/member/modify")
     public String modifyPost(@ModelAttribute MemberDTO dto){
-        boolean result = memberService.modifyMemberInfo(dto);
-        System.out.println("result" + result);
-        if(result){
-            return "redirect:/admin/member/list"; //나중에 view로 바꿀 것
+        if(dto.getMemberType().equals('T')){
+            boolean result = memberService.modifyMemberInfo(dto);
+            if(result){
+                return "redirect:/admin/member/view?memberId=" + dto.getMemberId();
+            }
+        }else{
+            boolean result = memberService.modifyMemberInfo(dto);
+            if(result){
+                return "redirect:/admin/member/view?memberId=" + dto.getMemberId();
+            }
         }
+
         return null;
     }
 
@@ -386,19 +377,18 @@ public class AdminController {
 //        }
 //    }
     @GetMapping("/member/delete")
-    public String memberDelete(@RequestParam String memberId, @RequestParam String memberType){
+    public String memberDelete(@RequestParam String memberId,
+                               @RequestParam String memberType,
+                               HttpServletResponse response){
         if(memberType.equals("T")){
             List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
-//            List<Integer> idxList = list.stream()
-//                    .map(CourseDTO::getIdx)
-//                    .collect(Collectors.toList());
-            //System.out.println(result.size());
             if(list.size() > 0){
                 // 공지사항 자동 등록 로직
                 int insertNotice = noticeService.autoInsert(memberId, list);
                 if(insertNotice > 0){
                     memberService.deleteMemberInfo(memberId);
-                    return "강의 삭제 예약 완료";
+                    JSFunc.alertBack("공지사항이 등록되었습니다.", response);
+                    return "";
 
                 }else{
                     return "예약 설정 중 오류가 발생했습니다.";
@@ -455,6 +445,18 @@ public class AdminController {
         CourseDTO courseDTO = courseSerivce.viewMyLastCourse(adminId);
         model.addAttribute("courseDTO", courseDTO);
         return "admin/course/insert_s";
+    }
+    @GetMapping("/course/insert_ss")
+    public String insert_ss(Model model, HttpSession session, @RequestParam int courseIdx,HttpServletResponse response) {
+        String teacherId = (String) session.getAttribute("memberId");
+        CourseDTO courseDTO = courseSerivce.courseView(courseIdx);
+        if(!Objects.equals(courseDTO.getTeacherId(), teacherId)){
+            JSFunc.alertBack("자신의 강좌만 등록 가능합니다.",response);
+            return null;
+        }
+
+        model.addAttribute("courseDTO", courseDTO);
+        return "teacher/course/insert_s";
     }
 
     @PostMapping("/course/insert_s")
@@ -597,7 +599,7 @@ public class AdminController {
     public String modify_s(@RequestParam("sections") String[] sections,
                            @RequestParam("courseIdx") int courseIdx,
                            @RequestParam("sectionCount") int sectionCount,
-                           @RequestParam("sectionIdx") int[] sectionIdx,
+                           @RequestParam(value = "sectionIdx") int[] sectionIdx,
                            HttpServletResponse response,
                            RedirectAttributes redirectAttributes) {
         System.out.println("sectionIdx: " + Arrays.toString(sectionIdx));
@@ -648,7 +650,7 @@ public class AdminController {
 
         model.addAttribute("sectionSize", sectionDTOList.size());
         log.info("sectionWithLessonListDTOList:{}",sectionWithLessonListDTOList);
-        log.info("sectionListWithLesson : {}", sectionWithLessonListDTOList.get(0));
+//        log.info("sectionListWithLesson : {}", sectionWithLessonListDTOList.get(0));
         model.addAttribute("sections", sectionWithLessonListDTOList.get(0));
         model.addAttribute("hasNextNext",true);
         return "admin/course/modify_l";
