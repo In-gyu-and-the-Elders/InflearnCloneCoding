@@ -15,7 +15,7 @@ public class CommonFileUtil {
 
 
     private static final String UPLOAD_DIR = "C:/Users/Jerry/Desktop/java7/project/inflearn_clone_file";
-
+    private static final String DELETE_DIR = "C:/Users/Jerry/Desktop/java7/project";
     @Value("${file.upload.path}")
     private String uploadPath;
 
@@ -68,8 +68,8 @@ public class CommonFileUtil {
     // 파일 삭제 메서드
     public static boolean deleteFile(String filePath) {
         if (filePath == null || filePath.isEmpty()) return false;
-
-        File file = new File(filePath);
+        String dir = DELETE_DIR+filePath;
+        File file = new File(dir);
         return file.exists() && file.delete();
     }
 

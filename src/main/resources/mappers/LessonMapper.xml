@@ -18,4 +18,8 @@
         </if>
         WHERE idx = #{idx}
     </update>
+    <select id="getVideo" resultType="java.lang.String">
+        SELECT video FROM tbl_lesson
+        WHERE idx=${lessonIdx}
+    </select>
 </mapper>    

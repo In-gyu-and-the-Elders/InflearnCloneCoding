@@ -11,7 +11,7 @@
           <div class="mb-3 lecture-item" id="lecture-1">
             <span class="lecture-number">1</span>
             <input type="text" name="title" class="form-control" placeholder="강의 제목" />
-            <input type="file" name="videoFile" class="form-control" />
+            <input type="file" accept="video/mp4, video/webm" name="videoFile" class="form-control" onchange="checkFileExtension(this)"/>
             <!-- 첫 번째 강의는 삭제 불가 -->
           </div>
         </div>
@@ -47,7 +47,7 @@
       newLecture.innerHTML = `
       <span class="lecture-number">${lectureCount}</span>
       <input type="text" name="title" class="form-control" placeholder="강의 제목" />
-      <input type="file" name="videoFile" class="form-control" />
+      <input type="file" accept="video/mp4, video/webm" name="videoFile" class="form-control" onchange="checkFileExtension(this)"/>
       <button type="button" class="btn btn-danger delete-lecture-btn" onclick="deleteLecture(this)">X</button>
     `;
 
@@ -84,6 +84,30 @@
       // lectureCount 재설정 (현재 마지막 강의 번호로)
       lectureCount = lectures.length;
     }
+    function checkFileExtension(input) {
+      const fileInput = input;  // 클릭한 파일 input을 받아옴
+      const file = fileInput.files[0];  // 선택된 파일 객체
+      const filePath = fileInput.value;
+      const allowedExtensions = /(\.mp4|\.webm)$/i;  // 허용할 확장자 설정
+
+      // 확장자 체크
+      if (!allowedExtensions.exec(filePath)) {
+        alert('영상 파일만 업로드 가능합니다 (mp4, webm)');
+        fileInput.value = '';  // 잘못된 파일을 선택한 경우 input을 초기화
+        return false;
+      }
+
+      // 파일 크기 체크 (50MB 이하)
+      const maxFileSize = 50 * 1024 * 1024;  // 50MB를 바이트로 변환
+      if (file.size > maxFileSize) {
+        alert('파일 크기는 50MB 이하만 업로드 가능합니다.');
+        fileInput.value = '';  // 파일 크기가 초과되면 input을 초기화
+        return false;
+      }
+
+      return true;  // 파일이 확장자와 크기 조건을 만족하면 true 반환
+    }
+
   </script>
 
   <style>
