@@ -555,14 +555,14 @@ public class TeacherController {
     @GetMapping("/viewReview")
     public String CourseReviewView(Model model,
                                    @RequestParam String memberId,
-                                   @RequestParam(defaultValue = "1") int pageNo){
-        if(memberId != null && !memberId.isEmpty()){
+                                   @RequestParam(defaultValue = "1") int pageNo) {
+        if (memberId != null && !memberId.isEmpty()) {
             MemberDTO info = memberService.selectMemberInfo(memberId);
             model.addAttribute("info", info);
             int totalCnt = reviewService.reviewCntByTeacher(memberId);
             System.out.println("total: " + totalCnt);
             Paging paging = new Paging(pageNo, 10, 5, totalCnt, null, null);
-            List<ReviewListDTO> reviews =  reviewService.reviewListByTeacher(pageNo, 10, memberId);
+            List<ReviewListDTO> reviews = reviewService.reviewListByTeacher(pageNo, 10, memberId);
             if (reviews != null && !reviews.isEmpty()) {
                 log.info("총 {}개의 리뷰가 조회되었습니다.", reviews.size());
                 for (ReviewListDTO review : reviews) {
@@ -576,10 +576,11 @@ public class TeacherController {
             model.addAttribute("paging", paging);
             model.addAttribute("uri", "/teacher/viewReview");
             return "teacher/teacherReview";
-        }else{
+        } else {
             log.info("회원 아이디 없음");
             return null;
         }
+    }
 
     @GetMapping("/modifyInfo")
     public String accountInfo(Model model, HttpSession session) {

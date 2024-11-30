@@ -157,4 +157,13 @@
     WHERE
         r.idx = #{reviewIdx}
   </select>
+
+  <update id="updateMemberLeave">
+    UPDATE tbl_member
+    SET status = 'D',
+        leaveDate = NOW(),
+        leaveReason = #{leaveReason},
+        leaveReasonRegDate = NOW()
+    WHERE memberId = #{memberId}
+</update>
 </mapper>

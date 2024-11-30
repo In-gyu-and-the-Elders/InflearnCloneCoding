@@ -1,0 +1,146 @@
+.mainContainer2 {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* 히어로 섹션 */
+.heroSection {
+  background-color: #00c471;
+  color: white;
+  padding: 60px 20px;
+  text-align: center;
+  border-radius: 8px;
+  margin-bottom: 40px;
+}
+
+.heroContent h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.heroContent p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.searchBox {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  gap: 10px;
+}
+
+.searchBox input {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.searchBox button {
+  padding: 15px 30px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* 카테고리 섹션 */
+.categorySection {
+  margin-bottom: 40px;
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.categoryItem {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.categoryItem:hover {
+  transform: translateY(-5px);
+}
+
+.categoryItem i {
+  font-size: 2rem;
+  color: #00c471;
+  margin-bottom: 10px;
+}
+
+/* 강의 카드 스타일 */
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.courseCard {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.courseCard:hover {
+  transform: translateY(-5px);
+}
+
+.courseCard img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.courseInfo {
+  padding: 15px;
+}
+
+.courseCategory {
+  color: #00c471;
+  font-size: 0.9rem;
+}
+
+.courseInfo h3 {
+  margin: 10px 0;
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+.instructor {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.courseMeta {
+  display: flex;
+  gap: 15px;
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.price {
+  font-weight: bold;
+  color: #333;
+}
+
+section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #333;
+}
