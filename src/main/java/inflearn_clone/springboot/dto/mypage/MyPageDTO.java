@@ -38,4 +38,9 @@ public class MyPageDTO {
   private int studentCount;
   private int rating;
   private double avgRating;
+
+  // 탈퇴
+  private LocalDateTime leaveDate;
+  private String leaveReason;
+  private LocalDateTime leaveReasonRegDate;
 }
