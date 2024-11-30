@@ -43,7 +43,7 @@
       <div class="mb-3">
         <label for="thumbnailFile" class="form-label">썸네일 이미지</label>
         <img th:src="${course.thumbnail}" width="300px;" alt="강의썸네일">
-        <input type="file" class="form-control" id="thumbnailFile" name="thumbnailFile"/>
+        <input type="file" accept="image/jpeg, image/png, image/jpg" class="form-control" id="thumbnailFile" name="thumbnailFile" onchange="checkFileExtension()"/>
         <span style="color:#ff6c6c;">썸네일 재등록 시 기존 썸네일은 삭제됩니다.</span>
       </div>
       <input type="hidden" name="idx" th:value="${course.idx}">
@@ -53,5 +53,30 @@
       </div>
     </form>
   </div>
+  <script>
+    function checkFileExtension() {
+      const fileInput = document.getElementById('thumbnailFile');
+      const file = fileInput.files[0];  // 선택된 파일 객체
+      const filePath = fileInput.value;
+      const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;  // 허용할 확장자 설정
+
+      // 확장자 체크
+      if (!allowedExtensions.exec(filePath)) {
+        alert('이미지 파일만 업로드 가능합니다 (jpg, jpeg, png)');
+        fileInput.value = '';  // 잘못된 파일을 선택한 경우 input을 초기화
+        return false;
+      }
+
+      // 파일 크기 체크 (1MB 이하)
+      const maxFileSize = 1 * 1024 * 1024;  // 1MB를 바이트로 변환
+      if (file.size > maxFileSize) {
+        alert('파일 크기는 1MB 이하만 업로드 가능합니다.');
+        fileInput.value = '';  // 파일 크기가 초과되면 input을 초기화
+        return false;
+      }
+
+      return true;  // 파일이 확장자와 크기 조건을 만족하면 true 반환
+    }
+  </script>
 </div>
 

@@ -44,6 +44,9 @@ public class CourseServiceImpl implements CourseSerivce {
     @Override
     public CourseDTO courseView1(int idx) {
         CourseVO vo = courseMapper.courseView1(idx);
+        if(vo == null) {
+            return null;
+        }
         CourseDTO courseInfo = modelMapper.map(vo, CourseDTO.class);
         return courseInfo;
     }
