@@ -76,4 +76,9 @@ public class MyPageServiceImpl implements MyPageService {
             return false;
         }
     }
+
+    @Override
+    public void updateMemberLeave(String memberId, String leaveReason) {
+        myPageMapper.updateMemberLeave(memberId, leaveReason);
+    }
 }

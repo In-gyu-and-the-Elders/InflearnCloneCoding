@@ -1,11 +1,78 @@
 <!DOCTYPE html>
 <html
-  lang="en"
+  lang="ko"
   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   xmlns:th="http://www.thymeleaf.org"
   layout:decorate="~{layout/layout.html}"
 >
-  <div layout:fragment="main">
-    <h1>메인</h1>
-  </div>
+<head>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/main/style.css}">
+    </th:block>
+</head>
+<div layout:fragment="main">
+    <div class="mainContainer2">
+        <!-- <section class="heroSection">
+            <div class="heroContent">
+                <h1>인프런에서 성장을 시작하세요</h1>
+                <p>우리는 성장하는 개발자들과 함께합니다</p>
+                <div class="searchBox">
+                    <input type="text" placeholder="배우고 싶은 지식을 입력해보세요.">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </section> -->
+
+        <section class="categorySection">
+            <h2>다양한 강의를 둘러보세요</h2>
+            <div class="categoryGrid">
+                <div class="categoryItem">
+                    <i class="fas fa-code"></i>
+                    <span>개발</span>
+                </div>
+                <div class="categoryItem">
+                    <i class="fas fa-desktop"></i>
+                    <span>인공지능</span>
+                </div>
+                <div class="categoryItem">
+                    <i class="fas fa-database"></i>
+                    <span>하드웨어</span>
+                </div>
+                <div class="categoryItem">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>커리어 자기계발</span>
+                </div>
+                <div class="categoryItem">
+                  <i class="fas fa-mobile-alt"></i>
+                  <span>기획 경영 마케팅</span>
+              </div>
+            </div>
+        </section>
+
+        <section class="recommendedSection">
+            <h2>인기 강의</h2>
+            <div class="courseGrid">
+                <div class="courseCard" th:each="i : ${#numbers.sequence(1, 4)}">
+                    <img src="https://via.placeholder.com/280x160" alt="강의 썸네일">
+                    <div class="courseInfo">
+                        <span class="courseCategory">프로그래밍</span>
+                        <h3>실전 프로젝트로 배우는 프로그래밍</h3>
+                        <p class="instructor">홍길동</p>
+                        <div class="courseMeta">
+                            <span class="rating">
+                                <i class="fas fa-star"></i> 4.5
+                            </span>
+                            <span class="students">
+                                <i class="fas fa-user"></i> 1,234명
+                            </span>
+                        </div>
+                        <div class="price">₩55,000</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+    </div>
+</div>
 </html>
