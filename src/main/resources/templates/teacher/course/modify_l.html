@@ -15,16 +15,17 @@
               <source th:src="${lesson.video}" type="video/mp4">
             </video>
             <span style="color:mediumvioletred">새로운 동영상을 등록 시 기존의 동영상은 삭제됩니다</span>
-            <input type="file" name="videoFile" class="form-control" />
+            <input type="file" accept="video/mp4, video/webm" name="videoFile" class="form-control" onchange="checkFileExtension(this)"/>
             <input type="hidden" name="lessonIdx" th:value="${lesson.idx}">
             <!-- 첫 번째 강의는 삭제 불가 -->
           </div>
 
           <!-- 첫 번째 강의 입력 필드 (삭제 불가) -->
-          <div class="mb-3 lecture-item" id="lecture-1">
+          <div class="mb-3 lecture-item" th:id="'lecture-'+${sections.lessonCount}">
             <span class="lecture-number" th:text="${sections.lessonCount+1}"></span>
             <input type="text" name="title" class="form-control" placeholder="강의 제목" />
-            <input type="file" name="videoFile" class="form-control" />
+            <input type="file" name="videoFile" accept="video/mp4, video/webm" class="form-control" onchange="checkFileExtension(this)"/>
+            <button th:if="${sections.lessonCount != 0}" type="button" class="btn btn-danger delete-lecture-btn" onclick="deleteLecture(this)">X</button>
             <!-- 첫 번째 강의는 삭제 불가 -->
           </div>
         </div>
@@ -39,12 +40,12 @@
           <button th:if="${!hasNextNext or sectionSize == 1}" type="submit" class="btn btn-success" >완료</button>
         </div>
       </form>
-      <form action="/teacher/course/modify_ll" method="post">
-        <input type="hidden" th:value="${sections.idx}" name="sectionIdx">
+<!--      <form action="/teacher/course/modify_ll" method="post">-->
+<!--        <input type="hidden" th:value="${sections.idx}" name="sectionIdx">-->
 
-        <button th:if="${hasNextNext and sectionSize != 1}" type="submit" class="btn btn-success">강의 추가하지 않고 다음 섹션으로</button>
-        <button th:if="${!hasNextNext or sectionSize == 1}" type="submit" class="btn btn-success" >완료(강의 추가 X)</button>
-      </form>
+<!--        <button th:if="${hasNextNext and sectionSize != 1}" type="submit" class="btn btn-success">강의 추가하지 않고 다음 섹션으로</button>-->
+<!--        <button th:if="${!hasNextNext or sectionSize == 1}" type="submit" class="btn btn-success" >완료(강의 추가 X)</button>-->
+<!--      </form>-->
     </div>
   </div>
 
@@ -67,7 +68,7 @@
       newLecture.innerHTML = `
         <span class="lecture-number">${lectureCount}</span>
         <input type="text" name="title" class="form-control" placeholder="강의 제목" />
-        <input type="file" name="videoFile" class="form-control" />
+        <input type="file" name="videoFile" accept="video/mp4, video/webm" class="form-control" onchange="checkFileExtension(this)"/>
         <button type="button" class="btn btn-danger delete-lecture-btn" onclick="deleteLecture(this)">X</button>
       `;
 
@@ -79,11 +80,12 @@
     function deleteLecture(button) {
       const lectureItem = button.closest('.lecture-item');
 
-      // 첫 번째 강의는 삭제 불가
-      if (lectureItem.id === 'lecture-1') {
+      //첫 번째 강의는 삭제 불가
+      if (lectureItem.id === 'lecture-0') {
         alert('첫 번째 강의는 삭제할 수 없습니다.');
         return;
       }
+
 
       lectureItem.remove();
 
@@ -98,6 +100,29 @@
 
       // lectureCount 재설정 (현재 마지막 강의 번호로)
       lectureCount = lectures.length; // 삭제 후 강의 수가 lectureCount로 설정됨
+    }
+    function checkFileExtension(input) {
+      const fileInput = input;  // 클릭한 파일 input을 받아옴
+      const file = fileInput.files[0];  // 선택된 파일 객체
+      const filePath = fileInput.value;
+      const allowedExtensions = /(\.mp4|\.webm)$/i;  // 허용할 확장자 설정
+
+      // 확장자 체크
+      if (!allowedExtensions.exec(filePath)) {
+        alert('영상 파일만 업로드 가능합니다 (mp4, webm)');
+        fileInput.value = '';  // 잘못된 파일을 선택한 경우 input을 초기화
+        return false;
+      }
+
+      // 파일 크기 체크 (50MB 이하)
+      const maxFileSize = 50 * 1024 * 1024;  // 50MB를 바이트로 변환
+      if (file.size > maxFileSize) {
+        alert('파일 크기는 50MB 이하만 업로드 가능합니다.');
+        fileInput.value = '';  // 파일 크기가 초과되면 input을 초기화
+        return false;
+      }
+
+      return true;  // 파일이 확장자와 크기 조건을 만족하면 true 반환
     }
   </script>
 

@@ -51,6 +51,7 @@
         <div class="mb-3 d-flex align-items-center" id="section_1">
           <span class="me-2" id="sectionLabel_1" th:text="${'섹션 '+(sectionCount+1)}">섹션 1</span>
           <input type="text" class="form-control w-75" name="sections" placeholder="섹션명을 입력해주세요" />
+          <button type="button" class="btn btn-danger btn-sm ms-2" onclick="removeSection('section_1')">&times;</button>
         </div>
       </div>
 
@@ -60,7 +61,6 @@
       </div>
       <input type="hidden" name="courseIdx" th:value="${courseDTO.idx}">
     </form>
-    <a class="btn btn-secondary me-2" th:href="@{/teacher/course/modify_ll(courseIdx=${courseDTO.idx})}">섹션 등록하지 않고 다음으로</a>
   </div>
 
   <script th:inline="javascript">
@@ -82,9 +82,7 @@
 
     function removeSection(sectionId) {
       // 섹션 1은 삭제할 수 없으므로, 해당 섹션을 삭제하려고 하면 리턴
-      if (sectionId === 'section_1') {
-        return;
-      }
+
 
       const section = document.getElementById(sectionId);
       const sectionLabel = document.getElementById('sectionLabel_' + sectionId.split('_')[1]);

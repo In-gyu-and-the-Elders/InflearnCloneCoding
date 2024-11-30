@@ -14,4 +14,5 @@ public interface MyPageService {
     MyPageDTO getReviewById(int reviewIdx);
     boolean updateReview(int reviewIdx, String memberId, String content, int rating);
     boolean deleteReview(int reviewIdx, String memberId);
+    void updateMemberLeave(String memberId, String leaveReason);
 }

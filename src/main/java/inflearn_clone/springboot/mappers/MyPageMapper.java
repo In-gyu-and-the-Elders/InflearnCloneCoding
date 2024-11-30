@@ -1,6 +1,5 @@
 package inflearn_clone.springboot.mappers;
 
-import inflearn_clone.springboot.domain.MemberVO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.dto.mypage.MyPageDTO;
 
@@ -19,4 +18,5 @@ public interface MyPageMapper {
   MyPageDTO getReviewById(@Param("reviewIdx") int reviewIdx);
   int updateReview(Map<String, Object> params);
   int deleteReview(Map<String, Object> params);
+  void updateMemberLeave(String memberId, String leaveReason);
 }

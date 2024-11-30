@@ -18,7 +18,6 @@
         </if>
         WHERE idx = #{idx}
     </update>
-
 <!--    동영상페이지-->
     <select id="getLessonById">
         SELECT * FROM tbl_lesson WHERE idx = #{lessonIdx}
@@ -64,5 +63,9 @@
             LIMIT 1
         ]]>
     </select>
-
+  
+    <select id="getVideo" resultType="java.lang.String">
+        SELECT video FROM tbl_lesson
+        WHERE idx=${lessonIdx}
+    </select>
 </mapper>    
