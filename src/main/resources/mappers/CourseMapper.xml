@@ -131,7 +131,14 @@
                 AND status = #{status}
             </if>
         </where>
-        ${sortQuery}
+        <choose>
+            <when test="sortQuery != null and sortQuery != ''">
+                ${sortQuery}
+            </when>
+            <otherwise>
+                ORDER BY regDate DESC
+            </otherwise>
+        </choose>
         LIMIT #{offset}, #{limit}
     </select>
 
@@ -240,6 +247,16 @@
             status = 'N',
             modifyDate = NOW()
         WHERE idx = #{idx}
+    </update>
+    <update id="processDeleteRequest">
+        UPDATE tbl_course
+        SET status = 'K'
+        WHERE idx=#{courseIdx}
+    </update>
+    <update id="processDeleteRequestN">
+        UPDATE tbl_course
+        SET status = 'Y'
+        WHERE idx=#{courseIdx}
     </update>
 </mapper>
 

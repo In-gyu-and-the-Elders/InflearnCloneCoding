@@ -108,7 +108,12 @@ public class NoticeServiceImpl implements NoticeServiceIf{
         bbsVO.setTitle(info.getTeacherId() + "강사님 강좌 폐지 안내");
         StringBuilder content = new StringBuilder();
         content.append("30일 이후 해당 강좌는 폐지됩니다\n");
-        content.append(info.getCourseTitle());
+        courseMapper.updateDeleteDate(info.getIdx(), LocalDateTime.now().plusDays(30));
+        LocalDateTime month = LocalDateTime.now().plusDays(30);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = month.format(formatter);
+        content.append(formattedDate);
+        content.append(info.getTitle());
         bbsVO.setCategory("N");
         bbsVO.setContent(content.toString());
         int result = bbsMapper.insert(bbsVO);

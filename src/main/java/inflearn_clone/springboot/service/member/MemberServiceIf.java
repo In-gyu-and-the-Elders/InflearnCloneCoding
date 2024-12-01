@@ -37,4 +37,7 @@ public interface MemberServiceIf {
 
     //엑셀 내보내기
     List<MemberDTO> selectMemberInfoByDate(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    // 회원 상태 수정
+    boolean changeMemberStatus(String memberId);
 }

@@ -135,4 +135,9 @@ public class MemberServiceImpl implements MemberServiceIf{
                 .map(vo -> modelMapper.map(vo, MemberDTO.class)).collect(Collectors.toList());
     }
 
+    @Override
+    public boolean changeMemberStatus(String memberId) {
+        return memberMapper.changeMemberStatus(memberId);
+    }
+
 }

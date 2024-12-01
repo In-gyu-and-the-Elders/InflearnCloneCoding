@@ -29,10 +29,17 @@
                     <when test ="searchValue == 'writerId'">
                         writerId LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
+                    <when test ="searchCategory == 'regDate'">
+                        regDate LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchValue == 'displayDate'">
+                        displayDate LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
                 </choose>
             </if>
             AND category = 'N'
         </where>
+        ORDER BY regDate DESC
         ${sortQuery}
         LIMIT #{offset}, #{limit}
     </select>
@@ -58,6 +65,12 @@
                     </when>
                     <when test="searchCategory == 'writerId'">
                         writerId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchCategory == 'regDate'">
+                        regDate LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchValue == 'displayDate'">
+                        displayDate LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
                 </choose>
             </if>

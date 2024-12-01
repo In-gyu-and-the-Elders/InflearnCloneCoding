@@ -16,6 +16,12 @@
                     <when test="searchCategory == 'name'">
                         `name` LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
+                    <when test="searchCategory == 'email'">
+                        email LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'status'">
+                        `status` LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
                 </choose>
             </if>
             <if test="status == null">
@@ -37,6 +43,12 @@
                     </when>
                     <when test="searchCategory == 'name'">
                         `name` LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'email'">
+                        email LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'status'">
+                        `status` LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
                 </choose>
             </if>
@@ -78,6 +90,12 @@
                     <when test="searchCategory == 'name'">
                         `name` LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
+                    <when test="searchCategory == 'email'">
+                        email LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'status'">
+                        `status` LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
                 </choose>
             </if>
             <if test="status == null">
@@ -101,6 +119,12 @@
                     </when>
                     <when test="searchCategory == 'name'">
                         `name` LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'email'">
+                        email LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'status'">
+                        `status` LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
                 </choose>
             </if>
@@ -144,5 +168,11 @@
         FROM tbl_member
         WHERE regDate BETWEEN #{startDate} AND #{endDate}
     </select>
+
+    <update id="changeMemberStatus" >
+        UPDATE tbl_member
+        SET status = 'N', modifyDate = now()
+        WHERE memberId = #{memberId}
+    </update>
 
 </mapper>
