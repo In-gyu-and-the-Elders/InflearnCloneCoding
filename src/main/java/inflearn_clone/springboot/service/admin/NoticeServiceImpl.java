@@ -86,7 +86,7 @@ public class NoticeServiceImpl implements NoticeServiceIf{
 
         for(Integer idx : idxList){
             for(String title : titleList){
-                courseMapper.updateDeleteDate(idx, LocalDateTime.now().plusDays(30).with(LocalTime.MIDNIGHT));
+                courseMapper.updateDeleteDate(idx, LocalDateTime.now().plusMinutes(1));
                 LocalDateTime month = LocalDateTime.now().plusDays(30);
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 String formattedDate = month.format(formatter);

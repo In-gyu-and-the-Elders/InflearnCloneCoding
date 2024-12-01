@@ -475,10 +475,6 @@ public class AdminController {
                                HttpSession session,
                                HttpServletResponse response){
         String adminId = (String)session.getAttribute("adminId");
-        if (adminId == null) {
-            JSFunc.alertLocation("로그인이 필요한 서비스입니다.", "/admin/login", response);
-            return null; // 로그인 페이지로 리다이렉트
-        }
         response.setCharacterEncoding("utf-8");
         if(memberType.equals("T")){
             List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
@@ -532,7 +528,7 @@ public class AdminController {
 
         //엑셀 생성
         Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("30일간의 회원 변동 구간 확인");
+        Sheet sheet = workbook.createSheet("회원 변동 구간 확인");
         int rowNum = 0;
 
         // 날짜 셀 스타일 생성
@@ -562,18 +558,18 @@ public class AdminController {
             row.createCell(4).setCellValue(member.getStatus());
             // 등록일
             Cell regDateCell = row.createCell(5);
-            regDateCell.setCellValue(member.getRegDate()); // LocalDate or LocalDateTime
+            regDateCell.setCellValue(member.getRegDate());
             regDateCell.setCellStyle(dateCellStyle);
 
             // 수정일
             Cell modifyDateCell = row.createCell(6);
-            modifyDateCell.setCellValue(member.getModifyDate()); // LocalDate or LocalDateTime
+            modifyDateCell.setCellValue(member.getModifyDate());
             modifyDateCell.setCellStyle(dateCellStyle);
 
             // 탈퇴일
             Cell leaveDateCell = row.createCell(7);
             if (member.getLeaveDate() != null) {
-                leaveDateCell.setCellValue(member.getLeaveDate()); // LocalDate or LocalDateTime
+                leaveDateCell.setCellValue(member.getLeaveDate());
                 leaveDateCell.setCellStyle(dateCellStyle);
             }
 
