@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/layout.html}"
+>
+
+<div layout:fragment="main">
+    <link th:rel="stylesheet" th:href="@{/css/course/courseStyle.css}">
+<!--    <link rel="stylesheet" href="/css/course/courseStyle.css">-->
+    <main class="main-content">
+        <form action="/course/list" method="get">
+            <section class="filters">
+                <button id="searchBtn" onclick="javasrcipt:document.getElementById('searchbar-input').focus()">검색</button>
+                <button type="submit" name="searchCategory" value="">전체</button>
+                <button type="submit" name="searchCategory" value="D">개발·프로그래밍</button>
+                <button type="submit" name="searchCategory" value="A">인공지능</button>
+                <button type="submit" name="searchCategory" value="H">하드웨어</button>
+                <button type="submit" name="searchCategory" value="M">기획·경영·마케팅</button>
+                <button type="submit" name="searchCategory" value="C">커리어·자기계발</button>
+            </section>
+
+            <div class="sort-search-container">
+            <select class="sort-dropdown" name="sort">
+                <option value="regDateDesc" th:selected="${sort == 'regDateDesc'}">최신순</option>
+                <option value="ratingDesc" th:selected="${sort == 'ratingDesc'}">평점 높은순</option>
+                <option value="ratingAsc" th:selected="${sort == 'ratingAsc'}">평점 낮은순</option>
+            </select>
+            <button type="submit" class="sort-button">정렬</button>
+        </section>
+            </div>
+        </form>
+<!--        <section class="filters">-->
+<!--&lt;!&ndash;            <input type="search" class="form-control" name="searchValue" placeholder="내용">&ndash;&gt;-->
+<!--            <button id="searchBtn" onclick="javasrcipt:document.getElementById('searchbar-input').focus()">검색</button>-->
+<!--        </section>-->
+        <section class="courses">
+            <!-- 데이터가 있을 경우 반복 출력 -->
+            <div class="course-card" th:each="course : ${course}">
+                <a th:href="@{/course/view/{idx}(idx=${course.idx})}">
+                <img th:src="${course.thumbnail}" alt="강의 이미지">
+                <div class="content">
+                    <h3 class="title" th:text="${course.title}"></h3>
+                    <p class="instructor" th:text="'강사: ' + ${course.teacherName}"></p>
+                    <p class="price" th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}"></p>
+                    <div class="rating">
+                        <span th:text="'⭐' + ${course.averageRating}"></span>
+                        <span th:text="'👤'+${course.studentCount}"></span>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <!-- 데이터가 없을 경우 메시지 출력 -->
+            <p class="no-data-message" th:if="${course == null or course.isEmpty()}">
+                해당하는 강좌가 없습니다.
+            </p>
+        </section>
+    </main>
+    <div th:replace="~{/common/paging :: paging}"></div>
+</div>
+<!--<script>-->
+<!--    // 검색 버튼 클릭 시 포커스 주기-->
+<!--    document.getElementById('searchBtn').addEventListener('click', function(event) {-->
+<!--        // event.preventDefault();  // 버튼 기본 동작을 막습니다.-->
+<!--        alert("클릭화ㅓㄱ인")-->
+<!--        document.getElementById('searchbar-input').focus();  // 검색창에 포커스 주기-->
+<!--    });-->
+<!--</script>-->
+</html>

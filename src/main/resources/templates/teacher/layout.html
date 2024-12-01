@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html
+        lang="ko"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/layout.html}">
+<head>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+    </th:block>
+</head>
+<div layout:fragment="main">
+    <div class="cccccc">
+        <div class="myPageContainer">
+            <div class="menuArea">
+                <div>
+                    <img src="/images/person.jpg" width="200px" height="220px">
+                    <br>
+                    <p>[[${info.name}]]</p>
+                    <ul class="myPageNav">
+                        <li><a th:href="@{/teacher/viewIntroduce(memberId=${info.memberId})}">소개</a></li>
+                        <li><a th:href="@{/teacher/viewCourseList(memberId=${info.memberId})}">강의 목록</a></li>
+                        <li><a href="#">수강평</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="contentArea">
+                <div layout:fragment="content" style="border: 1px solid red">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

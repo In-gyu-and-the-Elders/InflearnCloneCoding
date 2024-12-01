@@ -1,19 +1,21 @@
 package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
-import inflearn_clone.springboot.service.NoticeServiceIf;
-import inflearn_clone.springboot.utils.CommonFileUtil;
+import inflearn_clone.springboot.service.admin.NoticeServiceIf;
 import inflearn_clone.springboot.utils.JSFunc;
+import inflearn_clone.springboot.utils.Paging;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
+import java.util.List;
 
+import static inflearn_clone.springboot.utils.QueryUtil.generateSortQuery;
 @Controller
 @RequestMapping("/notice")
 @RequiredArgsConstructor
@@ -21,44 +23,41 @@ import java.io.IOException;
 public class NoticeController {
     private final NoticeServiceIf noticeService;
 
+    @GetMapping("/list")
+    public String list(Model model,
+                       @RequestParam(defaultValue = "1") int pageNo,
+                       @RequestParam(required = false) String searchCategory,
+                       @RequestParam(required = false) String searchValue,
+                       @RequestParam(required = false) String sortType,
+                       @RequestParam(required = false) String sortOrder) {
 
+        String sortQuery = generateSortQuery(sortType, sortOrder);
+        int totalCnt = noticeService.noticeTotalCntS(searchCategory, searchValue);
+        Paging paging = new Paging(pageNo, 10, 5, totalCnt, sortType, sortOrder);
+        List<BbsDTO> notice =  noticeService.listS(pageNo, 10, searchCategory, searchValue, sortQuery);
 
-    @GetMapping("/insert")
-    public String insert() {
-        return "notice/insert";
-    }
-    @PostMapping("/insert")
-    public String insert(BbsDTO bbsDTO,
-                         Model model, HttpServletResponse response) { //validation 추가해야 함.
-
-        //1. 파일 업로드
-        String fileName = null;
-        try {
-            fileName = CommonFileUtil.uploadFile(bbsDTO.getFile());
-        } catch (IOException e) {
-            log.info("[NoticeController] >> [insert] >> fileUpload Failed : {}",e.getMessage());
-            // 파일 업로드 실패
-            JSFunc.alertBack("파일 업로드 실패. 다시 시도해주세요", response);
+        log.info("totalCnt:{}", totalCnt);
+        log.info("notice:{}", notice);
+        for( BbsDTO bbsDTO : notice){
+            bbsDTO.setFileName();
+            bbsDTO.setExt();
         }
-        // 파일 업로드 성공
-        if(fileName!=null && !fileName.isEmpty()){
-            bbsDTO.setFilePath(fileName);
-        }
-        int result = noticeService.insert(bbsDTO);
-
-        if(result > 0){
-            return "redirect:/notice/list";
-        } else {
-            response.setCharacterEncoding("utf-8");
-            JSFunc.alertBack("등록에 실패했습니다", response);
-            return null;
-        }
+        model.addAttribute("notice", notice);
+        model.addAttribute("paging", paging);
+        model.addAttribute("searchCategory", searchCategory);
+        model.addAttribute("searchValue", searchValue);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("uri", "/notice/list");
+        return "notice/list";
     }
 
     @GetMapping("/view")
     public String view(@RequestParam int idx, HttpServletResponse response, Model model) {
         BbsDTO bbsDTO = noticeService.view(idx);
         if(bbsDTO != null){
+            bbsDTO.setFileName();
+            bbsDTO.setExt();
             model.addAttribute("bbsDTO",bbsDTO);
             return "notice/view";
         } else {
@@ -67,42 +66,4 @@ public class NoticeController {
             return null;
         }
     }
-
-    @GetMapping("/list")
-    public String list(Model model) {return null;}
-
-    @GetMapping("/modify")
-    public String modify(@RequestParam int idx, HttpServletResponse response, Model model) {
-        BbsDTO bbsDTO = noticeService.view(idx);
-        if(bbsDTO != null){
-            model.addAttribute("bbsDTO",bbsDTO);
-            return "notice/modify";
-        } else {
-            response.setCharacterEncoding("utf-8");
-            JSFunc.alertBack("해당 글은 존재하지 않습니다.", response);
-            return null;
-        }
-    }
-
-    @PostMapping("/modify")
-    public String modify(BbsDTO bbsDTO, Model model) {
-        // 1. 파일 빼고는 동일하게 진행함.
-        // 2. 파일 업로드가 있을 시, 0) DB에서 원본 파일명을 1) 일단 이 파일을 업로드함. 2) 으아아아아아아아아아아아악아아으아아아악
-
-        noticeService.update(bbsDTO);
-        return null;
-    }
-
-    @GetMapping("/delete")
-    public String delete(@RequestParam int idx, HttpServletResponse response) {
-        int result = noticeService.delete(idx);
-        if(result > 0){
-            return "redirect:/notice/list";
-        } else {
-            JSFunc.alertBack("공지사항 삭제 실패",response);
-            return null;
-        }
-    }
-
-
 }

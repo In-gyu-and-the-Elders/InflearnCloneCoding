@@ -1,18 +1,16 @@
 package inflearn_clone.springboot.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class BbsVO {
     private int idx;
-    private int level;
+    private String category;
     private int refIdx;
     private String title;
     private String content;
@@ -22,4 +20,5 @@ public class BbsVO {
     private int readCnt;
     private String filePath;
     private int courseIdx;
+    private String writerId;
 }

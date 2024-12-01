@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{layout/layout.html}"
+>
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+  </th:block>
+</head>
+  <div layout:fragment="main">
+    <div class="cccccc">
+      <div class="myPageContainer">
+        <div class="menuArea">
+          <div style="color: #ADB5BD">Home</div>
+          <div>
+            <ul class="myPageNav">
+              <li><a href="/member/myPage">내 강의실</a></li>
+              <li><a href="/cart/list" style="color:#00c471">수강 바구니</a></li>
+              <li><a href="/member/likedCourses">좋아요</a></li>
+              <li><a href="/member/reviews">작성한 게시글</a></li>
+              <li><a href="/order/list">구매 내역</a></li>
+              <li><a href="/member/accountInfo">계정 정보</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="contentArea">
+          <div class="header-container">
+            <h2 class="myRoomH2">수강바구니</h2>
+          </div>
+          <div class="cart-container" style="background: #fff; padding: 20px; border-radius: 4px;">
+            <!-- 상단: 전체 선택 및 강좌 수 -->
+            <div class="cart-header" style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #e4e4e4;">
+              <label style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="select-all" />
+                전체선택 <span id="course-count" style="color: #495057;">(0/<span th:text="${totalCount}">totalCount</span>)</span>
+              </label>
+              <button id="delete-selected-btn" onclick="deleteBtns()" style="color: #495057; border: none; background: none; cursor: pointer;">
+                삭제
+              </button>
+            </div>
+            
+            <!-- 강좌 리스트 -->
+            <div class="cart-list" th:if="${cartList != null and cartList.size() > 0}">
+              <div class="cart-item" th:each="item : ${cartList}" th:data-course-id="${item.courseIdx}"
+                   style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #e4e4e4;">
+                <div class="item-info" style="display: flex; align-items: center; gap: 15px;">
+                  <input type="checkbox" class="course-select" />
+                  <img th:src="${item.thumbnail}" alt="강좌 썸네일" class="thumbnail" 
+                       style="width: 120px; height: 80px; border-radius: 4px;" />
+                  <div class="course-details" style="display: flex; flex-direction: column; gap: 8px;">
+                    <p class="course-title" th:text="${item.title}" 
+                       style="font-size: 16px; font-weight: 500; margin: 0;"></p>
+                    <p class="course-teacher" th:text="${item.teacherId}" 
+                       style="color: #495057; font-size: 14px; margin: 0;"></p>
+                    <p class="course-price" th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')} + '원'" 
+                       style="font-weight: 600; font-size: 16px; margin: 0;"></p>
+                    <p class="course-regDate" th:text="${#temporals.format(item.regDate, 'yyyy-MM-dd')}" 
+                       style="color: #868e96; font-size: 12px; margin: 0;"></p>
+                  </div>
+                </div>
+                <button class="delete-btn" th:data-course-id="${item.idx}" onclick="deleteBtns()" 
+                        style="background: none; border: none; color: #adb5bd; cursor: pointer;">
+                  삭제
+                </button>
+              </div>
+            </div>
+
+            <div th:unless="${cartList != null and cartList.size() > 0}" 
+                 style="text-align: center; padding: 40px 0; color: #868e96;">
+              <p>현재 장바구니에 담긴 강좌가 없습니다.</p>
+            </div>
+
+            <!-- 총가격+결제버튼부분 -->
+            <div class="cart-summary" style="margin-top: 20px; background: #f8f9fa; padding: 20px; border-radius: 4px;">
+              <p style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 600; margin-bottom: 20px;">
+                총 선택한 강좌 가격: <span id="total-price" style="color: #00c471;">₩0</span>
+              </p>
+              <form id="orderForm" action="/order/regist" method="POST">
+                <input type="hidden" name="memberId" th:value="${memberId}" />
+                <input type="hidden" name="orderNumber" id="orderNumber" />
+                <input type="hidden" name="courseIdxList" id="courseIdxList" />
+                <input type="hidden" name="priceList" id="priceList" />
+                <button type="submit" id="checkoutBtn" 
+                        style="width: 100%; padding: 15px; background: #00c471; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer;">
+                  결제하기
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <th:block layout:fragment="script">
+    <script th:src="@{/js/cart/cart.js}"></script>
+  </th:block>
+  </div>
+</html>

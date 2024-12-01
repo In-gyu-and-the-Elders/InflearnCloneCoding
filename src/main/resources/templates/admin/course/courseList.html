@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/common}">
+<div layout:fragment="content">
+    <div>
+        <h2>강의 목록</h2>
+    </div>
+    <div class="search-container">
+        <form action="/admin/course/list" method="get" class="d-flex align-items-center">
+            <select class="form-select" name="searchCategory">
+                <option value="">카테고리</option>
+                <option value="title" >강좌명</option>
+                <option value="teacherId">강사ID</option>
+                <option value="price">가격</option>
+                <option value="category">과목분류</option>
+            </select>
+            <input type="search" class="form-control" name="searchValue" placeholder="내용">
+            <select class="form-select" name="sortType">
+                <option value="">정렬조건</option>
+                <option value="title" >강좌명</option>
+                <option value="teacherId">강사ID</option>
+                <option value="price">가격</option>
+                <option value="category">과목분류</option>
+                <option value="status">강좌상태</option>
+            </select>
+            <select class="form-select" name="sortOrder">
+                <option value="">정렬순</option>
+                <option value="DESC">내림차순</option>
+                <option value="ASC">오름차순</option>
+            </select>
+            <button class="btn btn-primary" type="submit">검색</button>
+            <button class="btn btn-secondary" type="reset">취소</button>
+        </form>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead class="thead">
+            <tr>
+                <th>과목분류코드</th>
+                <th>과목코드</th>
+                <th>강좌명</th>
+                <th>강사명</th>
+                <th>가격</th>
+                <th>등록일</th>
+                <th>강좌상태</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="dto, status:${courses}">
+            <td>[[${dto.category}]]</td>
+            <td>[[${dto.idx}]]</td>
+            <td>
+                <a th:href="@{/admin/course/view(idx=${dto.idx})}">[[${dto.title}]]</a>
+            </td>
+            <td>[[${dto.teacherId}]]</td>
+            <td>[[${dto.price}]]</td>
+            <td>[[${dto.regDate}]]</td>
+            <td>
+                <span class="badge badge-success" th:if="${dto.status == 'Y'}">활성</span>
+                <span class="badge badge-secondary" th:if="${dto.status == 'N'}">비활성</span>
+                <span class="badge badge-warning" th:if="${dto.status == 'R'}">삭제 처리 중</span>
+                <span class="badge badge-danger" th:if="${dto.status != 'Y' and dto.status != 'N' and dto.status != 'R'}">삭제</span>
+                <!-- 환불된 명단 조회 가능-->
+                <span class="badge badge-danger" th:if="${dto.status == 'D'}"
+                      th:onclick="|location.href= '@{/admin/course/refundList(idx=${dto.idx})}'|"> 환불 완료
+                </span>
+            </td>
+        </tr>
+        <tr th:if="${courses == null or courses.isEmpty()}">
+            <td colspan="7" class="text-center">등록된 내용이 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+    <div th:replace="~{/common/paging :: paging}"></div>
+</div>
+
+
+

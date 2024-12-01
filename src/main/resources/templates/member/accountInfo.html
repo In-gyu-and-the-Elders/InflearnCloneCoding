@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout.html}"
+>
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+    <meta name="memberId" th:content="${session.memberId}">
+  </th:block>
+</head>
+<div layout:fragment="main">
+  <div class="cccccc">
+    <div class="myPageContainer">
+      <div class="menuArea">
+        <div style="color: #ADB5BD">Home</div>
+        <div>
+          <ul class="myPageNav">
+            <li><a href="/member/myPage">내 강의실</a></li>
+            <li><a href="/cart/list">수강 바구니</a></li>
+            <li><a href="/member/likedCourses">좋아요</a></li>
+            <li><a href="/member/reviews">작성한 게시글</a></li>
+            <li><a href="/order/list">구매 내역</a></li>
+            <li><a href="/member/accountInfo" style="color:#00c471">계정 정보</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="contentArea">
+        <div class="header-container">
+          <h2 class="myRoomH2">계정 정보</h2>
+        </div>
+        <div class="account-info-container">
+          <div class="profile-section">
+            <img src="https://cdn.inflearn.com/public/main/profile/default_profile.png" alt="프로필 이미지" class="profile-image" style="border-radius: 50%">
+            <div class="profile-info">
+              <div class="info-group">
+                <div class="info-item">
+                  <label>이름</label>
+                  <span th:text="${memberInfo.name}" class="info-text"></span>
+                  <input type="text" th:value="${memberInfo.name}" class="info-input" style="display: none;">
+                  <button class="edit-button" onclick="handleEdit(this, 'name')">수정</button>
+                </div>
+                <div class="info-item">
+                  <label>이메일</label>
+                  <span th:text="${memberInfo.email}" class="info-text"></span>
+                  <input type="email" th:value="${memberInfo.email}" class="info-input" style="display: none;">
+                  <button class="edit-button" onclick="handleEdit(this, 'email')">수정</button>
+                </div>
+                <div class="info-item">
+                  <label>전화번호</label>
+                  <span th:text="${memberInfo.phone}" class="info-text"></span>
+                  <input type="tel" th:value="${memberInfo.phone}" class="info-input" style="display: none;">
+                  <button class="edit-button" onclick="handleEdit(this, 'phone')">수정</button>
+                </div>
+                <div class="info-item" style="display: flex; justify-content: space-between">
+                  <label>비밀번호<br />변경하기</label>
+                  <div>
+                    <button class="edit-button" onclick="window.location.href='/sign/pwChange'">변경</button>
+                  </div>
+                </div>
+                <div style="display: flex; justify-content: space-between">
+                  <label>회원 탈퇴</label>
+                  <div>
+                    <button class="edit-button" onclick="handleLeave()">탈퇴</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <script th:inline="javascript" defer>
+        window.handleEdit = function(button, field) {
+            const infoItem = button.closest('.info-item');
+            const textSpan = infoItem.querySelector('.info-text');
+            const inputField = infoItem.querySelector('.info-input');
+
+            if (button.textContent === '수정') {
+                textSpan.style.display = 'none';
+                inputField.style.display = 'inline-block';
+                inputField.value = textSpan.textContent.trim();
+                button.textContent = '취소';
+
+                const saveButton = document.createElement('button');
+                saveButton.textContent = '저장';
+                saveButton.className = 'save-button';
+                saveButton.onclick = () => handleSave(field, inputField.value, infoItem);
+                infoItem.appendChild(saveButton);
+            } else {
+                textSpan.style.display = 'inline-block';
+                inputField.style.display = 'none';
+                button.textContent = '수정';
+
+                const saveButton = infoItem.querySelector('.save-button');
+                if (saveButton) {
+                    saveButton.remove();
+                }
+            }
+        }
+
+        window.handleSave = function(field, value, infoItem) {
+            const memberId = document.querySelector('meta[name="memberId"]').content;
+
+            if (!memberId) {
+                alert('로그인이 필요합니다.');
+                window.location.href = '/';
+                return;
+            }
+
+            const data = {
+                [field]: value,
+                memberId: memberId
+            };
+
+            fetch('/member/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 응답 오류');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    const textSpan = infoItem.querySelector('.info-text');
+                    const inputField = infoItem.querySelector('.info-input');
+                    const editButton = infoItem.querySelector('.edit-button');
+                    const saveButton = infoItem.querySelector('.save-button');
+                    
+                    textSpan.textContent = value;
+                    textSpan.style.display = 'inline-block';
+                    inputField.style.display = 'none';
+                    editButton.textContent = '수정';
+                    saveButton.remove();
+                    
+                    alert('저장되었습니다.');
+                } else {
+                    alert(data.message || '저장에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('저장 중 오류가 발생했습니다.');
+            });
+        }
+
+        function handleLeave() {
+            if (confirm('정말 탈퇴하시겠습니까?')) {
+                let leaveReason = prompt('탈퇴 사유를 입력해주세요 (최소 2글자 이상)');
+                
+                if (leaveReason === null) {
+                    return;
+                }
+                
+                if (leaveReason.trim().length < 2) {
+                    alert('탈퇴 사유는 최소 2글자 이상 입력해주세요.');
+                    return;
+                }
+                
+                fetch('/member/leave', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        leaveReason: leaveReason
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = '/';
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('탈퇴 처리 중 오류가 발생했습니다.');
+                });
+            }
+        }
+    </script>
+</div>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/common}">
+<div layout:fragment="content">
+    <h2>회원 조회</h2>
+    <div class="container mt-5">
+        <form th:action="@{/admin/member/modify}" method="POST">
+            <!-- Member ID -->
+            <div class="mb-3">
+                <label for="memberId" class="form-label">회원 ID</label>
+                <input type="text" class="form-control" id="memberId" name="memberId" th:value="${info.memberId}">
+            </div>
+            <!-- Password -->
+            <div class="mb-3">
+                <label for="pwd" class="form-label">비밀번호</label>
+                <input type="password" class="form-control" id="pwd" name="pwd" th:value="${info.pwd}" readonly>
+            </div>
+
+            <!-- Name -->
+            <div class="mb-3">
+                <label for="name" class="form-label">이름</label>
+                <input type="text" class="form-control" id="name" name="name" th:value="${info.name}">
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+                <label for="phone" class="form-label">전화번호</label>
+                <input type="tel" class="form-control" id="phone" name="phone" th:value="${info.phone}">
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label for="email" class="form-label">이메일</label>
+                <input type="email" class="form-control" id="email" name="email" th:value="${info.email}">
+            </div>
+            <!-- Status -->
+            <div class="mb-3">
+                <label for="status" class="form-label">상태</label>
+                <select class="form-select" id="status" name="status">
+                    <option value="Y" th:selected="${info.status == 'Y'}">활성</option>
+                    <option value="N" th:selected="${info.status == 'N'}">비활성</option>
+                    <option value="D" th:selected="${info.status == 'D'}">탈퇴</option>
+                </select>
+            </div>
+<!--            <div class="mb-3">-->
+<!--                <label for="regDate" class="form-label">등록일</label>-->
+<!--                <input type="date" class="form-control" id="regDate" name="regDate"-->
+<!--                       th:value="${#temporals.format(info.regDate, 'yyyy-MM-dd')}" disabled>-->
+<!--            </div>-->
+            <div class="mb-3">
+                <label for="regDate" class="form-label">등록일</label>
+                <input type="text" class="form-control" id="regDate" name="regDate"
+                       th:value="${info.regDate}" disabled>
+            </div>
+
+            <!-- Modification Date -->
+<!--            <div class="mb-3" th:if="${info.modifyDate != null}">-->
+<!--                <label for="modifyDate" class="form-label">수정일</label>-->
+<!--                <input type="date" class="form-control" id="modifyDate" th:value="${info.modifyDate}" name="modifyDate" readonly>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Leave Date &ndash;&gt;-->
+<!--            <div class="mb-3" th:if="${info.leaveDate != null}">-->
+<!--                <label for="leaveDate" class="form-label">탈퇴일</label>-->
+<!--                <input type="date" class="form-control" id="leaveDate" th:value="${info.leaveDate}" name="leaveDate" readonly>-->
+<!--            </div>-->
+
+            <!-- Member Type -->
+            <div class="mb-3">
+                <label for="memberType" class="form-label">회원 타입</label>
+                <select class="form-select" id="memberType" name="memberType">
+                    <option value="S" th:selected="${info.memberType == 'S'}">일반 회원</option>
+                    <option value="T" th:selected="${info.memberType == 'T'}">강사</option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">수정</button>
+            <button type="button" class="btn btn-secondary" th:onclick="|location.href= '@{/admin/member/delete(memberId=${info.memberId}, memberType=${info.memberType})}'|">탈퇴</button>
+        </form>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+

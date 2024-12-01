@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<div>
+    <style>
+        /* 아코디언의 collapse 효과를 부드럽게 만드는 CSS */
+        .accordion-collapse {
+            transition: height 0.3s ease; /* 열리고 닫히는 모션을 부드럽게 */
+            overflow: hidden; /* 내용이 넘칠 때 숨기기 */
+        }
+
+        /* 강의 항목을 들여쓰기 하는 스타일 */
+        .accordion-body {
+            padding-left: 50px; /* 강의 항목을 들여쓰기 */
+            font-size: 14px; /* 글자 크기 조정 */
+            color: #555; /* 색상 */
+        }
+        .accordion-item > h2 {
+            font-weight: 900;
+        }
+    </style>
+    <h1>커리큘럼</h1>
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item" th:if="${sectionList != null and !sectionList.isEmpty()}">
+            <div th:each="section, status : ${sectionList}">
+                <h2 class="accordion-header">
+                    <button th:text="${section.section}" class="accordion-button" type="button" data-bs-toggle="collapse" th:data-bs-target="${'#panelsStayOpen-collapse'+status.index}" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+
+                    </button>
+                </h2>
+                <div th:id="${'panelsStayOpen-collapse'+status.index}" class="accordion-collapse collapse show" >
+                        <div class="accordion-body" th:each="lesson, status : ${section.lessons}" >
+                            <a th:href="@{'/course/study/' + ${lesson.idx}}" onclick="openPopup(this.href); return false;" th:text="${status.index+1}+'강 : '+${lesson.title}">
+                            </a>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function openPopup(url) {
+        window.open(url, 'VideoPlayer', 'width=800,height=600');
+    }
+</script>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="~{teacher/layout}">
+<head>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+    </th:block>
+    <th:block layout:fragment="css">
+        <style>
+            /* 메뉴와 후기 레이아웃 */
+            .myPageContainer {
+                display: grid;
+                grid-template-columns: 200px auto; /* menuArea는 200px, 나머지는 자동 */
+                gap: 20px; /* 메뉴와 후기 간격 */
+                width: 1100px;
+                margin: 0 auto;
+            }
+
+            .menuArea {
+                padding: 20px;
+                border-right: 1px solid #ddd; /* 오른쪽 경계선 */
+            }
+
+            .menuArea img {
+                display: block;
+                margin: 0 auto 20px; /* 이미지 가운데 정렬 및 아래 여백 */
+            }
+
+            .menuArea ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .menuArea ul li {
+                margin-top: 15px;
+            }
+
+            .menuArea ul li a {
+                text-decoration: none;
+            }
+
+            .menuArea ul li a:hover {
+                color: #0056b3; /* 호버 시 색상 */
+            }
+
+            .contentArea {
+                padding: 20px;
+                border-radius: 8px;
+            }
+
+            /* 후기 카드 */
+            .ClientReview_Card {
+                min-height: 100px;
+                border-top: 3px solid #13588F;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.1);
+                font-weight: 500;
+                overflow: hidden;
+                padding: 20px;
+                margin-bottom: 15px;
+                border-radius: 8px;
+                background-color: #ffffff;
+            }
+
+            .ClientReview_Stars {
+                font-size: 18px;
+                color: #ffbf00;
+            }
+
+            .ClientReview_Body {
+                font-size: 14px;
+                margin-bottom: 8px;
+            }
+
+            .ClientReview_Name {
+                color: #13588F;
+                font-size: 12px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="main">
+    <div class="myPageContainer">
+        <!-- 왼쪽 고정된 메뉴 -->
+        <div class="menuArea">
+            <div>
+                <img src="/images/person.jpg" width="200px" height="220px">
+                <p>[[${info.name}]]</p>
+                <ul class="myPageNav">
+                    <li><a th:href="@{/teacher/viewIntroduce(memberId=${info.memberId})}">소개</a></li>
+                    <li><a th:href="@{/teacher/viewCourseList(memberId=${info.memberId})}">강의 목록</a></li>
+                    <li><a href="#">수강평</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 오른쪽 후기 리스트 -->
+        <div class="contentArea">
+            <div th:if="${reviews != null and !reviews.isEmpty()}">
+                <div class="ClientReview_Card" th:each="review : ${reviews}">
+                    <div class="ClientReview_Top">
+                        <div class="ClientReview_Stars">
+                            <!-- 별점 -->
+                            <span th:each="i : ${#numbers.sequence(1, review.rating)}">★</span>
+                            <span th:each="i : ${#numbers.sequence(1, 5 - review.rating)}" style="color: #ddd;">★</span>
+                        </div>
+                    </div>
+                    <div class="ClientReview_Body" th:text="${review.content}">후기 내용</div>
+                    <div class="ClientReview_Name" th:text="${review.memberId}">작성자</div>
+                    <div class="ClientReview_Name" th:text="${#temporals.format(review.regDate, 'yyyy-MM-dd')}">날짜</div>
+                </div>
+                <p class="no-data-message" th:if="${reviews == null or reviews.isEmpty()}">
+                    등록된 후기가 없습니다.
+                </p>
+            </div>
+
+            <div th:replace="~{/common/paging :: paging}"></div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

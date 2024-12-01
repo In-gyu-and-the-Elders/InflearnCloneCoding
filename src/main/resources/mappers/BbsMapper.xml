@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="inflearn_clone.springboot.mapper.NoticeMapper">
+<mapper namespace="inflearn_clone.springboot.mappers.BbsMapper">
     <insert id="insert">
-        INSERT INTO tbl_bbs(category, title, content, displayDate, filePath)
-        VALUES ('N', #{title}, #{content}, #{displayDate}, #{filePath})
+        INSERT INTO tbl_bbs(category, title, content, displayDate, filePath, writerId)
+        VALUES (#{category}, #{title}, #{content}, #{displayDate}, #{filePath}, #{writerId})
     </insert>
     <update id="update">
         UPDATE tbl_bbs SET
@@ -18,11 +18,101 @@
         DELETE FROM tbl_bbs
         WHERE idx = #{idx}
     </delete>
-    <select id="list">
-
+    <select id="list" resultType="inflearn_clone.springboot.domain.BbsVO">
+        SELECT * FROM tbl_bbs
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                <choose>
+                    <when test ="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchValue == 'writerId'">
+                        writerId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchCategory == 'regDate'">
+                        regDate LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchValue == 'displayDate'">
+                        displayDate LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND category = 'N'
+        </where>
+        ORDER BY regDate DESC
+        ${sortQuery}
+        LIMIT #{offset}, #{limit}
     </select>
     <select id="view" resultType="inflearn_clone.springboot.domain.BbsVO">
         SELECT * FROM tbl_bbs
         WHERE idx = #{idx}
     </select>
+
+    <update id="updateDeleteDate">
+        UPDATE tbl_course
+        SET deleteDate = #{deleteDate}
+        WHERE idx = #{idx}
+    </update>
+
+    <select id="noticeTotalCnt" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_bbs
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                <choose>
+                    <when test="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'writerId'">
+                        writerId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchCategory == 'regDate'">
+                        regDate LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchValue == 'displayDate'">
+                        displayDate LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND category = 'N'
+        </where>
+    </select>
+
+    <select id="listS" resultType="inflearn_clone.springboot.domain.BbsVO">
+        SELECT * FROM tbl_bbs
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                <choose>
+                    <when test ="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchValue == 'writerId'">
+                        writerId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND category = 'N' AND (displayDate IS NULL OR displayDate &lt;= NOW())
+        </where>
+        ${sortQuery}
+        LIMIT #{offset}, #{limit}
+    </select>
+    <select id="noticeTotalCntS" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_bbs
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                <choose>
+                    <when test="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'writerId'">
+                        writerId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND category = 'N' AND (displayDate IS NULL OR displayDate &lt;= NOW())
+        </where>
+    </select>
+
+
 </mapper>    

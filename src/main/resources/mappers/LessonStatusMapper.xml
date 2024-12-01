@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="inflearn_clone.springboot.mappers.LessonStatusMapper">
+    <select id="countLessonStatus" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM tbl_lessonstatus
+        WHERE lessonIdx = #{lessonIdx} AND memberId = #{memberId}
+    </select>
+
+    <insert id="insertLessonStatus" parameterType="map">
+        INSERT INTO tbl_lessonstatus (lessonIdx, memberId, lessonFlag)
+        VALUES (#{lessonIdx}, #{memberId}, 'Y')
+    </insert>
+
+    <update id="updateLessonStatus" parameterType="map">
+        UPDATE tbl_lessonstatus
+        SET lessonFlag = 'Y'
+        WHERE lessonIdx = #{lessonIdx} AND memberId = #{memberId}
+    </update>
+
+    <select id="studyCheck" resultType="int">
+        SELECT COUNT(*) FROM tbl_lessonstatus ls
+                                 JOIN tbl_lesson l ON ls.lessonIdx = l.idx
+                                 JOIN tbl_section s ON l.sectionIdx = s.idx
+                                 JOIN tbl_course c ON s.courseIdx = c.idx
+        WHERE c.idx = #{courseIdx} AND ls.lessonFlag = 'Y' AND ls.memberId = #{memberId}
+    </select>
+</mapper>    

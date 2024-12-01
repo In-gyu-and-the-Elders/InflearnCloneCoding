@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org"
+  layout:decorate="~{layout/layout.html}"
+>
+<head>
+    <th:block layout:fragment="css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+      <link rel="stylesheet" th:href="@{/css/main/style.css}">
+    </th:block>
+</head>
+<div layout:fragment="main">
+  <div class="swiper2 mySwiper underSlide">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide" id="slider1">
+        <div class="fc">
+          <div class="sliderTextArea">
+            <div class="sliderHead1">명장에게 배우세요</div>
+            <h2 class="sliderTitle1">
+              딱 두 가지를<br />
+              제대로⚡ 다룹니다
+            </h2>
+            <p class="sliderSubTitle1">
+              실무에서 바로 써먹는 실전 스킬<br />
+              현직자의 노하우를 쉽게 배워보세요
+            </p>
+          </div>
+          <img src="https://cdn.inflearn.com/public/main_sliders/faffa5c4-6eb8-48ae-ad75-43cae8939c34/%EB%B0%B0%EB%84%88_521.png?f=webp&w=1200" alt="" />
+        </div>
+      </div>
+      <div class="swiper-slide" id="slider2">
+        <div class="fc">
+          <div class="sliderTextArea">
+            <div class="sliderHead2">빠르게 경험하는 성장</div>
+            <h2 class="sliderTitle2">
+              바쁘다 바빠 현대사회!<br />
+              딱 3시간만 투자하세요 ⏰
+            </h2>
+            <p class="sliderSubTitle2">
+              부담은 적게 성장은 빠르게!<br />
+              오늘부터 나도 프로 완강러
+            </p>
+          </div>
+          <img src="https://cdn.inflearn.com/public/main_sliders/fdfd9381-cce4-42ae-a051-ef86bae2feb3/%5B%E1%84%90%E1%85%A2%E1%84%80%E1%85%B3%E1%84%85%E1%85%A2%E1%86%AB%E1%84%83%E1%85%B5%E1%86%BC%5D3%E1%84%89%E1%85%B5%E1%84%80%E1%85%A1%E1%86%AB_521.webp?f=webp&w=1200" alt="" />
+          
+        </div>
+      </div>
+      <div class="swiper-slide" id="slider3">
+        <div class="fc">
+          <div class="sliderTextArea">
+            <div class="sliderHead3">선착순 모집</div>
+            <h2 class="sliderTitle3">
+              국비지원 IT 부트캠프 여기 다 있다!<br />
+              인프런에서 모아본 부트캠프 모음집 📁
+            </h2>
+            <p class="sliderSubTitle3">
+              2천만원 상당의 교육과정을<br />
+              0원으로 수강하세요.
+            </p>
+          </div>
+          <img src="https://cdn.inflearn.com/public/main_sliders/a1e0ffe5-8588-4edc-982c-c5183576a304/%5BBD%5DKDT_main_521.png?f=webp&w=1200" alt="" />
+        </div>
+      </div>
+      <div class="swiper-slide" id="slider4">
+        <div class="fc">
+          <div class="sliderTextArea">
+            <div class="sliderHead4">신규 강의</div>
+            <h2 class="sliderTitle4">
+              나만 몰랐었던 이 강의~♬.
+            </h2>
+            <p class="sliderSubTitle4">
+              매일 업데이트 되는<br />
+              인프런 신규강의를 만나보세요!
+            </p>
+          </div>
+          <img src="https://cdn.inflearn.com/public/main_sliders/7dc9730a-1a01-40a7-a509-4e8bceb73570/%5B%EB%A9%94%EC%9D%B8%ED%9E%88%EC%96%B4%EB%A1%9C%5D%EC%8B%A0%EA%B7%9C%EA%B0%95%EC%9D%98_main_521.gif?f=webp&w=1200" alt="" />
+        </div>
+      </div>
+      <div class="swiper-slide" id="slider5">
+        <div class="fc">
+          <div class="sliderTextArea">
+            <div class="sliderHead5">매월 업데이트!</div>
+            <h2 class="sliderTitle5">
+              무슨 강의 들을지 고민이라면?<br />
+              현직자 Top 50 강의 보기 👑
+            </h2>
+            <p class="sliderSubTitle5">
+              입문부터 실전까지,<br />
+              믿고 보는 실무자 Pick!
+            </p>
+          </div>
+          <img src="https://cdn.inflearn.com/public/main_sliders/c7210512-f6e0-4bc8-96fd-aedb81b34a15/%5B%ED%83%9C%EA%B7%B8%EB%9E%9C%EB%94%A9%5DTOP50_521.webp?f=webp&w=1200" alt="" />
+        </div>
+      </div>
+      <div class="swiper-slide" id="slider6">
+        <div class="fc">
+          <div class="sliderTextArea">
+            <div class="sliderHead6">매일 업데이트</div>
+            <h2 class="sliderTitle6">
+              지금 할인 중인 강의 💸
+            </h2>
+            <p class="sliderSubTitle6">
+              신규 강의부터 베스트셀러까지<br />
+              지금 바로 부담없이 시작해보세요!
+            </p>
+          </div>
+          <img src="https://cdn.inflearn.com/public/main_sliders/eead4cae-85b7-4faf-b8e4-6d7680037c2d/%5B%E1%84%86%E1%85%A6%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%92%E1%85%B5%E1%84%8B%E1%85%A5%E1%84%85%E1%85%A9%5D%E1%84%8C%E1%85%B5%E1%84%80%E1%85%B3%E1%86%B7%E1%84%92%E1%85%A1%E1%86%AF%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%8C%E1%85%AE%E1%86%BC_521.gif?f=webp&w=1200" alt="" />
+        </div>
+      </div>
+    </div>
+    <div class="sliderNavigation">
+        <div class="sliderPagination">
+          <div>
+            <button class="navBtn prevBtn">
+              &lt;
+            </button>
+            <span class="currentSlide">1</span>
+            /
+            <span class="totalSlides">6</span>
+            <button class="navBtn nextBtn">
+                &gt;
+            </button>
+          </div>
+        </div>
+        <div class="sliderBtnGroup">
+            <button class="sliderBtn active" data-slide="1">
+                <span>명장에게 배우세요</span>
+            </button>
+            <button class="sliderBtn" data-slide="2">
+                <span>빠르게 경험하는 성장</span>
+            </button>
+            <button class="sliderBtn" data-slide="3">
+                <span>선착순 모집</span>
+            </button>
+            <button class="sliderBtn" data-slide="4">
+                <span>신규 강의</span>
+            </button>
+            <button class="sliderBtn" data-slide="5">
+                <span>매월 업데이트!</span>
+            </button>
+            <button class="sliderBtn" data-slide="6">
+                <span>매일 업데이트</span>
+            </button>
+        </div>
+    </div>
+    <div
+      class="swiper-pagination"
+      style="position: relative; bottom: 20px; z-index: 12"
+    ></div>
+  </div>
+  
+    <div class="mainContainer2">
+        <section class="heroSection">
+            <div class="heroContent">
+                <h2>성장기회의 평등을 추구합니다</h2>
+                <form class="searchBox" action="/course/list" method="get">
+                    <input
+                      type="text"
+                      placeholder="배우고 싶은 지식을 입력해보세요."
+                      data-kv="headerSearchWord"
+                      maxlength="60"
+                      name="searchValue">
+                    <button><img src="/public/search.png" alt="" width="25px"></button>
+                </form>
+            </div>
+        </section>
+
+        <section class="categorySection">
+            <h2>다양한 강의를 둘러보세요</h2>
+            <div class="categoryGrid">
+              <a href="/course/list?searchCategory=D">
+                <div class="categoryItem">
+                  <div>
+                    <div class="qwe">
+                      <img src="https://cdn.inflearn.com/public/curation/x2/front-end.png" alt="" width="30px" />
+                    </div>
+                    <div class="qwe">#개발</div>
+                  </div>
+                </div>
+              </a>
+              <a href="/course/list?searchCategory=A">
+                <div class="categoryItem">
+                  <div>
+                    <div class="qwe">
+                      <img src="https://cdn.inflearn.com/public/curation/x2/front-end.png" alt="" width="30px" />
+                    </div>
+                    <div class="qwe">#인공지능</div>
+                  </div>
+                </div>
+              </a>
+              <a href="/course/list?searchCategory=H">
+                <div class="categoryItem">
+                  <div>
+                    <div class="qwe">
+                      <img src="https://cdn.inflearn.com/public/curation/x2/front-end.png" alt="" width="30px" />
+                    </div>
+                    <div class="qwe">#하드웨어</div>
+                  </div>
+                </div>
+              </a>
+              <a href="/course/list?searchCategory=C">
+                <div class="categoryItem">
+                  <div>
+                    <div class="qwe">
+                      <img src="https://cdn.inflearn.com/public/curation/x2/front-end.png" alt="" width="30px" />
+                    </div>
+                    <div class="qwe">#커리어 자기계발</div>
+                  </div>
+                </div>
+              </a>
+              <a href="/course/list?searchCategory=M">
+                <div class="categoryItem">
+                  <div>
+                    <div class="qwe">
+                      <img src="https://cdn.inflearn.com/public/curation/x2/front-end.png" alt="" width="30px" />
+                    </div>
+                    <div class="qwe">#기획 경영 마케팅</div>
+                  </div>
+              </div>
+              </a>
+            </div>
+        </section>
+
+        <section class="recommendedSection">
+            <h2>인기 강의</h2>
+            <div class="swiper courseSwiper-popular">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="courseGrid">
+                            <th:block th:each="course, stat : ${popularCourses}" 
+                                     th:if="${stat.index < 5}">
+                                <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                    <div class="courseCard">
+                                        <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                        <div class="courseInfo">
+                                            <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                            <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                            <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                            <div class="courseMeta">
+                                            </div>
+                                            <div class="price">
+                                                <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="swiper-slide" th:if="${popularCourses.size() > 5}">
+                        <div class="courseGrid">
+                            <th:block th:each="course, stat : ${popularCourses}" 
+                                     th:if="${stat.index >= 5}">
+                                <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                    <div class="courseCard">
+                                        <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                        <div class="courseInfo">
+                                            <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                            <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                            <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                            <div class="courseMeta">
+                                            </div>
+                                            <div class="price">
+                                                <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-button-next">&gt;</div>
+                <div class="swiper-button-prev">&lt;</div>
+            </div>
+        </section>
+
+        <section class="recommendedSection">
+            <h2>최신 강의</h2>
+            <div class="swiper courseSwiper-recent">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="courseGrid">
+                            <th:block th:each="course, stat : ${recentCourses}" 
+                                     th:if="${stat.index < 5}">
+                                <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                    <div class="courseCard">
+                                        <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                        <div class="courseInfo">
+                                            <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                            <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                            <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                            <div class="courseMeta">
+                                            </div>
+                                            <div class="price">
+                                                <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="swiper-slide" th:if="${recentCourses.size() > 5}">
+                        <div class="courseGrid">
+                            <th:block th:each="course, stat : ${recentCourses}" 
+                                     th:if="${stat.index >= 5}">
+                                <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                    <div class="courseCard">
+                                        <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                        <div class="courseInfo">
+                                            <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                            <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                            <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                            <div class="courseMeta">
+                                            </div>
+                                            <div class="price">
+                                                <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-button-next">&gt;</div>
+                <div class="swiper-button-prev">&lt;</div>
+            </div>
+        </section>
+
+        <th:block th:each="category : ${#arrays.toArray({'D', 'A', 'H', 'C', 'M'})}">
+            <section class="recommendedSection">
+                <h2 th:text="${
+                    category == 'D' ? '개발 강의' : 
+                    category == 'A' ? '인공지능 강의' : 
+                    category == 'H' ? '하드웨어 강의' : 
+                    category == 'C' ? '커리어/자기계발 강의' : 
+                    '기획/경영/마케팅 강의'
+                }">카테고리별 강의</h2>
+                <div th:class="'swiper courseSwiper-' + ${category}">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="courseGrid">
+                                <th:block th:each="course, stat : ${categoryCourses.get(category)}" 
+                                         th:if="${stat.index < 5}">
+                                    <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                        <div class="courseCard">
+                                            <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                            <div class="courseInfo">
+                                                <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                                <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                                <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                                <div class="courseMeta">
+                                                </div>
+                                                <div class="price">
+                                                    <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </th:block>
+                            </div>
+                        </div>
+                        <div class="swiper-slide" th:if="${categoryCourses.get(category).size() > 5}">
+                            <div class="courseGrid">
+                                <th:block th:each="course, stat : ${categoryCourses.get(category)}" 
+                                         th:if="${stat.index >= 5}">
+                                    <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                        <div class="courseCard">
+                                            <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                            <div class="courseInfo">
+                                                <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                                <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                                <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                                <div class="courseMeta">
+                                                </div>
+                                                <div class="price">
+                                                    <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-button-next">&gt;</div>
+                    <div class="swiper-button-prev">&lt;</div>
+                </div>
+            </section>
+        </th:block>
+      </div>
+
+      <th:block layout:fragment="script">
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+        <script>
+          var swiper = new Swiper(".swiper2", {
+            loop: true,
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            },
+            autoplay: {
+              delay: 5000,
+              disableOnInteraction: false,
+            },
+            breakpoints: {
+              480: {
+                slidesPerView: 1,
+                spaceBetween: 20
+              },
+              768: {
+                slidesPerView: 1,
+                spaceBetween: 30
+              },
+              1024: {
+                slidesPerView: 1,
+                spaceBetween: 40
+              }
+            },
+            on: {
+                slideChange: function () {
+                    document.querySelectorAll('.sliderBtn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    const activeSlide = (this.realIndex % 6) + 1;
+                    document.querySelector(`.sliderBtn[data-slide="${activeSlide}"]`).classList.add('active');
+                    document.querySelector('.currentSlide').textContent = activeSlide;
+                }
+            }
+          });
+
+          document.querySelectorAll('.sliderBtn').forEach(btn => {
+              btn.addEventListener('click', () => {
+                  const slideIndex = parseInt(btn.getAttribute('data-slide'));
+                  swiper.slideToLoop(slideIndex - 1);
+              });
+          });
+
+          document.querySelector('.prevBtn').addEventListener('click', () => {
+              swiper.slidePrev();
+          });
+
+          document.querySelector('.nextBtn').addEventListener('click', () => {
+              swiper.slideNext();
+          });
+
+          // 각 Swiper 초기화
+          const swiperClasses = [
+              'courseSwiper-popular',
+              'courseSwiper-recent',
+              'courseSwiper-D',
+              'courseSwiper-A',
+              'courseSwiper-H',
+              'courseSwiper-C',
+              'courseSwiper-M'
+          ];
+
+          swiperClasses.forEach(className => {
+              new Swiper("." + className, {
+                  slidesPerView: 1,
+                  spaceBetween: 30,
+                  navigation: {
+                      nextEl: "." + className + " .swiper-button-next",
+                      prevEl: "." + className + " .swiper-button-prev",
+                  }
+              });
+          });
+        </script>
+    </th:block>
+</div>
+</html>

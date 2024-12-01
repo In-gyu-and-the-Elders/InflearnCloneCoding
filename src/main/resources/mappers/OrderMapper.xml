@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//En"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="inflearn_clone.springboot.mappers.OrderMapper">
+
+    <insert id="regist">
+        INSERT INTO tbl_order (memberId, courseIdx, orderPrice, orderNumber, orderDate)
+        VALUES (#{memberId}, #{courseIdx}, #{orderPrice}, #{orderNumber}, NOW())
+    </insert>
+
+    <select id="getOrderList" resultType="inflearn_clone.springboot.dto.order.OrderCourseDTO">
+        SELECT o.idx, o.courseIdx, c.title, o.orderPrice, o.orderDate, o.orderNumber,o.memberId, o.status, o.leaveDate
+        FROM tbl_order o
+                 JOIN tbl_course c ON o.courseIdx = c.idx
+        WHERE o.memberId = #{memberId}
+        ORDER BY o.orderDate
+    </select>
+
+    <select id="orderCnt">
+        SELECT COUNT(*)
+        FROM tbl_order
+        WHERE courseIdx = #{courseIdx} AND memberId = #{memberId} AND status = 'Y'
+    </select>
+
+    <select id="refundByDeleteCourse">
+        SELECT memberId, orderPrice, orderDate, status, orderNumber, leaveDate
+        FROM tbl_order
+        WHERE courseIdx = #{idx}
+    </select>
+  
+    <update id="refundOrder">
+        UPDATE tbl_order
+        SET status = 'D',
+            leaveDate = NOW()
+        WHERE courseIdx = #{courseIdx} AND memberId = #{memberId}
+    </update>
+
+    <select id="studentCnt">
+        SELECT COUNT(*)
+        FROM tbl_order
+        WHERE courseIdx = #{courseIdx}
+    </select>
+</mapper>

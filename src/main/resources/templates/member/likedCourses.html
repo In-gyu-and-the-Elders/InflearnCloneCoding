@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout.html}"
+>
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+  </th:block>
+</head>
+<div layout:fragment="main">
+  <div class="cccccc">
+    <div class="myPageContainer">
+      <div class="menuArea">
+        <div style="color: #ADB5BD">Home</div>
+        <div>
+          <ul class="myPageNav">
+            <li><a href="/member/myPage">내 강의실</a></li>
+            <li><a href="/cart/list">수강 바구니</a></li>
+            <li><a href="/member/likedCourses" style="color:#00c471">좋아요</a></li>
+            <li><a href="/member/reviews">작성한 게시글</a></li>
+            <li><a href="/order/list">구매 내역</a></li>
+            <li><a href="/member/accountInfo">계정 정보</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="contentArea">
+        <div>
+          <div class="header-container">
+            <h2 class="myRoomH2">좋아요한 강의</h2>
+            <select id="sortSelect" class="sort-select" onchange="location.href='/member/likedCourses?sortType=' + this.value">
+              <option value="latest" th:selected="${currentSort == 'latest'}">최신순</option>
+              <option value="title" th:selected="${currentSort == 'title'}">제목순</option>
+              <option value="student" th:selected="${currentSort == 'student'}">수강생순</option>
+              <option value="rating" th:selected="${currentSort == 'rating'}">평점순</option>
+            </select>
+          </div>
+          <div th:if="${likedCourses != null and !likedCourses.isEmpty()}" class="courses-grid">
+            <a th:each="course : ${likedCourses}" class="course-card" th:href="@{/course/view/{idx}(idx=${course.idx})}">
+              <img th:if="${course.thumbnail}" th:src="@{${course.thumbnail}}" class="course-thumbnail" alt="강의 썸네일">
+              <img th:unless="${course.thumbnail}" th:src="@{/images/default-course.jpg}" class="course-thumbnail" alt="기본 썸네일">
+
+              <div class="course-info">
+                <div class="course-title" th:text="${course.title}">강의 제목</div>
+                <div class="course-meta">
+                  <div class="instructor" th:text="${course.teacherName}">강사명</div>
+                  <div class="instructor" th:text="${#numbers.formatDecimal(course.price, 0, 'COMMA', 0, 'POINT')} + '원'">금액</div>
+                  <div class="course-stats">
+                    <span th:text="'평점 ' + ${#numbers.formatDecimal(course.avgRating, 1, 1)}">평점</span>
+                    &nbsp;|&nbsp;
+                    <span th:text="'수강생 ' + ${course.studentCount} + '명'">수강생 수</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <div th:if="${likedCourses == null or likedCourses.isEmpty()}" class="no-courses">
+            <p>좋아요한 강의가 없습니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</html>

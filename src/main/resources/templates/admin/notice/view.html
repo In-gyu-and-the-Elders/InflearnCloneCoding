@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/common}">
+<div layout:fragment="content">
+    <table class="table table-bordered">
+        <tr>
+            <th style="width: 20%;">제목</th>
+            <td th:text="${bbsDTO.title}"></td>
+            <th style="width: 20%;">등록일</th>
+            <td th:text="${#temporals.format(bbsDTO.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        <tr>
+            <th>내용</th>
+            <td colspan="3" th:text="${bbsDTO.content}"></td>
+        </tr>
+        <tr>
+            <th>첨부파일</th>
+            <td colspan="3">
+                <a th:href="@{/file/download(fileName=${bbsDTO.fileName})}">
+                    <span th:text="${bbsDTO.fileName}"></span>
+                </a>
+            </td>
+        </tr>
+    </table>
+
+    <div class="d-flex justify-content-end mt-3">
+        <a th:href="@{/admin/notice/delete(idx=${bbsDTO.idx})}" class="btn btn-danger me-2" onclick="return confirm('삭제하시겠습니까?')">삭제</a>
+        <a th:href="@{/admin/notice/modify(idx=${bbsDTO.idx})}" class="btn btn-success">수정</a>
+    </div>
+
+</div>

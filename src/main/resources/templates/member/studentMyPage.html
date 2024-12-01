@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout.html}"
+>
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
+  </th:block>
+</head>
+  <div layout:fragment="main">
+    <div class="cccccc">
+      <div class="myPageContainer">
+        <div class="menuArea">
+          <div style="color: #ADB5BD">Home</div>
+          <div>
+            <ul class="myPageNav">
+              <li><a href="/member/myPage" style="color:#00c471">내 강의실</a></li>
+              <li><a href="/cart/list">수강 바구니</a></li>
+              <li><a href="/member/likedCourses">좋아요</a></li>
+              <li><a href="/member/reviews">작성한 게시글</a></li>
+              <li><a href="/order/list">구매 내역</a></li>
+              <li><a href="/member/accountInfo">계정 정보</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="contentArea">
+          <div>
+            <div class="header-container">
+              <h2 class="myRoomH2">내 강의실</h2>
+              <select id="sortSelect" class="sort-select" onchange="location.href='/member/myPage?sortType=' + this.value">
+                <option value="latest" th:selected="${currentSort == 'latest'}">최근 구매순</option>
+                <option value="title" th:selected="${currentSort == 'title'}">제목순</option>
+              </select>
+            </div>
+            <div th:if="${myCourses != null and !myCourses.isEmpty()}" class="courses-grid">
+                <a th:each="course : ${myCourses}" class="course-card" th:href="@{/course/view/{idx}(idx=${course.courseIdx})}">
+                    <img th:if="${course.thumbnail}" th:src="@{${course.thumbnail}}" class="course-thumbnail" alt="강의 썸네일">
+                    <img th:unless="${course.thumbnail}" th:src="@{/images/default-course.jpg}" class="course-thumbnail" alt="기본 썸네일">
+                    
+                    <div class="course-info">
+                        <div class="course-title" th:text="${course.title}">강의 제목</div>
+                        <div class="course-meta">
+                            <div th:text="${course.totalLessonCount} + '강'">강의 갯수</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div th:if="${myCourses == null or myCourses.isEmpty()}" class="no-courses">
+                <p>수강 중인 강의가 없습니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</html>

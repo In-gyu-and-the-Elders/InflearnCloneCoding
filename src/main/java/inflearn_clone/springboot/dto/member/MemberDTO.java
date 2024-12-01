@@ -1,9 +1,6 @@
 package inflearn_clone.springboot.dto.member;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDateTime;
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Log4j2
+@ToString
 public class MemberDTO {
     private String memberId;
     private String pwd;
@@ -23,4 +21,5 @@ public class MemberDTO {
     private LocalDateTime modifyDate;
     private LocalDateTime leaveDate;
     private String memberType; // Member type (S: Student, T: Teacher)
+    private String teacherDesc;
 }

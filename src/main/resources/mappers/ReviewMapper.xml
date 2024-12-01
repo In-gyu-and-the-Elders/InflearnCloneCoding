@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="inflearn_clone.springboot.mappers.ReviewMapper">
+
+    <select id="getReviewList" resultType="inflearn_clone.springboot.dto.review.ReviewListDTO">
+        SELECT r.idx, r.courseIdx, r.memberId, r.content, r.rating, r.regDate, r.modifyDate, m.name AS memberName
+        FROM tbl_review r
+        JOIN tbl_member m ON r.memberId = m.memberId
+        WHERE r.courseIdx = #{courseIdx}
+        ORDER BY
+        <choose>
+            <when test="sortBy == 'latest'">
+                r.regDate DESC
+            </when>
+            <when test="sortBy == 'rating_desc'">
+                r.rating DESC
+            </when>
+            <when test="sortBy == 'rating_asc'">
+                r.rating ASC
+            </when>
+        </choose>
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 리뷰 등록 -->
+    <insert id="insertReview">
+        INSERT INTO tbl_review(courseIdx, memberId, content, rating)
+        VALUES(#{courseIdx}, #{memberId}, #{content}, #{rating})
+    </insert>
+
+    <!-- 리뷰 수정 -->
+    <update id="modifyReview">
+        UPDATE tbl_review
+        SET content = #{content}, rating = #{rating}, modifyDate = NOW()
+        WHERE idx = #{idx} AND memberId = #{memberId}
+    </update>
+
+    <!-- 리뷰 삭제 -->
+    <delete id="deleteReview">
+        DELETE FROM tbl_review WHERE idx = #{idx} AND memberId = #{memberId}
+    </delete>
+
+<!--    특정글확인-->
+    <select id="viewReview">
+        SELECT idx, courseIdx, content, rating, memberId
+        FROM tbl_review
+        WHERE idx=#{idx}
+    </select>
+
+    <!-- 강사 강의 수  -->
+    <select id="courseCntByTeacher" resultType="int">
+        SELECT COUNT(idx)
+        FROM tbl_course
+        WHERE teacherId = #{memberId};
+    </select>
+
+    <!-- 강사 리뷰 수 -->
+    <select id="reviewCntByTeacher" resultType="int">
+        SELECT COUNT(r.idx) AS reviewCount
+        FROM tbl_course c
+        LEFT JOIN tbl_review r ON c.idx = r.courseIdx
+        WHERE c.teacherId = #{memberId};
+    </select>
+
+    <!-- 강사 리뷰 목록 -->
+    <select id="reviewListByTeacher" resultType="inflearn_clone.springboot.domain.ReviewVO">
+        SELECT
+            c.idx,
+            c.title,
+            r.idx,
+            r.content,
+            r.rating,
+            r.regDate,
+            r.memberId
+        FROM tbl_review r
+                 LEFT JOIN tbl_course c ON c.idx = r.courseIdx
+        WHERE c.teacherId = #{memberId}
+        ORDER BY r.regDate DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!--    리뷰평점-->
+    <select id="avgRating" parameterType="int" resultType="double">
+        SELECT AVG(rating) FROM tbl_review WHERE courseIdx = #{courseIdx}
+    </select>
+
+    <!-- 리뷰 작성 여부 확인 -->
+    <select id="writerCheck" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_review
+        WHERE memberId = #{memberId} AND courseIdx = #{courseIdx}
+    </select>
+
+    <!-- 리뷰 총 개수 조회 -->
+    <select id="reviewcnt" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_review
+        WHERE courseIdx = #{courseIdx}
+    </select>
+
+</mapper> 
