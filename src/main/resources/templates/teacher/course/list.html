@@ -143,7 +143,7 @@
           </div>
         </section>
 
-        <section id="course-area" class="row g-4 w-75 mx-auto">
+        <section id="course-area" class="row g-4 mx-auto">
 
           <div th:if="${list != null and !list.isEmpty()}" class="courses-grid">
             <a th:each="course : ${list}" class="course-card" th:href="@{/course/view/{idx}(idx=${course.idx})}">
@@ -151,15 +151,15 @@
               <img th:unless="${course.thumbnail}" th:src="@{/images/default-course.jpg}" class="course-thumbnail" alt="기본 썸네일">
 
               <div class="course-info">
-                <div class="course-title" th:text="${course.title}">강의 제목</div>
+                <div class="course-title" th:text="${course.title}" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;">강의 제목</div>
                 <div class="course-meta">
                   <span th:text="${course.lessonCnt} + '강'">강의 갯수</span>
-                  <span th:if="${course.category == 'D'}" th:text="'개발'"></span>
-                  <span th:if="${course.category == 'A'}" th:text="'인공지능'"></span>
-                  <span th:if="${course.category == 'H'}" th:text="'하드웨어'"></span>
-                  <span th:if="${course.category == 'C'}" th:text="'커리어,자기계발'"></span>
-                  <span th:if="${course.category == 'M'}" th:text="'기획,경영,마케팅'"></span>
-                  <span th:text="${#numbers.formatCurrency(course.price)}">가격</span>
+                  <span style="color:#688c86;" th:if="${course.category == 'D'}" th:text="'개발'"></span>
+                  <span style="color:#8c6868;" th:if="${course.category == 'A'}" th:text="'인공지능'"></span>
+                  <span style="color:#686a8c;" th:if="${course.category == 'H'}" th:text="'하드웨어'"></span>
+                  <span style="color:#8c7b68;" th:if="${course.category == 'C'}" th:text="'커리어,자기계발'"></span>
+                  <span style="color:#878c68;" th:if="${course.category == 'M'}" th:text="'기획,경영,마케팅'"></span>
+                  <span style="color:black; font-weight:800;" th:text="${#numbers.formatCurrency(course.price)}">가격</span>
                   <p th:text="'등록일 : '+${#temporals.format(course.regDate, 'yyyy-MM-dd HH:mm:ss')}">등록일</p>
                   <p th:text="'노출일 : '+${#temporals.format(course.displayDate, 'yyyy-MM-dd HH:mm:ss')}">노출일</p>
                   <button disabled th:if="${course.displayDate < T(java.time.LocalDateTime).now()}" th:text="'수정 불가'"></button>
