@@ -272,17 +272,14 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
 
   const formData = new FormData(e.target);
 
-  // 전화번호 조합
   const phone1 = formData.get("phone1");
   const phone2 = formData.get("phone2");
   const phone3 = formData.get("phone3");
 
-  // 개별 phone 필드 삭제
   formData.delete("phone1");
   formData.delete("phone2");
   formData.delete("phone3");
 
-  // 조합된 전화번호 추가
   formData.append("phone", phone1 + "-" + phone2 + "-" + phone3);
 
   formData.delete("pwdConfirm");

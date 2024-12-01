@@ -69,7 +69,7 @@ public class OrderController {
             }
 
             response.setCharacterEncoding("utf-8");
-            JSFunc.alertLocation(message, "member/myPage", response);
+            JSFunc.alertLocation(message, "/member/myPage", response);
         } else {
             String message = "결제 가능한 강좌가 없습니다.";
             if (!alreadyOrderedList.isEmpty()) {

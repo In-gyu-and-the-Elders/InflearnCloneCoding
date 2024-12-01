@@ -233,26 +233,173 @@
 
         <section class="recommendedSection">
             <h2>인기 강의</h2>
-            <div class="courseGrid">
-                <div class="courseCard" th:each="i : ${#numbers.sequence(1, 5)}">
-                    <img src="https://via.placeholder.com/280x160" alt="강의 썸네일">
-                    <div class="courseInfo">
-                        <span class="courseCategory">프로그래밍</span>
-                        <h3>실전 프로젝트로 배우는 프로그래밍</h3>
-                        <p class="instructor">홍길동</p>
-                        <div class="courseMeta">
-                            <span class="rating">
-                                <i class="fas fa-star"></i> 4.5
-                            </span>
-                            <span class="students">
-                                <i class="fas fa-user"></i> 1,234명
-                            </span>
+            <div class="swiper courseSwiper-popular">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="courseGrid">
+                            <th:block th:each="course, stat : ${popularCourses}" 
+                                     th:if="${stat.index < 5}">
+                                <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                    <div class="courseCard">
+                                        <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                        <div class="courseInfo">
+                                            <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                            <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                            <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                            <div class="courseMeta">
+                                            </div>
+                                            <div class="price">
+                                                <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </th:block>
                         </div>
-                        <div class="price">₩55,000</div>
+                    </div>
+                    <div class="swiper-slide" th:if="${popularCourses.size() > 5}">
+                        <div class="courseGrid">
+                            <th:block th:each="course, stat : ${popularCourses}" 
+                                     th:if="${stat.index >= 5}">
+                                <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                    <div class="courseCard">
+                                        <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                        <div class="courseInfo">
+                                            <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                            <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                            <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                            <div class="courseMeta">
+                                            </div>
+                                            <div class="price">
+                                                <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </th:block>
+                        </div>
                     </div>
                 </div>
+                <div class="swiper-button-next">&gt;</div>
+                <div class="swiper-button-prev">&lt;</div>
             </div>
         </section>
+
+        <section class="recommendedSection">
+            <h2>최신 강의</h2>
+            <div class="swiper courseSwiper-recent">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="courseGrid">
+                            <th:block th:each="course, stat : ${recentCourses}" 
+                                     th:if="${stat.index < 5}">
+                                <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                    <div class="courseCard">
+                                        <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                        <div class="courseInfo">
+                                            <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                            <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                            <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                            <div class="courseMeta">
+                                            </div>
+                                            <div class="price">
+                                                <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="swiper-slide" th:if="${recentCourses.size() > 5}">
+                        <div class="courseGrid">
+                            <th:block th:each="course, stat : ${recentCourses}" 
+                                     th:if="${stat.index >= 5}">
+                                <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                    <div class="courseCard">
+                                        <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                        <div class="courseInfo">
+                                            <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                            <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                            <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                            <div class="courseMeta">
+                                            </div>
+                                            <div class="price">
+                                                <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-button-next">&gt;</div>
+                <div class="swiper-button-prev">&lt;</div>
+            </div>
+        </section>
+
+        <th:block th:each="category : ${#arrays.toArray({'D', 'A', 'H', 'C', 'M'})}">
+            <section class="recommendedSection">
+                <h2 th:text="${
+                    category == 'D' ? '개발 강의' : 
+                    category == 'A' ? '인공지능 강의' : 
+                    category == 'H' ? '하드웨어 강의' : 
+                    category == 'C' ? '커리어/자기계발 강의' : 
+                    '기획/경영/마케팅 강의'
+                }">카테고리별 강의</h2>
+                <div th:class="'swiper courseSwiper-' + ${category}">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="courseGrid">
+                                <th:block th:each="course, stat : ${categoryCourses.get(category)}" 
+                                         th:if="${stat.index < 5}">
+                                    <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                        <div class="courseCard">
+                                            <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                            <div class="courseInfo">
+                                                <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                                <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                                <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                                <div class="courseMeta">
+                                                </div>
+                                                <div class="price">
+                                                    <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </th:block>
+                            </div>
+                        </div>
+                        <div class="swiper-slide" th:if="${categoryCourses.get(category).size() > 5}">
+                            <div class="courseGrid">
+                                <th:block th:each="course, stat : ${categoryCourses.get(category)}" 
+                                         th:if="${stat.index >= 5}">
+                                    <a th:href="@{/course/view/{idx}(idx=${course.idx})}" class="courseCard-link">
+                                        <div class="courseCard">
+                                            <img th:src="${course.thumbnail}" th:alt="${course.title + ' 썸네일'}">
+                                            <div class="courseInfo">
+                                                <span class="courseCategory" th:text="${course.getCategoryName()}">카테고리</span>
+                                                <h3 class="courseTitle" th:text="${course.title}">강의 제목</h3>
+                                                <p class="instructor" th:text="${course.teacherId}">강사이름</p>
+                                                <div class="courseMeta">
+                                                </div>
+                                                <div class="price">
+                                                    <span th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}">가격</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-button-next">&gt;</div>
+                    <div class="swiper-button-prev">&lt;</div>
+                </div>
+            </section>
+        </th:block>
       </div>
 
       <th:block layout:fragment="script">
@@ -307,6 +454,28 @@
 
           document.querySelector('.nextBtn').addEventListener('click', () => {
               swiper.slideNext();
+          });
+
+          // 각 Swiper 초기화
+          const swiperClasses = [
+              'courseSwiper-popular',
+              'courseSwiper-recent',
+              'courseSwiper-D',
+              'courseSwiper-A',
+              'courseSwiper-H',
+              'courseSwiper-C',
+              'courseSwiper-M'
+          ];
+
+          swiperClasses.forEach(className => {
+              new Swiper("." + className, {
+                  slidesPerView: 1,
+                  spaceBetween: 30,
+                  navigation: {
+                      nextEl: "." + className + " .swiper-button-next",
+                      prevEl: "." + className + " .swiper-button-prev",
+                  }
+              });
           });
         </script>
     </th:block>

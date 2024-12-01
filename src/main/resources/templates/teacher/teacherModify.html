@@ -50,6 +50,12 @@
                   <input type="tel" th:value="${memberInfo.phone}" class="info-input" style="display: none;">
                   <button class="edit-button" onclick="handleEdit(this, 'phone')">수정</button>
                 </div>
+                <div class="info-item">
+                  <label>소개</label>
+                  <span th:text="${memberInfo.teacherDesc}" class="info-text"></span>
+                  <textarea type="text" th:value="${memberInfo.teacherDesc}" class="info-input" style="display: none;"></textarea>
+                  <button class="edit-button" onclick="handleEdit(this, 'teacherDesc')">수정</button>
+                </div>
                 <div class="info-item" style="display: flex; justify-content: space-between">
                   <label>비밀번호<br />변경하기</label>
                   <div>
@@ -89,12 +95,11 @@
         saveButton.onclick = () => handleSave(field, inputField.value, infoItem);
         infoItem.appendChild(saveButton);
       } else {
-        // 취소 - 원래 상태로 복귀
+        // 취소
         textSpan.style.display = 'inline-block';
         inputField.style.display = 'none';
         button.textContent = '수정';
 
-        // 저장 버튼 제거
         const saveButton = infoItem.querySelector('.save-button');
         if (saveButton) {
           saveButton.remove();
