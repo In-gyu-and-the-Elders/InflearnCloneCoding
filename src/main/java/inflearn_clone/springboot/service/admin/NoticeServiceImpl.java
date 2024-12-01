@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -85,7 +86,7 @@ public class NoticeServiceImpl implements NoticeServiceIf{
 
         for(Integer idx : idxList){
             for(String title : titleList){
-                courseMapper.updateDeleteDate(idx, LocalDateTime.now().plusDays(30));
+                courseMapper.updateDeleteDate(idx, LocalDateTime.now().plusDays(30).with(LocalTime.MIDNIGHT));
                 LocalDateTime month = LocalDateTime.now().plusDays(30);
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 String formattedDate = month.format(formatter);
@@ -108,7 +109,7 @@ public class NoticeServiceImpl implements NoticeServiceIf{
         bbsVO.setTitle(info.getTeacherId() + "강사님 강좌 폐지 안내");
         StringBuilder content = new StringBuilder();
         content.append("30일 이후 해당 강좌는 폐지됩니다\n");
-        courseMapper.updateDeleteDate(info.getIdx(), LocalDateTime.now().plusDays(30));
+        courseMapper.updateDeleteDate(info.getIdx(), LocalDateTime.now().plusDays(30).with(LocalTime.MIDNIGHT));
         LocalDateTime month = LocalDateTime.now().plusDays(30);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = month.format(formatter);
