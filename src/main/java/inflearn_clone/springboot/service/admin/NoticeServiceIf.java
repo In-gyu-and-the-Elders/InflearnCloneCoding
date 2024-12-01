@@ -2,6 +2,7 @@ package inflearn_clone.springboot.service.admin;
 
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -15,7 +16,9 @@ public interface NoticeServiceIf {
     BbsDTO view(int idx);
 
     //수미가 작성한 것
-    public int autoInsert(String memberId, List<CourseDTO> list);
+    public int autoInsert(String memberId, List<CourseDTO> list, String adminId);
+
+    public int autoInsertOneCourse(String memberId, CourseDTO info);
 
     int noticeTotalCnt(String searchCategory, String searchValue);
     int noticeTotalCntS(String searchCategory, String searchValue);

@@ -37,7 +37,7 @@ public interface CourseSerivce {
     //전체 강좌 수
     int allCourseListTotalCnt(String searchCategory, String searchValue, String status);
 
-    List<CourseDTO> allCourseList(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);
+    List<CourseDTO> allCourseList(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String status);
 
     // 강의 상세 정보 가져오기
     CourseDTO courseView(int idx);

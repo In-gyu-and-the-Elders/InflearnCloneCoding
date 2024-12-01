@@ -3,6 +3,8 @@ package inflearn_clone.springboot.utils;
 import lombok.extern.log4j.Log4j2;
 
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 import java.io.PrintWriter;
 
 @Log4j2
@@ -64,4 +66,21 @@ public class JSFunc {
 			log.error(e.getMessage());
 		}
 	}
+
+	public static void alertAndRedirect(String msg, String redirectUrl, HttpServletResponse response) {
+		try {
+			PrintWriter writer = response.getWriter();
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html;charset=UTF-8");
+			String script = "<script>"
+					+ "alert('" + msg + "');"
+					+ "window.location.href='" + redirectUrl + "';"
+					+ "</script>";
+			writer.print(script);
+			writer.flush();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+	}
+
 }

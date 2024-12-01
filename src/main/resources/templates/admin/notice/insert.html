@@ -2,6 +2,11 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
       layout:decorate="~{admin/layout/common}">
 <div layout:fragment="content">
+
+    <div>
+        <h2>공지사항 등록</h2>
+    </div>
+    <br>
     <form th:action="@{/admin/notice/insert}" method="post" th:object="${bbsDTO}" enctype="multipart/form-data">
         <table class="table table-bordered">
             <tr>

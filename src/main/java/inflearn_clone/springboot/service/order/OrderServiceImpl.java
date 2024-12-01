@@ -47,6 +47,9 @@ public class OrderServiceImpl implements OrderService  {
     public List<OrderRefundDTO> refundByDeleteCourse(int idx) {
         System.out.println("idx" + idx);
         List<OrderVO> list = orderMapper.refundByDeleteCourse(idx);
+        if(list == null){
+            return null;
+        }
         return list.stream()
             .map(vo -> modelMapper.map(vo, OrderRefundDTO.class)).collect(Collectors.toList());
     }

@@ -76,16 +76,31 @@
         <where>
             <if test="searchCategory != null and searchValue != null">
                 <choose>
-                    <when test="searchCategory == 'memberId'">
-                        memberId LIKE CONCAT('%', #{searchValue}, '%')
+                    <when test="searchCategory == 'teacherId'">
+                        teacherId LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
-                    <when test="searchCategory == 'name'">
-                        `name` LIKE CONCAT('%', #{searchValue}, '%')
+                    <when test="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'price'">
+                        price LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'category'">
+                        category LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'status'">
+                        status LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
                 </choose>
             </if>
-            AND status = #{status}
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="status == null">
+                AND status IN('D', 'N', 'Y', 'R')
+            </if>
         </where>
+
     </select>
     <!-- 강좌 리스트 전체 조회(활성, 비활성, 탈퇴)-->
     <select id="allCourseList" resultType="inflearn_clone.springboot.domain.CourseVO">
@@ -95,16 +110,35 @@
         <where>
             <if test="searchCategory != null and searchValue != null">
                 <choose>
-                    <when test="searchCategory == 'title'">
-                        memberId LIKE CONCAT('%', #{searchValue}, '%')
-                    </when>
                     <when test="searchCategory == 'teacherId'">
-                        `name` LIKE CONCAT('%', #{searchValue}, '%')
+                        teacherId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'price'">
+                        price LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'category'">
+                        category LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'status'">
+                        status LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
                 </choose>
             </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
         </where>
-        ${sortQuery}
+        <choose>
+            <when test="sortQuery != null and sortQuery != ''">
+                ${sortQuery}
+            </when>
+            <otherwise>
+                ORDER BY regDate DESC
+            </otherwise>
+        </choose>
         LIMIT #{offset}, #{limit}
     </select>
 
@@ -112,7 +146,6 @@
         SELECT idx, category, title, description, teacherId, regDate, displayDate, status, price, thumbnail
         FROM tbl_course
         WHERE idx = #{idx}
-
     </select>
 
     <select id="courseTotalCnt1" resultType="int">
@@ -219,7 +252,7 @@
     <update id="processDeleteRequest">
         UPDATE tbl_course
            SET status = 'K'
-        WHERE idx=#{courseIdx}
+           WHERE idx=#{courseIdx}
     </update>
     <update id="processDeleteRequestN">
         UPDATE tbl_course

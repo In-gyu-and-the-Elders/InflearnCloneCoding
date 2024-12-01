@@ -2,6 +2,7 @@ package inflearn_clone.springboot.service.member;
 
 import inflearn_clone.springboot.dto.member.LeaveReasonDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,4 +34,10 @@ public interface MemberServiceIf {
 
     // 회원 삭제
     boolean deleteMemberInfo(String memberId);
+
+    //엑셀 내보내기
+    List<MemberDTO> selectMemberInfoByDate(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    // 회원 상태 수정
+    boolean changeMemberStatus(String memberId);
 }
