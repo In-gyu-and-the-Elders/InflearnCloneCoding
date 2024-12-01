@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="inflearn_clone.springboot.mappers.MainMapper">
+
+    <!-- 공통 컬럼 -->
+    <sql id="courseColumns">
+        idx, category, title, description, teacherId, 
+        regDate, displayDate, modifyDate, deleteDate,
+        status, price, thumbnail
+    </sql>
+
+    <!-- 최신 강의 목록 -->
+    <select id="getRecentCourses" resultType="inflearn_clone.springboot.dto.main.MainDTO">
+        SELECT 
+            <include refid="courseColumns" />
+        FROM 
+            tbl_course
+        WHERE 
+            status = 'Y'
+            AND displayDate IS NOT NULL
+            AND deleteDate IS NULL
+        ORDER BY 
+            displayDate DESC
+        LIMIT 8
+    </select>
+
+    <!-- 카테고리별 강의 목록 -->
+    <select id="getCoursesByCategory" resultType="inflearn_clone.springboot.dto.main.MainDTO">
+        SELECT 
+            <include refid="courseColumns" />
+        FROM 
+            tbl_course
+        WHERE 
+            status = 'Y'
+            AND category = #{category}
+            AND displayDate IS NOT NULL
+            AND deleteDate IS NULL
+        ORDER BY 
+            displayDate DESC
+        LIMIT 8
+    </select>
+
+    <!-- 인기 강의 목록 -->
+    <select id="getPopularCourses" resultType="inflearn_clone.springboot.dto.main.MainDTO">
+        SELECT 
+            <include refid="courseColumns" />
+        FROM 
+            tbl_course
+        WHERE 
+            status = 'Y'
+            AND displayDate IS NOT NULL
+            AND deleteDate IS NULL
+        ORDER BY 
+            displayDate DESC
+        LIMIT 8
+    </select>
+
+</mapper>
