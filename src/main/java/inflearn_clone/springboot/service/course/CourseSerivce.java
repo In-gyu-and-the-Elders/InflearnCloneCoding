@@ -40,10 +40,10 @@ public interface CourseSerivce {
     List<CourseDTO> allCourseList(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String status);
 
     // 강의 상세 정보 가져오기
-    CourseDTO courseView(int idx);
+    CourseTotalDTO courseView(int idx);
 
-    List<CourseTotalDTO> getCourses(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);
-    int getTotalCourses(String searchCategory, String searchValue);
+    List<CourseTotalDTO> getCourses(int pageNo, int pageSize, List<String> categoryCodes, String searchValue, String sortQuery);
+    int getTotalCourses(List<String> categoryCodes, String searchValue);
     int insertCourse(CourseDTO courseDTO);
     CourseDTO viewMyLastCourse(String memberId);
 

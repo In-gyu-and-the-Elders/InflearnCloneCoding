@@ -2,6 +2,7 @@ package inflearn_clone.springboot.controller;
 import inflearn_clone.springboot.dto.admin.AdminLoginDTO;
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
+import inflearn_clone.springboot.dto.course.CourseTotalDTO;
 import inflearn_clone.springboot.dto.course.CourseMDTO;
 import inflearn_clone.springboot.dto.lesson.LessonDTO;
 import inflearn_clone.springboot.dto.member.LeaveReasonDTO;
@@ -663,8 +664,10 @@ public class AdminController {
     @GetMapping("/course/insert_ss")
     public String insert_ss(Model model, HttpSession session, @RequestParam int courseIdx,HttpServletResponse response) {
         String teacherId = (String) session.getAttribute("memberId");
-        CourseDTO courseDTO = courseSerivce.courseView(courseIdx);
+
+        CourseTotalDTO courseDTO = courseSerivce.courseView(courseIdx);
         response.setCharacterEncoding("UTF-8");
+
         if(!Objects.equals(courseDTO.getTeacherId(), teacherId)){
             JSFunc.alertBack("자신의 강좌만 등록 가능합니다.",response);
             return null;

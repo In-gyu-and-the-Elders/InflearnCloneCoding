@@ -51,4 +51,10 @@ public class CartServiceImpl implements CartService {
     public int getCartCount(String memberId) {
         return cartMapper.getCartCount(memberId);
     }
+
+    //결제후 장바구니 삭제
+    @Override
+    public int deleteByCourseIdx(List<Integer> courseIdxList, String memberId) {
+        return cartMapper.deleteByCourseIdx(courseIdxList, memberId);
+    }
 }

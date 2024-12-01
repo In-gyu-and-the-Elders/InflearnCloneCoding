@@ -17,4 +17,12 @@
         SET lessonFlag = 'Y'
         WHERE lessonIdx = #{lessonIdx} AND memberId = #{memberId}
     </update>
+
+    <select id="studyCheck" resultType="int">
+        SELECT COUNT(*) FROM tbl_lessonstatus ls
+                                 JOIN tbl_lesson l ON ls.lessonIdx = l.idx
+                                 JOIN tbl_section s ON l.sectionIdx = s.idx
+                                 JOIN tbl_course c ON s.courseIdx = c.idx
+        WHERE c.idx = #{courseIdx} AND ls.lessonFlag = 'Y' AND ls.memberId = #{memberId}
+    </select>
 </mapper>    

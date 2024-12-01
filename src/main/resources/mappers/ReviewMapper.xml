@@ -38,7 +38,7 @@
 
     <!-- 리뷰 삭제 -->
     <delete id="deleteReview">
-        DELETE FROM tbl_review WHERE idx = #{idx}
+        DELETE FROM tbl_review WHERE idx = #{idx} AND memberId = #{memberId}
     </delete>
 
 <!--    특정글확인-->
@@ -79,4 +79,24 @@
         ORDER BY r.regDate DESC
         LIMIT #{offset}, #{limit}
     </select>
+
+    <!--    리뷰평점-->
+    <select id="avgRating" parameterType="int" resultType="double">
+        SELECT AVG(rating) FROM tbl_review WHERE courseIdx = #{courseIdx}
+    </select>
+
+    <!-- 리뷰 작성 여부 확인 -->
+    <select id="writerCheck" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_review
+        WHERE memberId = #{memberId} AND courseIdx = #{courseIdx}
+    </select>
+
+    <!-- 리뷰 총 개수 조회 -->
+    <select id="reviewcnt" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_review
+        WHERE courseIdx = #{courseIdx}
+    </select>
+
 </mapper> 

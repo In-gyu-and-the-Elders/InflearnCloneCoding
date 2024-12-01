@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class OrderController {
     private final OrderService orderService;
     private final CartService cartService;
 
+    @Transactional
     @PostMapping("/regist")
     public void registOrder(@RequestParam List<Integer> courseIdxList,
                             @RequestParam List<Integer> priceList,
@@ -58,7 +60,8 @@ public class OrderController {
         }
 
         if (!successOrderedList.isEmpty()) {
-            cartService.delete(successOrderedList, memberId);
+            log.info("결제시확인successOrderedList{}",successOrderedList);
+            cartService.deleteByCourseIdx(successOrderedList, memberId);
 
             String message = "결제가 완료되었습니다.";
             if (!alreadyOrderedList.isEmpty()) {
@@ -70,7 +73,8 @@ public class OrderController {
         } else {
             String message = "결제 가능한 강좌가 없습니다.";
             if (!alreadyOrderedList.isEmpty()) {
-                log.info(alreadyOrderedList);
+                cartService.deleteByCourseIdx(alreadyOrderedList, memberId);
+                log.info("이미 결제된 강좌"+alreadyOrderedList);
                 message = "모든 강좌가 이미 결제된 상태입니다.";
             }
             response.setCharacterEncoding("utf-8");
@@ -100,6 +104,7 @@ public class OrderController {
     @ResponseBody
     public String refundOrder(@RequestParam("idx") int idx) {
         boolean result = orderService.refundOrder(idx);
+
         return result ? "F" : "S";
     }
 
