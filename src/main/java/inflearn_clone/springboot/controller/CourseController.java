@@ -210,7 +210,7 @@ public class CourseController {
 //                log.info("실제 sortBy"+sortBy);
 //                log.info("실제 page"+page);
                 String memberId = (String) request.getSession().getAttribute("memberId");
-                int limit = 1;
+                int limit = 5;
                 int offset = page * limit;
                 List<ReviewListDTO> reviews = reviewService.getReviewList(idx, sortBy, offset, limit);
                 boolean writerCheck = reviewService.writerCheck(memberId,idx);

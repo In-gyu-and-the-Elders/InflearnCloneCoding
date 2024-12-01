@@ -130,7 +130,7 @@ public class ReviewController {
     public List<ReviewListDTO> getReviewList(@RequestParam int courseIdx,
                                              @RequestParam String sortBy,
                                              @RequestParam int page) {
-        int limit = 1;
+        int limit = 5;
         int offset = page * limit;
         return reviewService.getReviewList(courseIdx, sortBy, offset, limit);
     }

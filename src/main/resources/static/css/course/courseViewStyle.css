@@ -209,8 +209,7 @@ body {
 
 .modal-content textarea:focus {
     outline: none;
-    border-color: #007BFF;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    border-color: #00c471;;
 }
 
 /* 별점 스타일 */
@@ -258,13 +257,10 @@ body {
 }
 
 .btn-submit {
-    background-color: #007BFF;
+    background-color: #00c471;;
     color: white;
 }
 
-.btn-submit:hover {
-    background-color: #0056b3;
-}
 
 .btn-cancel {
     margin-left:55px;
