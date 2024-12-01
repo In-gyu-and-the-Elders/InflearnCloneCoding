@@ -10,6 +10,7 @@ public interface NoticeServiceIf {
     public int update(BbsDTO bbsDTO);
     public int delete(int idx);
     public List<BbsDTO> list(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);
+    public List<BbsDTO> listS(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);
 
     BbsDTO view(int idx);
 
@@ -17,6 +18,7 @@ public interface NoticeServiceIf {
     public int autoInsert(String memberId, List<CourseDTO> list);
 
     int noticeTotalCnt(String searchCategory, String searchValue);
+    int noticeTotalCntS(String searchCategory, String searchValue);
 
 
 }

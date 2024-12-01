@@ -58,6 +58,20 @@ public class NoticeServiceImpl implements NoticeServiceIf{
     }
 
     @Override
+    public List<BbsDTO> listS(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("offset", (pageNo - 1) * pageSize);
+        map.put("limit", pageSize);
+        map.put("searchCategory", searchCategory);
+        map.put("searchValue", searchValue);
+        map.put("sortQuery", sortQuery);
+
+        List<BbsVO> list = bbsMapper.listS(map);
+        List<BbsDTO> dtoList = list.stream().map(vo -> modelMapper.map(vo, BbsDTO.class)).toList();
+        return dtoList;
+    }
+
+    @Override
     public BbsDTO view(int idx) {
         BbsVO bbsVO = bbsMapper.view(idx);
         return modelMapper.map(bbsVO, BbsDTO.class);
@@ -102,5 +116,10 @@ public class NoticeServiceImpl implements NoticeServiceIf{
     @Override
     public int noticeTotalCnt(String searchCategory, String searchValue) {
         return bbsMapper.noticeTotalCnt(searchCategory, searchValue);
+    }
+
+    @Override
+    public int noticeTotalCntS(String searchCategory, String searchValue) {
+        return bbsMapper.noticeTotalCntS(searchCategory, searchValue);
     }
 }
