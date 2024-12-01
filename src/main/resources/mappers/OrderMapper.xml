@@ -32,7 +32,7 @@
         UPDATE tbl_order
         SET status = 'D',
             leaveDate = NOW()
-        WHERE idx = #{idx}
+        WHERE courseIdx = #{courseIdx} AND memberId = #{memberId}
     </update>
 
     <select id="studentCnt">

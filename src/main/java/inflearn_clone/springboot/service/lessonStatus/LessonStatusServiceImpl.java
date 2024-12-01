@@ -20,4 +20,9 @@ public class LessonStatusServiceImpl implements LessonStatusService {
             lessonStatusMapper.insertLessonStatus(lessonIdx, memberId);
         }
     }
+    @Override
+    public boolean studyCheck(int courseIdx, String memberId) {
+        return lessonStatusMapper.studyCheck(courseIdx, memberId) > 0;
+    }
+
 }

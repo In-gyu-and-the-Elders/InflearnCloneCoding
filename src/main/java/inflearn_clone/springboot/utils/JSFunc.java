@@ -83,4 +83,29 @@ public class JSFunc {
 		}
 	}
 
+    // 팝업 닫는용
+    public static void alertAndClose(String msg, HttpServletResponse response) {
+        try {
+            PrintWriter writer = response.getWriter();
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("text/html;charset=UTF-8");
+            String script = "<script>"
+                    + "alert('" + escapeJavaScript(msg) + "');"
+                    + "window.close();"
+                    + "</script>";
+            writer.print(script);
+            writer.flush();
+        } catch (Exception e) {
+            log.error("alertAndClose 오류: {}", e.getMessage());
+        }
+    }
+
+    private static String escapeJavaScript(String input) {
+        if (input == null) {
+            return "";
+        }
+        return input.replace("'", "\\'").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
+    }
+
+
 }

@@ -3,6 +3,7 @@ package inflearn_clone.springboot.controller;
 import inflearn_clone.springboot.dto.order.OrderCourseDTO;
 import inflearn_clone.springboot.dto.order.OrderDTO;
 import inflearn_clone.springboot.service.cart.CartService;
+import inflearn_clone.springboot.service.lessonStatus.LessonStatusService;
 import inflearn_clone.springboot.service.order.OrderService;
 import inflearn_clone.springboot.utils.JSFunc;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
     private final CartService cartService;
+    private final LessonStatusService lessonStatusService;
 
     @Transactional
     @PostMapping("/regist")
@@ -102,10 +104,16 @@ public class OrderController {
 
     @PostMapping("/refund")
     @ResponseBody
-    public String refundOrder(@RequestParam("idx") int idx) {
-        boolean result = orderService.refundOrder(idx);
-
-        return result ? "F" : "S";
+    public String refundOrder(@RequestParam("courseIdx") int courseIdx, HttpServletRequest request) {
+        log.info("삭제시 idx{}",courseIdx);
+        String memberId = (String) request.getSession().getAttribute("memberId");
+        boolean viewLesson = lessonStatusService.studyCheck(courseIdx,memberId);
+        if (viewLesson) {
+            return "D"; // 환불 불가실패
+        }
+        // 환불 처리
+        boolean result = orderService.refundOrder(courseIdx,memberId);
+        return result ? "F" : "S"; // S: 환불 성공, F: 환불 실패
     }
 
     //============페이지테스트==============
