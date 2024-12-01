@@ -475,6 +475,10 @@ public class AdminController {
                                HttpSession session,
                                HttpServletResponse response){
         String adminId = (String)session.getAttribute("adminId");
+        if (adminId == null) {
+            JSFunc.alertLocation("로그인이 필요한 서비스입니다.", "/admin/login", response);
+            return null; // 로그인 페이지로 리다이렉트
+        }
         response.setCharacterEncoding("utf-8");
         if(memberType.equals("T")){
             List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
