@@ -15,6 +15,8 @@ public interface CartMapper {
     int delete(@Param("idxList") List<Integer> idxList, @Param("memberId") String memberId);
     int cartCnt(@Param("courseIdx") int courseIdx, @Param("memberId") String memberId);
     int getCartCount(@Param("memberId") String memberId);
+// 결제후 장바구니 삭제
+    int deleteByCourseIdx(@Param("courseIdxList") List<Integer> courseIdxList, @Param("memberId") String memberId);
 }
 
 

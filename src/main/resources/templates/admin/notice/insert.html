@@ -2,16 +2,20 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
       layout:decorate="~{admin/layout/common}">
 <div layout:fragment="content">
+
     <div>
         <h2>공지사항 등록</h2>
     </div>
     <br>
-    <form th:action="@{/admin/notice/insert}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/admin/notice/insert}" method="post" th:object="${bbsDTO}" enctype="multipart/form-data">
         <table class="table table-bordered">
             <tr>
                 <th style="width: 20%;">제목</th>
                 <td>
-                    <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요" required>
+                    <input type="text" min="5" max="50" class="form-control" th:field="*{title}" placeholder="제목을 입력하세요" >
+                    <div th:if="${#fields.hasErrors('title')}" style="color: red;">
+                        <span th:errors="*{title}"></span>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -21,13 +25,19 @@
                         <input type="checkbox" class="form-check-input" id="setPublishDate" onclick="togglePublishDate()">
                         <label class="form-check-label" for="setPublishDate">공개일시 설정</label>
                     </div>
-                    <input type="datetime-local" class="form-control" name="displayDate" id="publishDateTime" disabled>
+                    <input type="datetime-local" class="form-control" th:field="*{displayDate}" id="publishDateTime" disabled>
+                    <div th:if="${#fields.hasErrors('displayDate')}" style="color: red;">
+                        <span th:errors="*{displayDate}"></span>
+                    </div>
                 </td>
             </tr>
             <tr>
                 <th>내용</th>
                 <td colspan="3">
-                    <textarea class="form-control" name="content" rows="5" placeholder="내용을 입력하세요"></textarea>
+                    <textarea class="form-control" minlength="10" maxlength="1000" th:field="*{content}" rows="5" placeholder="내용을 입력하세요">[[${bbsDTO.content}]]</textarea>
+                    <div th:if="${#fields.hasErrors('content')}" style="color: red;">
+                        <span th:errors="*{content}"></span>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -39,12 +49,12 @@
 
                         <!-- 파일 업로드 입력 -->
                         <div class="input-group mt-2">
-                            <input type="file" class="form-control" name="file" accept=".pdf, .doc, .docx, .xls, .xlsx">
+                            <input type="file" class="form-control" name="file" accept=".png, .jpeg, .jpg, .gif, .pdf, .doc, .docx, .xls, .xlsx" onchange="validateFile()">
                         </div>
 
                         <!-- 업로드 안내 텍스트 -->
                         <span class="form-text text-muted mt-2" style="font-size: 0.875rem;">
-                            .pdf, .doc, .docx, .xls, .xlsx 파일만 업로드 가능.<br>업로드 시 이전 파일은 완전히 삭제되어 복구가 불가능합니다.
+                            .png, .jpeg, .jpg, .gif, .pdf, .doc, .docx, .xls, .xlsx 파일만 업로드 가능.<br>업로드 시 이전 파일은 완전히 삭제되어 복구가 불가능합니다.
                         </span>
                     </div>
                 </td>
@@ -63,6 +73,37 @@
 
             // 체크박스가 체크되면 datetime-local 입력을 활성화, 체크 해제되면 비활성화
             publishDateInput.disabled = !setPublishDateCheckbox.checked;
+        }
+        function validateFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];  // 첫 번째 파일만 검증
+
+            // 파일이 선택되지 않았을 경우
+            if (!file) {
+                alert('파일을 선택해주세요.');
+                return;
+            }
+
+            // 파일 확장자 확인
+            const allowedExtensions = ['png, jpeg, jpg, gif, pdf', 'doc', 'docx', 'xls', 'xlsx'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+
+            if (!allowedExtensions.includes(fileExtension)) {
+                alert('허용되지 않은 파일 형식입니다. .png, .jpeg, .jpg, .gif, .pdf, .doc, .docx, .xls, .xlsx 파일만 업로드 가능합니다.');
+                fileInput.value = '';  // 파일 입력 초기화
+                return;
+            }
+
+            // 파일 크기 제한: 10MB 이하
+            const maxSize = 10 * 1024 * 1024;  // 10MB
+            if (file.size > maxSize) {
+                alert('파일 크기는 10MB 이하로 업로드 해주세요.');
+                fileInput.value = '';  // 파일 입력 초기화
+                return;
+            }
+
+            // 유효성 통과 시
+            alert('파일이 유효합니다.');
         }
     </script>
 </div>

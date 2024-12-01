@@ -2,6 +2,7 @@ package inflearn_clone.springboot.controller;
 import inflearn_clone.springboot.dto.admin.AdminLoginDTO;
 import inflearn_clone.springboot.dto.bbs.BbsDTO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
+import inflearn_clone.springboot.dto.course.CourseTotalDTO;
 import inflearn_clone.springboot.dto.course.CourseMDTO;
 import inflearn_clone.springboot.dto.lesson.LessonDTO;
 import inflearn_clone.springboot.dto.member.LeaveReasonDTO;
@@ -659,8 +660,10 @@ public class AdminController {
     @GetMapping("/course/insert_ss")
     public String insert_ss(Model model, HttpSession session, @RequestParam int courseIdx,HttpServletResponse response) {
         String teacherId = (String) session.getAttribute("memberId");
-        CourseDTO courseDTO = courseSerivce.courseView(courseIdx);
+
+        CourseTotalDTO courseDTO = courseSerivce.courseView(courseIdx);
         response.setCharacterEncoding("UTF-8");
+
         if(!Objects.equals(courseDTO.getTeacherId(), teacherId)){
             JSFunc.alertBack("자신의 강좌만 등록 가능합니다.",response);
             return null;
@@ -1228,13 +1231,22 @@ public class AdminController {
 
     // 11261051 --> validation 아직 안 됨
     @GetMapping("notice/insert")
-    public String insert() {
+    public String insert(Model model) {
+        model.addAttribute("bbsDTO", new BbsDTO());
         return "admin/notice/insert";
     }
 
     @PostMapping("notice/insert")
-    public String insert(BbsDTO bbsDTO, HttpServletResponse response, HttpSession session) {
-
+    public String insert(@ModelAttribute @Valid BbsDTO bbsDTO,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes,
+                         HttpServletResponse response,
+                         HttpSession session,Model model) {
+        if(bindingResult.hasErrors()){
+            model.addAttribute("bbsDTO", bbsDTO);
+            redirectAttributes.addFlashAttribute("errors", bindingResult);
+            return "admin/notice/insert";
+        }
         String adminId = (String) session.getAttribute("adminId");
         if (adminId == null) {
             response.setCharacterEncoding("utf-8");

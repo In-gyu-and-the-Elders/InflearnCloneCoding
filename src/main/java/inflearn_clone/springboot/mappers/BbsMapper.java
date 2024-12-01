@@ -13,6 +13,8 @@ public interface BbsMapper {
     public int delete(int idx);
     public List<BbsVO> list(Map<String, Object> map);
     public BbsVO view(int idx);
+    public List<BbsVO> listS(Map<String, Object> map);
 
     public int noticeTotalCnt(String searchCategory, String searchValue);
+    public int noticeTotalCntS(String searchCategory, String searchValue);
 }

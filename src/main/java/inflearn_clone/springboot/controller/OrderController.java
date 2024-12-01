@@ -3,6 +3,7 @@ package inflearn_clone.springboot.controller;
 import inflearn_clone.springboot.dto.order.OrderCourseDTO;
 import inflearn_clone.springboot.dto.order.OrderDTO;
 import inflearn_clone.springboot.service.cart.CartService;
+import inflearn_clone.springboot.service.lessonStatus.LessonStatusService;
 import inflearn_clone.springboot.service.order.OrderService;
 import inflearn_clone.springboot.utils.JSFunc;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,9 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
     private final CartService cartService;
+    private final LessonStatusService lessonStatusService;
 
+    @Transactional
     @PostMapping("/regist")
     public void registOrder(@RequestParam List<Integer> courseIdxList,
                             @RequestParam List<Integer> priceList,
@@ -58,7 +62,8 @@ public class OrderController {
         }
 
         if (!successOrderedList.isEmpty()) {
-            cartService.delete(successOrderedList, memberId);
+            log.info("결제시확인successOrderedList{}",successOrderedList);
+            cartService.deleteByCourseIdx(successOrderedList, memberId);
 
             String message = "결제가 완료되었습니다.";
             if (!alreadyOrderedList.isEmpty()) {
@@ -70,7 +75,8 @@ public class OrderController {
         } else {
             String message = "결제 가능한 강좌가 없습니다.";
             if (!alreadyOrderedList.isEmpty()) {
-                log.info(alreadyOrderedList);
+                cartService.deleteByCourseIdx(alreadyOrderedList, memberId);
+                log.info("이미 결제된 강좌"+alreadyOrderedList);
                 message = "모든 강좌가 이미 결제된 상태입니다.";
             }
             response.setCharacterEncoding("utf-8");
@@ -98,9 +104,16 @@ public class OrderController {
 
     @PostMapping("/refund")
     @ResponseBody
-    public String refundOrder(@RequestParam("idx") int idx) {
-        boolean result = orderService.refundOrder(idx);
-        return result ? "F" : "S";
+    public String refundOrder(@RequestParam("courseIdx") int courseIdx, HttpServletRequest request) {
+        log.info("삭제시 idx{}",courseIdx);
+        String memberId = (String) request.getSession().getAttribute("memberId");
+        boolean viewLesson = lessonStatusService.studyCheck(courseIdx,memberId);
+        if (viewLesson) {
+            return "D"; // 환불 불가실패
+        }
+        // 환불 처리
+        boolean result = orderService.refundOrder(courseIdx,memberId);
+        return result ? "F" : "S"; // S: 환불 성공, F: 환불 실패
     }
 
     //============페이지테스트==============
