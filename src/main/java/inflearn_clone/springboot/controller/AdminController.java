@@ -31,9 +31,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -45,6 +43,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -509,6 +509,11 @@ public class AdminController {
         Sheet sheet = workbook.createSheet("30일간의 회원 변동 구간 확인");
         int rowNum = 0;
 
+        // 날짜 셀 스타일 생성
+        CellStyle dateCellStyle = workbook.createCellStyle();
+        CreationHelper creationHelper = workbook.getCreationHelper();
+        dateCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("yyyy-MM-dd"));
+
         //컬럼 생성
         Row headerRow = sheet.createRow(rowNum++);
         headerRow.createCell(0).setCellValue("아이디");
@@ -520,6 +525,7 @@ public class AdminController {
         headerRow.createCell(6).setCellValue("수정일");
         headerRow.createCell(7).setCellValue("탈퇴일");
 
+
         // 데이터 행 생성
         for (MemberDTO member : members) {
             Row row = sheet.createRow(rowNum++);
@@ -528,15 +534,31 @@ public class AdminController {
             row.createCell(2).setCellValue(member.getPhone());
             row.createCell(3).setCellValue(member.getEmail());
             row.createCell(4).setCellValue(member.getStatus());
-            row.createCell(5).setCellValue(member.getRegDate());
-            row.createCell(6).setCellValue(member.getModifyDate());
-            row.createCell(7).setCellValue(member.getLeaveDate());
+            // 등록일
+            Cell regDateCell = row.createCell(5);
+            regDateCell.setCellValue(member.getRegDate()); // LocalDate or LocalDateTime
+            regDateCell.setCellStyle(dateCellStyle);
+
+            // 수정일
+            Cell modifyDateCell = row.createCell(6);
+            modifyDateCell.setCellValue(member.getModifyDate()); // LocalDate or LocalDateTime
+            modifyDateCell.setCellStyle(dateCellStyle);
+
+            // 탈퇴일
+            Cell leaveDateCell = row.createCell(7);
+            if (member.getLeaveDate() != null) {
+                leaveDateCell.setCellValue(member.getLeaveDate()); // LocalDate or LocalDateTime
+                leaveDateCell.setCellStyle(dateCellStyle);
+            }
 
         }
 
         // 컨텐츠 타입과 파일명 지정
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment;filename=members.xlsx");
+
+        // 한글 파일 이름 설정
+        String fileName = URLEncoder.encode("회원변동내역서.xlsx", StandardCharsets.UTF_8.toString());
+        response.setHeader("Content-Disposition", "attachment;filename*=UTF-8''" + fileName);
 
         // 엑셀 파일 출력
         workbook.write(response.getOutputStream());
