@@ -207,9 +207,11 @@
         c.status,
         c.price,
         c.thumbnail,
-        m.name AS teacherName
+        m.name AS teacherName,
+        COALESCE(AVG(r.rating), 0) AS averageRating
         FROM tbl_course c
         JOIN tbl_member m ON c.teacherId = m.memberId
+        LEFT JOIN tbl_review r ON c.idx = r.courseIdx
         <where>
             <if test="(categoryCodes != null and categoryCodes.size() > 0) or (searchValue != null and searchValue != '')">
                 (
@@ -228,10 +230,11 @@
                 )
             </if>
             AND c.status = 'Y'
-             <![CDATA[
-            AND c.displayDate <= NOW()
-                     ]]>
+            <![CDATA[
+        AND c.displayDate <= NOW()
+        ]]>
         </where>
+        GROUP BY c.idx
         ${sortQuery}
         LIMIT #{offset}, #{limit}
     </select>

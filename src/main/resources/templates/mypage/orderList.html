@@ -47,7 +47,7 @@
                                       style="font-weight: 600; color: #1b1c1d; font-size: 16px;"></span>
                             </div>
                             <button th:if="${order.status != 'D'}" 
-                                    th:data-idx="${order.idx}" 
+                                    th:data-idx="${order.courseIdx}"
                                     class="refund-button" 
                                     onclick="refund(this)"
                                     style="padding: 8px 16px; border-radius: 4px; border: 1px solid #e9ecef; background: white; color: #495057; font-size: 14px; cursor: pointer;">
@@ -67,19 +67,22 @@
     </div>
     <script>
         function refund(button) {
-            const idx = button.getAttribute('data-idx');
+            const courseIdx = button.getAttribute('data-idx');
             if (confirm('환불하시겠습니까?')) {
                 fetch(`/order/refund`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({ idx })
+                    body: new URLSearchParams({ courseIdx })
                 })
                     .then(response => response.text())
                     .then(result => {
                         if (result === 'S') {
                             alert('환불이 처리되었습니다.');
                             button.style.display = 'none';
-                        } else {
+                        }else if(result === 'D'){
+                            alert('강의 시청기록이 있어 환불 불가합니다.');
+                        }
+                        else {
                             alert('환불에 실패했습니다.');
                         }
                     });

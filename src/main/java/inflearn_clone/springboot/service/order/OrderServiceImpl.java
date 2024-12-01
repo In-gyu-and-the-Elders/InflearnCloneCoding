@@ -54,8 +54,8 @@ public class OrderServiceImpl implements OrderService  {
             .map(vo -> modelMapper.map(vo, OrderRefundDTO.class)).collect(Collectors.toList());
     }
     @Override
-    public boolean refundOrder(int idx) {
-        return orderMapper.refundOrder(idx) == 0;
+    public boolean refundOrder(int courseIdx, String memberId) {
+        return orderMapper.refundOrder(courseIdx, memberId) == 0;
     }
     @Override
     public int studentCnt(int courseIdx) {

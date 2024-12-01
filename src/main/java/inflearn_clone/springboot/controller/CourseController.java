@@ -17,6 +17,7 @@ import inflearn_clone.springboot.service.order.OrderService;
 import inflearn_clone.springboot.service.review.ReviewService;
 import inflearn_clone.springboot.service.section.SectionServiceIf;
 import inflearn_clone.springboot.utils.CategoryMapper;
+import inflearn_clone.springboot.utils.JSFunc;
 import inflearn_clone.springboot.utils.Paging;
 import inflearn_clone.springboot.utils.QueryUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -184,8 +185,6 @@ public class CourseController {
                 model.addAttribute("course", course);
                 return "course/tabs/info";
             case "curriculum":
-
-
                 //여기서 해야 하는 것 --> 이미 이 강좌 뷰에 들어왔으니까, 섹션 리스트가 필요한데, 이 섹션에는 강의 리스트가 포함이 되어 있어야 함!
                 List<SectionDTO> sectionDTOList = sectionService.sectionList(idx); // 강좌 인덱스로 섹션의 리스트를 가져옴.
                 List<SectionWithLessonListDTO> sectionWithLessonListDTOList = new ArrayList<>(); // 강의 리스트가 포함된 섹션 리스트를 생성
@@ -236,25 +235,27 @@ public class CourseController {
     }
 
     @GetMapping("/study/{lessonIdx}")
-    public String playLesson(@PathVariable int lessonIdx, Model model, HttpServletRequest request) {
+    public String playLesson(@PathVariable int lessonIdx, Model model, HttpServletRequest request,HttpServletResponse response) {
         String memberId = (String) request.getSession().getAttribute("memberId");
-        if (memberId == null) {
-            return "redirect:/login"; // 로그인 페이지로 리다이렉트
-        }
-
+        log.info("초기 아이디 확인 lessonidx:{}",lessonIdx);
         // 강의 정보 가져오기
         LessonDTO lesson = lessonService.getLessonById(lessonIdx);
         if (lesson == null) {
-            return "redirect:/"; // 메인 페이지로 리다이렉트
+            response.setCharacterEncoding("UTF-8");
+            JSFunc.alertAndClose("해당 강의를 찾을 수 없습니다.", response);
+            return null;
         }
-
+        log.info("강의정보lesson{}",lesson);
         // 해당 강의의 courseIdx 가져오기
         int courseIdx = lessonService.getCourseIdxByLessonId(lessonIdx);
+        log.info("해당 강의의 courseIdx{}",courseIdx);
 
         // 사용자가 해당 강의를 구매했는지 확인
         boolean hasOrdered = orderService.orderCnt(courseIdx, memberId);
         if (hasOrdered) {
-            return "redirect:/course/view/" + courseIdx; // 강의 상세 페이지로 리다이렉트
+            response.setCharacterEncoding("UTF-8");
+            JSFunc.alertAndClose("강좌 구매후 시청이 가능합니다.", response);
+            return null;
         }
 
         lessonStatusService.updateLessonStatus(lessonIdx, memberId);
