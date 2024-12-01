@@ -64,6 +64,8 @@ public interface CourseMapper {
     List<SectionVO> selectSection(int idx);
     List<LessonVO> selectLesson(@Param("sectionIdx") List<Integer> sectionIdx);
 
+    boolean processDeleteRequest(@Param("courseIdx") long courseIdx);
+    boolean processDeleteRequestN(@Param("courseIdx") long courseIdx);
 
     int courseTotalCnt(Map<String, Object> map);
 }

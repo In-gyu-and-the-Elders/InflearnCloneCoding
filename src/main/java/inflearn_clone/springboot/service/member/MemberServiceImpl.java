@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,9 +72,13 @@ public class MemberServiceImpl implements MemberServiceIf{
     @Override
     public MemberDTO selectMemberInfo(String memberId) {
         MemberVO vo = memberMapper.selectMemberInfo(memberId);
+        if (vo == null) {
+            return null;
+        }
         MemberDTO memberInfo = modelMapper.map(vo, MemberDTO.class);
         return memberInfo;
     }
+
 
     @Override
     public boolean modifyMemberInfo(MemberDTO dto) {
@@ -91,6 +96,9 @@ public class MemberServiceImpl implements MemberServiceIf{
     @Override
     public LeaveReasonDTO leaveReasonView(String memberId) {
         MemberVO vo = memberMapper.leaveReasonView(memberId);
+        if(vo == null){
+            return null;
+        }
         return modelMapper.map(vo, LeaveReasonDTO.class);
     }
 
@@ -98,6 +106,7 @@ public class MemberServiceImpl implements MemberServiceIf{
     public boolean deleteMemberInfo(String memberId) {
         return memberMapper.deleteMemberInfo(memberId);
     }
+
 
     @Override
     public List<MemberDTO> selectTeacherRequest(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
@@ -113,5 +122,22 @@ public class MemberServiceImpl implements MemberServiceIf{
                 .map(vo -> modelMapper.map(vo, MemberDTO.class)).collect(Collectors.toList());
     }
 
+    @Override
+    public List<MemberDTO> selectMemberInfoByDate(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // LocalDateTime -> String 변환
+        String startDate = startDateTime.format(formatter);
+        String endDate = endDateTime.format(formatter);
+
+        List<MemberVO> voList = memberMapper.selectMemberInfoByDate(startDate, endDate);
+        return voList.stream()
+                .map(vo -> modelMapper.map(vo, MemberDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean changeMemberStatus(String memberId) {
+        return memberMapper.changeMemberStatus(memberId);
+    }
 
 }

@@ -2,12 +2,15 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
       layout:decorate="~{admin/layout/common}">
 <div layout:fragment="content">
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">강좌 수정</h2>
-        <form id="courseForm" method="POST" th:object="${course}" enctype="multipart/form-data" action="/admin/course/modify">
+    <div>
+        <h2>강좌 등록</h2>
+    </div>
+    <div class="container mt-5 w-75">
+        <h2 class="text-center mb-4">강좌 등록</h2>
+        <form id="courseForm" method="POST" th:object="${courseDTO}" th:action="@{/admin/course/insert}" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="title" class="form-label">강좌 제목</label>
-                <input type="text" minlength="5" maxlength="100" class="form-control" id="title" th:field="*{title}" th:value="${course.title}" placeholder="강좌 제목" required />
+                <input type="text" class="form-control" minlength="5" maxlength="100" id="title" th:field="*{title}" placeholder="강좌 제목" th:text="${courseDTO.title}" required />
                 <div th:if="${#fields.hasErrors('title')}" style="color: red;">
                     <span th:errors="*{title}"></span>
                 </div>
@@ -15,7 +18,7 @@
 
             <div class="mb-3">
                 <label for="description" class="form-label">강좌 소개</label>
-                <textarea class="form-control" minlength="100" maxlength="2000" id="description" th:text="${course.description}" th:field="*{description}" placeholder="강좌 소개" rows="4" required></textarea>
+                <textarea class="form-control" minlength="100" maxlength="2000" id="description" th:field="*{description}" placeholder="강좌 소개" rows="4" required>[[${courseDTO.description}]]</textarea>
                 <div th:if="${#fields.hasErrors('description')}" style="color: red;">
                     <span th:errors="*{description}"></span>
                 </div>
@@ -24,11 +27,11 @@
             <div class="mb-3">
                 <label for="category" class="form-label">카테고리</label>
                 <select class="form-control" id="category" th:field="*{category}" required>
-                    <option value="D" th:selected="${course.category == 'D'}">개발</option>
-                    <option value="A" th:selected="${course.category == 'A'}">인공지능</option>
-                    <option value="H" th:selected="${course.category == 'H'}">하드웨어</option>
-                    <option value="C" th:selected="${course.category == 'C'}">커리어,자기계발</option>
-                    <option value="M" th:selected="${course.category == 'M'}">기획,경영,마케팅</option>
+                    <option th:selected="${courseDTO.category == 'D'}" value="D">개발</option>
+                    <option th:selected="${courseDTO.category == 'A'}" value="A">인공지능</option>
+                    <option th:selected="${courseDTO.category == 'H'}" value="H">하드웨어</option>
+                    <option th:selected="${courseDTO.category == 'C'}" value="C">커리어,자기계발</option>
+                    <option th:selected="${courseDTO.category == 'M'}" value="M">기획,경영,마케팅</option>
                 </select>
                 <div th:if="${#fields.hasErrors('category')}" style="color: red;">
                     <span th:errors="*{category}"></span>
@@ -37,7 +40,7 @@
 
             <div class="mb-3">
                 <label for="price" class="form-label">가격</label>
-                <input type="number" class="form-control" id="price" th:field="*{price}" th:value="${course.price}" placeholder="가격" required />
+                <input type="number" class="form-control" id="price" th:field="*{price}" placeholder="가격" required />
                 <div th:if="${#fields.hasErrors('price')}" style="color: red;">
                     <span th:errors="*{price}"></span>
                 </div>
@@ -45,7 +48,7 @@
 
             <div class="mb-3">
                 <label for="displayDate" class="form-label">강좌 노출일</label>
-                <input type="datetime-local" class="form-control" id="displayDate" th:value="${#temporals.format(course.displayDate, 'yyyy-MM-dd HH:mm')}" th:field="*{displayDate}" required />
+                <input type="datetime-local" class="form-control" id="displayDate" th:field="*{displayDate}" required />
                 <div th:if="${#fields.hasErrors('displayDate')}" style="color: red;">
                     <span th:errors="*{displayDate}"></span>
                 </div>
@@ -53,17 +56,14 @@
 
             <div class="mb-3">
                 <label for="thumbnailFile" class="form-label">썸네일 이미지</label>
-                <img th:src="${course.thumbnail}" width="300px;" alt="강의썸네일">
-                <input type="file" accept="image/jpeg, image/png, image/jpg" class="form-control" id="thumbnailFile" th:field="*{thumbnailFile}" onchange="checkFileExtension()"/>
-                <span style="color:#ff6c6c;">썸네일 재등록 시 기존 썸네일은 삭제됩니다.</span>
+                <input type="file" class="form-control" accept="image/jpeg, image/png, image/jpg" id="thumbnailFile" th:field="*{thumbnailFile}" required onchange="checkFileExtension()"/>
                 <div th:if="${#fields.hasErrors('thumbnailFile')}" style="color: red;">
                     <span th:errors="*{thumbnailFile}"></span>
                 </div>
             </div>
-            <input type="hidden" name="idx" th:value="${course.idx}">
-            <input type="hidden" name="teacherId" th:value="${course.teacherId}">
+
             <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary">다음</button>
+                <button type="submit" class="btn btn-primary">강좌 등록</button>
             </div>
         </form>
     </div>
@@ -91,6 +91,7 @@
 
             return true;  // 파일이 확장자와 크기 조건을 만족하면 true 반환
         }
+
     </script>
 </div>
 

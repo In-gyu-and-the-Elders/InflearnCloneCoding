@@ -28,4 +28,8 @@ public interface MemberMapper {
     MemberVO leaveReasonView(String memberId);
 
     boolean deleteMemberInfo(String memberId);
+
+    List<MemberVO> selectMemberInfoByDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    boolean changeMemberStatus(String memberId);
 }

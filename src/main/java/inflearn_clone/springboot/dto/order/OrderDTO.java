@@ -20,4 +20,5 @@ public class OrderDTO {
     private int orderPrice;
     private LocalDateTime orderDate;
     private String orderNumber;
+    private LocalDateTime leaveDate;
 }

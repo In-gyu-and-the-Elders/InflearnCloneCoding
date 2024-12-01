@@ -131,7 +131,7 @@
 </style>
 </head>
 <body>
-<a th:href="@{/admin/logout}"  onclick="return confirm('로그아웃 하시겠습니까?')">로그아웃</a>
+<a th:href="@{/administrator/logout}"  onclick="return confirm('로그아웃 하시겠습니까?')">로그아웃</a>
 <div class="analytics-report">
     <div class="dashboard-overview">
             <div class="stat-card">
@@ -182,9 +182,9 @@
 
     <div class="report-generation">
         <div class="report-filters">
-            <input type="date" id="start-date" />
-            <input type="date" id="end-date" />
-            <button id="generate-report">엑셀로 내보내기</button>
+            <input type="datetime-local" id="startDate" />
+            <input type="datetime-local" id="endDate" />
+            <button id="generate-report" th:onclick="download()">엑셀로 내보내기</button>
         </div>
     </div>
 </div>
@@ -235,6 +235,17 @@ const scoreDistributionChart = new Chart(ctxScoreDistribution, {
         maintainAspectRatio: false
     }
 });
+
+function download(){
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+    if(!startDate || !endDate){
+        alert("시작일과 종료일 모두 입력해주세요.");
+        return;
+    }
+    const url = "/admin/excel/download?startDate=" + encodeURIComponent(startDate) + "&endDate=" + encodeURIComponent(endDate);
+    location.href = url;
+}
 </script>
 </body>
 </html>

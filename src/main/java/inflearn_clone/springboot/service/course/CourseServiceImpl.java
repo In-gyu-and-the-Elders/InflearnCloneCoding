@@ -109,13 +109,14 @@ public class CourseServiceImpl implements CourseSerivce {
     }
 
     @Override
-    public List<CourseDTO> allCourseList(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
+    public List<CourseDTO> allCourseList(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String status) {
         Map<String, Object> map = new HashMap<>();
         map.put("offset", (pageNo - 1) * pageSize);
         map.put("limit", pageSize);
         map.put("searchCategory", searchCategory);
         map.put("searchValue", searchValue);
         map.put("sortQuery", sortQuery);
+        map.put("status", status);
 
         List<CourseVO> voList =  courseMapper.allCourseList(map);
         return voList.stream()
