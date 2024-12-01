@@ -11,6 +11,6 @@ public interface OrderService {
     List<OrderCourseDTO> getOrderList(String memberId);
     boolean orderCnt(int courseIdx, String memberId);
     List<OrderRefundDTO> refundByDeleteCourse(int idx);
-    boolean refundOrder(int idx);
+    boolean refundOrder(int courseIdx, String memberId);
     int studentCnt(int courseIdx);
 }

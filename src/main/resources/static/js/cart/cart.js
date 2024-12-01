@@ -76,10 +76,10 @@ document.addEventListener("DOMContentLoaded", function () {
       document.querySelectorAll(".course-select:checked")
     );
     const idxList = selectedItems.map((item) =>
-      item.closest(".cart-item").getAttribute("data-course-id")
+        parseInt(item.closest(".cart-item").getAttribute("data-course-id"), 10)
     );
     console.log("선택된 강좌 ID들:", idxList);
-    fetch("/cart/delete", {
+    fetch("/cart/deleteList", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -112,13 +112,13 @@ document.addEventListener("DOMContentLoaded", function () {
   // 각 개별 삭제 버튼 클릭 시 처리
   document.querySelectorAll(".delete-btn").forEach((button) => {
     button.addEventListener("click", function () {
-      const courseId = button.getAttribute("data-course-id");
+      const cartIdx = button.getAttribute("data-course-id");
       fetch("/cart/delete", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ idxList: [courseId] }),
+        body: JSON.stringify({ idxList: [cartIdx] }),
       })
         .then((response) => response.json())
         .then((data) => {

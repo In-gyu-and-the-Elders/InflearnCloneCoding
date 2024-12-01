@@ -77,18 +77,41 @@ public class CartController {
         List<Integer> idxList = idxListString.stream()
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
-//        log.info("삭제할 항목들: {}", idxList);
+        log.info("삭제할 항목들: {}", idxList);
         String memberId = (String) request.getSession().getAttribute("memberId");
         boolean success = false;
-        try {
-            cartService.delete(idxList, memberId);
-            success = true;
-        } catch (Exception e) {
-            success = false;
+        for (Integer idx : idxList) {
+            try {
+                cartService.delete(idxList, memberId);
+                success = true;
+            } catch (Exception e) {
+                log.error("삭제 실패 - idx: {}, error: {}", idx, e.getMessage(), e);
+                success = false;
+            }
         }
         JSONObject jsonResponse = new JSONObject();
         jsonResponse.put("success", success);
         jsonResponse.put("message", success ? "삭제되었습니다" : "다시시도해주세요");
+        return jsonResponse.toString();
+    }
+
+    @PostMapping("/deleteList")
+    @ResponseBody
+    public String deleteCartItemsByCourseIdx(@RequestBody Map<String, List<Integer>> requestData, HttpServletRequest request) {
+        List<Integer> courseIdxList = requestData.get("idxList");
+        String memberId = (String) request.getSession().getAttribute("memberId");
+
+        boolean success = false;
+        try {
+            cartService.deleteByCourseIdx(courseIdxList, memberId);
+            success = true;
+        } catch (Exception e) {
+            log.error("삭제 실패: {}", e.getMessage(), e);
+        }
+
+        JSONObject jsonResponse = new JSONObject();
+        jsonResponse.put("success", success);
+        jsonResponse.put("message", success ? "삭제되었습니다" : "다시 시도해주세요");
         return jsonResponse.toString();
     }
 }
