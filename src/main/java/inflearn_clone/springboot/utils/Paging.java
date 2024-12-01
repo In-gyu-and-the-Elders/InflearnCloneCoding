@@ -17,6 +17,9 @@ public class Paging {
     }
 
     public int getTotalPage(){
+        if(totalCnt == 0){
+            return 1;
+        }
         return  (int) Math.ceil((double) totalCnt / pageSize);
     }
     public int getStartBlockPage(){

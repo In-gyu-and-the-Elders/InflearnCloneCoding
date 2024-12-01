@@ -1,6 +1,7 @@
 package inflearn_clone.springboot.controller;
 
 import inflearn_clone.springboot.dto.course.CourseDTO;
+import inflearn_clone.springboot.dto.course.CourseMDTO;
 import inflearn_clone.springboot.dto.course.TeacherCourseDTO;
 import inflearn_clone.springboot.dto.lesson.LessonDTO;
 import inflearn_clone.springboot.dto.member.MemberDTO;
@@ -26,10 +27,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,10 +40,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static inflearn_clone.springboot.utils.QueryUtil.generateSortQuery;
 
@@ -65,7 +65,8 @@ public class TeacherController {
     private final LessonMapper lessonMapper;
 
     @GetMapping("/course/insert")
-    public String insert() {
+    public String insert(@ModelAttribute CourseDTO courseDTO,Model model) {
+        model.addAttribute("courseDTO", new CourseDTO());
         return "teacher/course/insert";
     }
 
@@ -73,9 +74,11 @@ public class TeacherController {
     public String insert(@Valid CourseDTO courseDTO,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes,
-                         HttpServletResponse response, HttpSession session) {
+                         HttpServletResponse response, HttpSession session,Model model) {
         if (bindingResult.hasErrors()) {
-            return "redirect:/teacher/course/insert";
+            redirectAttributes.addFlashAttribute("errors", bindingResult);
+            model.addAttribute("courseDTO", courseDTO);
+            return "teacher/course/insert";
         }
         String teacherId = (String) session.getAttribute("memberId");
         courseDTO.setTeacherId(teacherId);
@@ -143,10 +146,25 @@ public class TeacherController {
 
     @PostMapping("/course/insert_s")
     @Transactional
-    public String insert_s(@RequestParam("sections") String[] sections,
+    public String insert_s(@RequestParam("sections") String[] sections, // @RequestParam 사용
                            @RequestParam("courseIdx") int courseIdx,
-                           HttpServletResponse response, HttpSession session) {
-       try {
+                           HttpServletResponse response, HttpSession session, Model model
+                           ) {
+        response.setCharacterEncoding("UTF-8");
+        if(sections.length <= 0 ){
+            session.setAttribute("flag", true);
+            JSFunc.alertBack("섹션은 비워둘 수 없습니다.",response);
+            return null;
+        }
+        if (Arrays.stream(sections).anyMatch(String::isEmpty)) {
+            session.setAttribute("flag", true);
+            JSFunc.alertBack("섹션은 비워둘 수 없습니다.", response);
+            return null;
+        }
+
+
+
+        try {
            for (String section : sections) {
                SectionDTO sectionDTO = SectionDTO.builder()
                        .courseIdx(courseIdx)
@@ -187,7 +205,33 @@ public class TeacherController {
     @PostMapping("/course/insert_l") //여긴 validation따로 해줘야 함.
     public String insert_1(@RequestParam("title") String[] titles,
                            @RequestParam("videoFile") MultipartFile[] videoFiles,
-                           @RequestParam("sectionIdx") int sectionIdx, Model model,HttpServletResponse response) {
+                           @RequestParam("sectionIdx") int sectionIdx, Model model,HttpServletResponse response
+    ,HttpSession session) {
+        response.setCharacterEncoding("UTF-8");
+        if(titles.length <= 0 ){
+            session.setAttribute("flagS", true);
+            JSFunc.alertBack("제목은 비워둘 수 없습니다.",response);
+            return null;
+        }
+        if (Arrays.stream(titles).anyMatch(String::isEmpty)) {
+            session.setAttribute("flagS", true);
+
+            JSFunc.alertBack("제목은 비워둘 수 없습니다.", response);
+            return null;
+        }
+        if(videoFiles.length <= 0 ){
+            session.setAttribute("flagS", true);
+
+            JSFunc.alertBack("영상은 필수입니다",response);
+            return null;
+        }
+        if (Arrays.stream(videoFiles).anyMatch(MultipartFile::isEmpty)) {
+            session.setAttribute("flagS", true);
+
+            JSFunc.alertBack("영상은 필수입니다", response);
+            return null;
+        }
+
         response.setCharacterEncoding("UTF-8");
         for(int i=0; i<videoFiles.length; i++) {
             if(!videoFiles[i].isEmpty()) {
@@ -307,7 +351,15 @@ public class TeacherController {
     }
 
     @PostMapping("/course/modify")
-    public String modify(CourseDTO courseDTO, Model model, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+    public String modify(@Valid CourseMDTO courseMDTO,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes, Model model, HttpServletResponse response) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", bindingResult);
+            model.addAttribute("course", courseMDTO);
+            return "redirect:/teacher/course/modify?courseIdx="+courseMDTO.getIdx();
+        }
+        CourseDTO courseDTO = modelMapper.map(courseMDTO, CourseDTO.class);
         response.setCharacterEncoding("UTF-8");
         if(!courseDTO.getThumbnailFile().isEmpty()){
             String fileName = courseDTO.getThumbnailFile().getOriginalFilename();
@@ -373,7 +425,18 @@ public class TeacherController {
                            @RequestParam("sectionCount") int sectionCount,
                            @RequestParam(value = "sectionIdx") int[] sectionIdx,
                            HttpServletResponse response,
-                           RedirectAttributes redirectAttributes) {
+                           RedirectAttributes redirectAttributes,
+                           HttpSession session) {
+        response.setCharacterEncoding("UTF-8");
+        if(sections.length <= 0 ){
+            JSFunc.alertBack("섹션은 비워둘 수 없습니다.",response);
+            return null;
+        }
+        if (Arrays.stream(sections).anyMatch(String::isEmpty)) {
+            JSFunc.alertBack("섹션은 비워둘 수 없습니다.", response);
+            return null;
+        }
+
 
         for(int i=0;i<sectionCount;i++){
             String sectionTitle = sections[i];
@@ -432,8 +495,6 @@ public class TeacherController {
             sectionWithLessonListDTOList.add(sectionWithLessonListDTO);
         } //여기까지 했으면 이제 섹션과 해당 강의가 같이 말아짐
 
-
-
         log.info("sectionWithLessonListDTOList:{}",sectionWithLessonListDTOList);
         log.info("sectionListWithLesson : {}", sectionWithLessonListDTOList.get(0));
         model.addAttribute("sectionSize", sectionDTOList.size());
@@ -450,6 +511,25 @@ public class TeacherController {
                            @RequestParam(value = "lessonIdx", required = false) int[] lessonIdx,
                            Model model,HttpServletResponse response){
         response.setCharacterEncoding("UTF-8");
+        if(titles.length == 0){
+            JSFunc.alertBack("제목은 비워둘 수 없습니다.",response);
+            return null;
+        }
+        if (Arrays.stream(titles).anyMatch(String::isEmpty)) {
+            JSFunc.alertBack("제목은 비워둘 수 없습니다.", response);
+            return null;
+        }
+        if(videoFiles.length == 0){
+            JSFunc.alertBack("영상은 필수입니다",response);
+            return null;
+        }
+        if (Arrays.stream(videoFiles)
+                .skip(lessonCount)  // lessonCount 이후의 파일들만 검사
+                .anyMatch(MultipartFile::isEmpty)) {
+            JSFunc.alertBack("영상은 필수입니다", response);
+            return null;
+        }
+
         for(int i=0; i<videoFiles.length; i++) {
             if(!videoFiles[i].isEmpty()) {
                 String fileName = videoFiles[i].getOriginalFilename();
@@ -640,7 +720,7 @@ public class TeacherController {
 //    }
 
     @GetMapping("/viewCourseList")
-    public String CourseListView(Model model, @RequestParam String memberId,
+    public String CourseListView(Model model, @RequestParam(required = false) String memberId,
                                  @RequestParam(defaultValue = "1") int pageNo){
         if(memberId != null && !memberId.isEmpty()){
             MemberDTO info = memberService.selectMemberInfo(memberId);
@@ -705,5 +785,36 @@ public class TeacherController {
     @GetMapping("/pwChangeTeacher")
     public String pwChangeTeacher() {
         return "teacher/teacherModifyPw";
+    }
+
+    @GetMapping("/course/delete")
+    public void requestDelete(
+            @RequestParam("courseIdx") Long courseIdx, HttpServletResponse response) {
+    response.setCharacterEncoding("UTF-8");
+        log.info("courseIdx:{}",courseIdx);
+
+        // 삭제 요청 로직 처리
+        boolean success = courseMapper.processDeleteRequest(courseIdx);
+
+        if(success){
+            JSFunc.alertLocation("삭제 요청 완료", "/teacher/course/list",response);
+        } else {
+            JSFunc.alertLocation("삭제 요청 실패","/teacher/course/list",response);
+        }
+    }
+    @GetMapping("/course/deleteN")
+    public void requestDeleteN(
+            @RequestParam("courseIdx") Long courseIdx, HttpServletResponse response) {
+        response.setCharacterEncoding("UTF-8");
+        log.info("courseIdx:{}",courseIdx);
+
+        // 삭제 요청 로직 처리
+        boolean success = courseMapper.processDeleteRequestN(courseIdx);
+
+        if(success){
+            JSFunc.alertLocation("삭제 취소 요청 완료", "/teacher/course/list",response);
+        } else {
+            JSFunc.alertLocation("삭제 취소 요청 실패","/teacher/course/list",response);
+        }
     }
 }

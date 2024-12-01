@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Log4j2
 @ToString
-public class CourseDTO {
+public class CourseMDTO {
     private int idx;
     private int courseIdx;
     private int lessonIdx;
@@ -47,7 +47,6 @@ public class CourseDTO {
     @Positive(message = "가격은 양수여야 합니다.")
     private Integer price;
     private String thumbnail; // Thumbnail image path
-    @NotNull(message = "썸네일 이미지는 필수 항목입니다.")
     private MultipartFile thumbnailFile;
 
     private List<SectionDTO> sections = new ArrayList<>();

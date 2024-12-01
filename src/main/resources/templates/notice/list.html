@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<div layout:fragment="main">
+    <div class="container mt-4">
+        <h2 class="text-center text-primary mb-4">공지사항 목록</h2>
+
+        <!-- Search Section -->
+        <div class="search-container mb-4">
+            <form action="/notice/list" method="get" class="d-flex justify-content-end align-items-center">
+                <div class="form-group mr-2">
+                    <select class="form-select" name="searchCategory">
+                        <option value="">카테고리</option>
+                        <option th:selected="${searchCategory == 'title'}" value="title">제목</option>
+                    </select>
+                </div>
+                <div class="form-group mr-2">
+                    <input type="search" class="form-control" name="searchValue" th:value="${searchValue}" placeholder="내용">
+                </div>
+                <div class="form-group mr-2">
+                    <select class="form-select" name="sortOrder">
+                        <option value="">정렬순</option>
+                        <option value="DESC" th:selected="${sortOrder == 'DESC'}">내림차순</option>
+                        <option value="ASC" th:selected="${sortOrder == 'ASC'}">오름차순</option>
+                    </select>
+                </div>
+                <div class="form-group mr-2">
+                    <select class="form-select" name="sortType">
+                        <option value="">정렬내용</option>
+                        <option value="regDate" th:selected="${sortType == 'regDate'}">등록일</option>
+                        <option value="title" th:selected="${sortType == 'title'}">제목</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" type="submit">검색</button>
+                <button class="btn btn-secondary" type="reset">취소</button>
+            </form>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                <tr>
+                    <th>#</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>등록일</th>
+                    <th>공개일</th>
+                    <th>첨부파일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="dto, status:${notice}">
+                    <td th:text="${status.index + 1}"></td>
+                    <td><a th:href="@{/notice/view(idx=${dto.getIdx()})}">[[${dto.title}]]</a></td>
+                    <td>[[${dto.writerId}]]</td>
+                    <td th:text="${#temporals.format(dto.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${dto.displayDate != null ? #temporals.format(dto.displayDate, 'yyyy-MM-dd HH:mm:ss') : #temporals.format(dto.regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:if="${dto.filePath != null}">
+                        <a th:href="@{/file/download(fileName=${dto.fileName})}">[[${dto.fileName}]]</a>
+                    </td>
+                    <td th:if="${dto.filePath == null}">-</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Section -->
+        <div th:replace="~{/common/paging :: paging}"></div>
+        <p th:if="${notice.isEmpty()}" class="text-center text-muted">등록된 공지사항이 없습니다.</p>
+
+
+    </div>
+</div>
+</html>
