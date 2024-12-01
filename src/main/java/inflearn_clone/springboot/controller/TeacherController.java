@@ -495,8 +495,6 @@ public class TeacherController {
             sectionWithLessonListDTOList.add(sectionWithLessonListDTO);
         } //여기까지 했으면 이제 섹션과 해당 강의가 같이 말아짐
 
-
-
         log.info("sectionWithLessonListDTOList:{}",sectionWithLessonListDTOList);
         log.info("sectionListWithLesson : {}", sectionWithLessonListDTOList.get(0));
         model.addAttribute("sectionSize", sectionDTOList.size());
