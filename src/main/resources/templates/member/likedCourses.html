@@ -38,7 +38,7 @@
             </select>
           </div>
           <div th:if="${likedCourses != null and !likedCourses.isEmpty()}" class="courses-grid">
-            <a th:each="course : ${likedCourses}" class="course-card" th:href="@{/course/detail/{idx}(idx=${course.idx})}">
+            <a th:each="course : ${likedCourses}" class="course-card" th:href="@{/course/view/{idx}(idx=${course.idx})}">
               <img th:if="${course.thumbnail}" th:src="@{${course.thumbnail}}" class="course-thumbnail" alt="강의 썸네일">
               <img th:unless="${course.thumbnail}" th:src="@{/images/default-course.jpg}" class="course-thumbnail" alt="기본 썸네일">
 

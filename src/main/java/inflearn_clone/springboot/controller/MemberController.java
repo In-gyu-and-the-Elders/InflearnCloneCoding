@@ -192,7 +192,7 @@ public class MemberController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            log.error("리뷰 수정 중 류 발생", e);
+            log.error("리뷰 수정 중 오류 발생", e);
             response.put("success", false);
             response.put("message", "리뷰 수정 중 오류가 발생했습니다.");
             return ResponseEntity.internalServerError().body(response);

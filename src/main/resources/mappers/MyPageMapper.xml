@@ -82,7 +82,7 @@
 
 <!-- 회원 정보 조회-->
   <select id="accountInfo">
-    SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType, leaveReason, leaveReasonRegDate FROM tbl_member
+    SELECT memberId, pwd, name, phone, email, status, regDate, modifyDate, leaveDate, memberType, leaveReason, leaveReasonRegDate, teacherDesc FROM tbl_member
     WHERE memberId = #{memberId}
   </select>
 
@@ -99,10 +99,14 @@
             <if test="phone != null and phone != ''">
                 phone = #{phone},
             </if>
+            <if test="teacherDesc != null and teacherDesc != ''">
+                teacherDesc = #{teacherDesc},
+            </if>
             modifyDate = NOW()
         </set>
         WHERE memberId = #{memberId}
     </update>
+
   <select id="getReview">
     SELECT
       r.idx,
@@ -160,7 +164,7 @@
 
   <update id="updateMemberLeave">
     UPDATE tbl_member
-    SET status = 'D',
+    SET status = 'R',
         leaveDate = NOW(),
         leaveReason = #{leaveReason},
         leaveReasonRegDate = NOW()

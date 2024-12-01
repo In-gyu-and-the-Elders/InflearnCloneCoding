@@ -88,10 +88,10 @@ public class AdminController {
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpServletResponse response, HttpSession session){
         String adminId = (String) session.getAttribute("adminId");
-        if (adminId == null) {
-            response.setCharacterEncoding("utf-8");
-            JSFunc.alertBack("로그인이 필요합니다", response);
-        }
+        // if (adminId == null) {
+        //     response.setCharacterEncoding("utf-8");
+        //     JSFunc.alertBack("로그인이 필요합니다", response);
+        // }
 
         // 강사 탈퇴 요청 수 조회
         int teacherTotalCnt = memberService.teacherRequestTotalCnt(null, null, "T");
@@ -476,6 +476,11 @@ public class AdminController {
                                HttpSession session,
                                HttpServletResponse response){
         String adminId = (String)session.getAttribute("adminId");
+
+        // if (adminId == null) {
+        //     JSFunc.alertLocation("로그인이 필요한 서비스입니다.", "/admin/login", response);
+        //     return null; // 로그인 페이지로 리다이렉트
+        // }
         response.setCharacterEncoding("utf-8");
         if(memberType.equals("T")){
             List<CourseDTO> list = courseSerivce.selectCourseByMemberId(memberId);
@@ -1249,11 +1254,11 @@ public class AdminController {
             return "admin/notice/insert";
         }
         String adminId = (String) session.getAttribute("adminId");
-        if (adminId == null) {
-            response.setCharacterEncoding("utf-8");
-            JSFunc.alertBack("로그인이 필요합니다", response);
-            throw new IllegalStateException("로그인이 필요합니다."); // 예외 처리
-        }
+        // if (adminId == null) {
+        //     response.setCharacterEncoding("utf-8");
+        //     JSFunc.alertBack("로그인이 필요합니다", response);
+        //     throw new IllegalStateException("로그인이 필요합니다."); // 예외 처리
+        // }
         bbsDTO.setWriterId(adminId); //아직 세션 없음
 
         bbsDTO.setCategory("N"); // [공지사항]

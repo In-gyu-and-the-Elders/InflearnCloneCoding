@@ -1,36 +1,50 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>관리자 로그인</title>
-</head>
-<body>
-<h2>관리자 로그인</h2>
+  </head>
+  <body>
+    <h2>관리자 로그인</h2>
 
-<!-- 글로벌 에러 메시지 -->
-<div th:if="${error != null}" style="color: red;">
-    [[${error}]]
-</div>
-<form th:action="@{/administrator/login}" th:object="${adminLoginDTO}" method="post">
-    <div>
+    <!-- 글로벌 에러 메시지 -->
+    <div th:if="${error != null}" style="color: red">[[${error}]]</div>
+    <form
+      action="/administrator/login-proc"
+      th:object="${adminLoginDTO}"
+      method="post"
+    >
+      <div>
         <label for="adminId">관리자 ID</label>
-        <input type="text" id="adminId" th:field="*{adminId}" required>
+        <input
+          type="text"
+          id="adminId"
+          th:field="*{adminId}"
+          name="adminId"
+          required
+        />
         <!-- 아이디 필드의 에러 메시지 -->
-        <div th:if="${#fields.hasErrors('adminId')}" style="color: red;">
-            <span th:errors="*{adminId}"></span>
+        <div th:if="${#fields.hasErrors('adminId')}" style="color: red">
+          <span th:errors="*{adminId}"></span>
         </div>
-    </div>
+      </div>
 
-    <div>
+      <div>
         <label for="adminPwd">비밀번호</label>
-        <input type="password" id="adminPwd" th:field="*{adminPwd}" required>
+        <input
+          type="password"
+          id="adminPwd"
+          th:field="*{adminPwd}"
+          name="adminPwd"
+          required
+        />
         <!-- 비밀번호 필드의 에러 메시지 -->
-        <div th:if="${#fields.hasErrors('adminPwd')}" style="color: red;">
-            <span th:errors="*{adminPwd}"></span>
+        <div th:if="${#fields.hasErrors('adminPwd')}" style="color: red">
+          <span th:errors="*{adminPwd}"></span>
         </div>
-    </div>
+      </div>
 
-    <button type="submit">로그인</button>
-</form>
-</body>
+      <button type="submit">로그인</button>
+    </form>
+  </body>
 </html>
