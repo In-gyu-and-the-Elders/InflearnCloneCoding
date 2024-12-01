@@ -4,6 +4,158 @@
   <title>강의 재생</title>
   <!-- 필요한 CSS와 JS 파일 로드 -->
 </head>
+<style>
+  /* 기본 설정 */
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #000; /* 모든 글씨를 검정색으로 */
+  }
+
+  /* 메인 컨테이너 스타일 */
+  .container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px auto;
+    max-width: 1200px; /* 전체 페이지 최대 너비 */
+    flex-wrap: wrap; /* 화면이 작아지면 줄바꿈 */
+  }
+
+  /* 동영상 영역 */
+  #videoPlayer {
+    flex: 2;
+    width: 100%; /* 가로 전체 */
+    max-width: 100%; /* 화면 크기에 따라 최대 확장 */
+    height: auto; /* 높이를 비율에 맞게 자동 조정 */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 0 auto 20px; /* 중앙 정렬 및 간격 */
+    aspect-ratio: 16 / 9; /* 동영상 비율 유지 */
+  }
+
+  /* 강의 정보 */
+  h1 {
+    font-size: 32px; /* 제목 크기 확대 */
+    margin-bottom: 20px;
+    color: #000; /* 검정색 */
+  }
+
+  p {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #000; /* 검정색 */
+  }
+
+  /* 이전/다음 버튼 */
+  a {
+    text-decoration: none;
+    color: #000; /* 검정색으로 변경 */
+    font-size: 16px; /* 크기 조정 */
+    margin: 0 15px; /* 버튼 간격 추가 */
+  }
+
+  a:hover {
+    text-decoration: underline;
+    color: #333; /* 호버 시 약간 어두운 검정 */
+  }
+
+  /* 커리큘럼 영역 */
+  .sidebar {
+    flex: 1;
+    max-width: 400px; /* 커리큘럼 영역 넓게 설정 */
+    margin-left: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+
+  h2 {
+    font-size: 24px; /* 섹션 제목 확대 */
+    margin-bottom: 20px;
+    color: #000; /* 검정색 */
+  }
+
+  h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #000; /* 검정색 */
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  li a {
+    font-size: 16px; /* 글씨 크기 확대 */
+    color: #000; /* 검정색 */
+    text-decoration: none;
+  }
+
+  li a:hover {
+    text-decoration: underline;
+  }
+
+  /* 중앙 정렬 */
+  button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background-color: #00c471;;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+
+  button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  /* 반응형 스타일 */
+  @media screen and (max-width: 768px) {
+    #videoPlayer {
+      width: 100%; /* 모바일에서는 전체 너비 사용 */
+      aspect-ratio: 16 / 9; /* 비율 유지 */
+    }
+
+    .sidebar {
+      max-width: 100%; /* 모바일에서 커리큘럼 영역도 전체 너비 사용 */
+      margin-left: 0;
+      margin-top: 20px;
+    }
+
+    .container {
+      flex-direction: column; /* 모바일에서 세로로 배치 */
+    }
+  }
+  .video-controls {
+    display: flex;
+    justify-content: center; /* 버튼을 중앙으로 정렬 */
+    gap: 20px; /* 버튼 간 간격 */
+    margin-top: 20px; /* 위아래 여백 */
+  }
+
+  .video-controls a {
+    text-decoration: none;
+    color: #000; /* 검정색 */
+    font-size: 16px; /* 버튼 글씨 크기 */
+    padding: 10px 20px;
+    border-radius: 5px; /* 버튼 둥글게 */
+    transition: background-color 0.3s;
+  }
+
+</style>
 <body>
 <div style="display: flex;">
   <!-- 메인 영역: 동영상 -->
@@ -13,7 +165,7 @@
       <source th:src="@{${lesson.video}}" type="video/mp4">
     </video>
     <!-- 이전/다음 버튼 -->
-    <div>
+    <div class="video-controls">
       <a th:if="${previousLesson != null}" th:href="@{'/course/study/' + ${previousLesson.idx}}" onclick="openPopup(this.href); return false;">이전 강의</a>
       <a th:if="${nextLesson != null}" th:href="@{'/course/study/' + ${nextLesson.idx}}" onclick="openPopup(this.href); return false;">다음 강의</a>
     </div>
@@ -33,4 +185,5 @@
 </div>
 
 </body>
+
 </html>

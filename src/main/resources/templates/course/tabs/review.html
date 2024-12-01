@@ -42,6 +42,7 @@
 
     .review-actions {
         margin-top: 10px;
+
     }
 
     .review-more {
@@ -63,6 +64,42 @@
 
     .modal2.open {
         display: block;
+    }
+
+    .modal2::before {
+        display: none; /* 배경 자체를 없앱니다 */
+    }
+    /* 수정/삭제 버튼 */
+    .review-actions button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        margin-right: 10px;
+        font-size: 14px;
+        text-decoration: underline;
+    }
+
+    .review-more button {
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .review-more button:hover {
+        background-color: #0056b3;
+    }
+
+    .review-sort {
+        display: flex;
+        justify-content: flex-end; /* 우측 정렬 */
+        align-items: center;
+        margin-bottom: 20px;
     }
 </style>
 <div class="review-container">
@@ -90,6 +127,8 @@
                     <span th:each="i : ${#numbers.sequence(1, review.rating)}">★</span>
                 </span>
                 <span class="review-date" th:text="${#temporals.format(review.regDate, 'yyyy-MM-dd')}"></span>
+            </div>
+            <div class="review-actions" th:if="${review.memberId == memberId}">
             </div>
 
             <!-- 리뷰 내용 -->
@@ -127,7 +166,7 @@
                         <input type="hidden" name="courseIdx" th:value="${courseIdx}">
 
                         <textarea id="reviewText" name="content" maxlength="500" minlength="5"
-                                  placeholder="수강평을 작성해보세요!"></textarea>
+                                  placeholder="수강평을 작성해보세요!" ></textarea>
                         <div class="char-count">
                             <span id="charCount">0</span>/500
                         </div>
@@ -154,7 +193,7 @@
     <script th:inline="javascript">
         let currentPage = [[${currentPage}]];
         const totalReviewCount = [[${totalReviewCount}]];
-        const limit = 1;
+        const limit = 5;
 
         // sortBy 변경 이벤트에 대한 이벤트 위임
         $(document).on('change', '#sortBy', function () {
@@ -241,6 +280,7 @@
                         // 리뷰 목록 갱신
                         const sortBy = $('#sortBy').val();
                         const page = 0;
+
                         $.get(`/course/tab/review/${courseIdx}`, {sortBy: sortBy, page: page}, function (data) {
                             $('.tab-content').html(data);
                         });
