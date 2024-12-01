@@ -509,6 +509,7 @@ public class AdminController {
     public String selectRefundList(Model model,
                                    @RequestParam int idx,
                                    HttpServletResponse response){
+        response.setCharacterEncoding("utf-8");
         List<OrderRefundDTO> orderList = orderService.refundByDeleteCourse(idx);
         if(orderList.size() > 0){
             model.addAttribute("list", orderList);
