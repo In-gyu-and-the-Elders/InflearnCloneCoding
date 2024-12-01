@@ -1,3 +1,7 @@
+/* body {
+  overflow-x: auto !important;
+} */
+
 .flex {
   display: flex;
 }
@@ -16,16 +20,19 @@
 .mainContainer {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  overflow-x: auto;
 }
 
 .mainContent {
   width: 100%;
-  max-width: 1650px;
+  min-width: 1650px;
   min-height: 463px;
-  margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
+  flex-shrink: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (max-width: 1920px) {

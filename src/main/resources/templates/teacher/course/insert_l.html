@@ -10,15 +10,17 @@
           <!-- 첫 번째 강의 입력 필드 (삭제 불가) -->
           <div class="mb-3 lecture-item" id="lecture-1">
             <span class="lecture-number">1</span>
-            <input type="text" name="title" class="form-control" placeholder="강의 제목" />
-            <input type="file" accept="video/mp4, video/webm" name="videoFile" class="form-control" onchange="checkFileExtension(this)"/>
+            <input type="text" name="title" required class="form-control" placeholder="강의 제목" />
+            <input type="file" accept="video/mp4, video/webm" required name="videoFile" class="form-control" onchange="checkFileExtension(this)"/>
             <!-- 첫 번째 강의는 삭제 불가 -->
           </div>
         </div>
         <input type="hidden" th:value="${section.idx}" name="sectionIdx">
 
         <!-- 강의 추가 버튼 -->
-        <button type="button" class="btn btn-primary" id="addLectureBtn" onclick="addLecture()">강의 추가</button>
+        <div class="d-flex justify-content-end mb-3">
+          <button type="button" class="btn btn-primary" id="addLectureBtn" onclick="addLecture()">강의 추가</button>
+        </div>
 
         <div class="mt-3">
           <button th:if="${hasNextNext and sectionSize != 1}" type="submit" class="btn btn-success">다음 섹션</button>
@@ -46,9 +48,9 @@
       // 새로운 강의 입력 필드 내용
       newLecture.innerHTML = `
       <span class="lecture-number">${lectureCount}</span>
-      <input type="text" name="title" class="form-control" placeholder="강의 제목" />
-      <input type="file" accept="video/mp4, video/webm" name="videoFile" class="form-control" onchange="checkFileExtension(this)"/>
-      <button type="button" class="btn btn-danger delete-lecture-btn" onclick="deleteLecture(this)">X</button>
+      <input type="text" name="title" class="form-control" required placeholder="강의 제목" />
+      <input type="file" accept="video/mp4, video/webm" required name="videoFile" class="form-control" onchange="checkFileExtension(this)"/>
+      <button type="button" class="btn btn-danger delete-lecture-btn"  onclick="deleteLecture(this)">X</button>
     `;
 
       // lectureInputs 컨테이너에 새 강의 추가

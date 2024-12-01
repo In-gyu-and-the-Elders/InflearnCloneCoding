@@ -9,6 +9,105 @@
   <th:block layout:fragment="css">
     <link rel="stylesheet" th:href="@{/css/myPage/studentMyPage.css}">
   </th:block>
+  <style>
+    .course-meta > p {
+      font-size: 0.9em;
+    }
+    .course-meta > button {
+      padding: 5px 10px; /* 버튼 안쪽 여백 */
+      font-size: 0.9em;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff; /* 기본 버튼 색상 */
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    /* 버튼에 마우스를 올렸을 때의 스타일 (호버 효과) */
+    .course-meta > button:hover {
+      background-color: #0056b3; /* 호버 시 색상 변경 */
+      transform: scale(1.05); /* 마우스를 올리면 크기가 살짝 커짐 */
+    }
+
+    /* 비활성화된 버튼 스타일 (disabled 상태) */
+    .course-meta > button:disabled {
+      background-color: #ccc; /* 회색으로 비활성화 */
+      cursor: not-allowed; /* 클릭 불가 커서 */
+      pointer-events: none; /* 클릭 이벤트 비활성화 */
+    }
+
+    /* 수정 불가 버튼에 텍스트 스타일 */
+    .course-meta > button[disabled] {
+      background-color: #ccc;
+      color: #666;
+    }
+    .course-meta > .delete-request {
+      padding: 5px 10px; /* 버튼 안쪽 여백 */
+      font-size: 0.9em;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      background-color: #dc3545; /* 삭제 버튼을 위한 빨간색 */
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    /* 삭제 요청 버튼에 마우스를 올렸을 때 스타일 (호버 효과) */
+    .course-meta > .delete-request:hover {
+      background-color: #c82333; /* 호버 시 더 어두운 빨간색 */
+      transform: scale(1.05); /* 마우스를 올리면 버튼이 살짝 커짐 */
+    }
+
+    /* 삭제 요청 버튼에 클릭 효과 */
+    .course-meta > .delete-request:active {
+      background-color: #bd2130; /* 클릭 시 색상 변경 */
+    }
+    .course-meta > .delete-requestN {
+      padding: 5px 10px; /* 버튼 안쪽 여백 */
+      font-size: 0.9em;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      background-color: #55a66e; /* 삭제 버튼을 위한 빨간색 */
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    /* 삭제 요청 버튼에 마우스를 올렸을 때 스타일 (호버 효과) */
+    .course-meta > .delete-requestN:hover {
+      background-color: #203d17; /* 호버 시 더 어두운 빨간색 */
+      transform: scale(1.05); /* 마우스를 올리면 버튼이 살짝 커짐 */
+    }
+
+    /* 삭제 요청 버튼에 클릭 효과 */
+    .course-meta > delete-requestN:active {
+      background-color: #2d5b3b; /* 클릭 시 색상 변경 */
+    }
+    .search-container > form > .search{
+      padding: 5px 10px; /* 버튼 안쪽 여백 */
+      font-size: 0.9em;
+      width:10vw;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff; /* 기본 버튼 색상 */
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .search-container > form > .reset{
+      padding: 5px 10px; /* 버튼 안쪽 여백 */
+      font-size: 0.9em;
+      width:10vw;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      background-color: #737373; /* 기본 버튼 색상 */
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+  </style>
 </head>
 <div layout:fragment="main">
   <div class="cccccc">
@@ -25,7 +124,7 @@
       <div class="contentArea">
         <section id="top-area" class="d-flex justify-content-between align-items-center mb-4">
           <h2>내 강의실</h2>
-          <div class="search-container">
+          <div class="search-container w-75">
             <form action="/teacher/course/list" method="get" class="d-flex align-items-center">
               <input type="search" class="form-control" name="searchValue" placeholder="제목으로 검색">
               <select class="form-select" name="sortOrder">
@@ -38,39 +137,50 @@
                 <option value="regDate" th:selected="${sortType == 'regDate'}">등록일</option>
                 <option value="title" th:selected="${sortType == 'title'}">제목</option>
               </select>
-              <button class="btn btn-primary" type="submit">검색</button>
-              <button class="btn btn-secondary" type="reset">취소</button>
+              <button class="search" type="submit">검색</button>
+              <button class="reset" type="reset">취소</button>
             </form>
           </div>
         </section>
 
         <section id="course-area" class="row g-4 w-75 mx-auto">
-          <div th:each="course : ${list}" class="col-md-4">
-            <div class="course-card card">
-              <div class="courseImage card-img-top" style="height: 200px; background-color: #f0f0f0;">
-                <image th:src="${course.thumbnail}"></image>
-              </div>
-              <div class="courseTitle card-body">
-                <a th:href="@{/course/view/{idx}(idx=${course.idx})}"><h5 class="card-title" th:text="${course.title}">제목</h5></a>
-                <p class="card-text" th:if="${course.category == 'D'}" th:text="'개발'"></p>
-                <p class="card-text" th:if="${course.category == 'A'}" th:text="'인공지능'">가격</p>
-                <p class="card-text" th:if="${course.category == 'H'}" th:text="'하드웨어'">가격</p>
-                <p class="card-text" th:if="${course.category == 'C'}" th:text="'커리어,자기계발'">가격</p>
-                <p class="card-text" th:if="${course.category == 'M'}" th:text="'기획,경영,마케팅'">가격</p>
-                <p class="card-text" th:text="${#numbers.formatCurrency(course.price)}">가격</p>
-                <p class="card-text" th:text="'등록일 : '+${#temporals.format(course.regDate, 'yyyy-MM-dd HH:mm:ss')}">등록일</p>
-                <p class="card-text" th:text="'노출일 : '+${#temporals.format(course.displayDate, 'yyyy-MM-dd HH:mm:ss')}">노출일</p>
 
-                <div class="lessonCnt" th:text="${'섹션 : ' + course.sectionCnt + '   강의 : ' + course.lessonCnt}">섹션/강의 수</div>
+          <div th:if="${list != null and !list.isEmpty()}" class="courses-grid">
+            <a th:each="course : ${list}" class="course-card" th:href="@{/course/view/{idx}(idx=${course.idx})}">
+              <img th:if="${course.thumbnail}" th:src="@{${course.thumbnail}}" class="course-thumbnail" alt="강의 썸네일">
+              <img th:unless="${course.thumbnail}" th:src="@{/images/default-course.jpg}" class="course-thumbnail" alt="기본 썸네일">
+
+              <div class="course-info">
+                <div class="course-title" th:text="${course.title}">강의 제목</div>
+                <div class="course-meta">
+                  <span th:text="${course.lessonCnt} + '강'">강의 갯수</span>
+                  <span th:if="${course.category == 'D'}" th:text="'개발'"></span>
+                  <span th:if="${course.category == 'A'}" th:text="'인공지능'"></span>
+                  <span th:if="${course.category == 'H'}" th:text="'하드웨어'"></span>
+                  <span th:if="${course.category == 'C'}" th:text="'커리어,자기계발'"></span>
+                  <span th:if="${course.category == 'M'}" th:text="'기획,경영,마케팅'"></span>
+                  <span th:text="${#numbers.formatCurrency(course.price)}">가격</span>
+                  <p th:text="'등록일 : '+${#temporals.format(course.regDate, 'yyyy-MM-dd HH:mm:ss')}">등록일</p>
+                  <p th:text="'노출일 : '+${#temporals.format(course.displayDate, 'yyyy-MM-dd HH:mm:ss')}">노출일</p>
+                  <button disabled th:if="${course.displayDate < T(java.time.LocalDateTime).now()}" th:text="'수정 불가'"></button>
+                  <button th:if="${course.displayDate >= T(java.time.LocalDateTime).now() and course.sectionCnt != 0}"
+                          th:onclick="|event.preventDefault(); location.href='@{/teacher/course/modify(courseIdx=${course.idx})}'|">강의 수정</button>
+                  <button th:if="${course.sectionCnt == 0 and course.displayDate >= T(java.time.LocalDateTime).now()}"
+                          th:onclick="|event.preventDefault(); location.href='@{/teacher/course/insert_ss(courseIdx=${course.idx})}'|">강의 등록 재개</button>
+                  <button th:if="${!course.status.equals('K')}"
+                          class="delete-request"
+                          th:onclick="|event.preventDefault(); location.href='@{/teacher/course/delete(courseIdx=${course.idx})}'|">삭제 요청</button>
+                  <button th:if="${course.status.equals('K')}"
+                          class="delete-requestN"
+                          th:onclick="|event.preventDefault(); location.href='@{/teacher/course/deleteN(courseIdx=${course.idx})}'|">삭제 취소</button>
+
+                </div>
               </div>
-              <button class="btn btn-danger" disabled th:if="${course.displayDate < T(java.time.LocalDateTime).now()}" th:text="'강의 수정 불가'"></button>
-              <a class="btn btn-primary" th:if="${course.displayDate >= T(java.time.LocalDateTime).now() and course.sectionCnt != 0}" th:text="'강의 수정'"
-                 th:href="@{/teacher/course/modify(courseIdx=${course.idx})}"></a>
-              <a class="btn btn-primary" th:if="${course.sectionCnt == 0 and course.displayDate >= T(java.time.LocalDateTime).now()}" th:text="'강의 등록 재개'" th:href="@{/teacher/course/insert_ss(courseIdx=${course.idx})}"></a>
-            </div>
+            </a>
           </div>
-          <div th:if="${list == null}">
-            <p>현재 등록된 강의가 없습니다.</p>
+
+          <div th:if="${list == null or list.isEmpty()}" class="no-courses">
+            <p>등록된 강의가 없습니다.</p>
           </div>
         </section>
 
@@ -83,5 +193,7 @@
       </div>
     </div>
   </div>
+
 </div>
+
 </html>

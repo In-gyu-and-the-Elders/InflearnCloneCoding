@@ -4,6 +4,7 @@ import inflearn_clone.springboot.dto.section.SectionDTO;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -36,6 +37,7 @@ public class CourseDTO {
     private LocalDateTime regDate;
     private String section;
     @NotNull(message = "강좌 노출일은 필수 항목입니다.")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     @Future(message = "강좌 노출일은 미래여야 합니다.")
     private LocalDateTime displayDate;
     private LocalDateTime modifyDate;
@@ -43,7 +45,7 @@ public class CourseDTO {
     private String status; // (Y: Active, N: Inactive, D: Deleted)
     @NotNull(message = "가격은 필수 항목입니다.")
     @Positive(message = "가격은 양수여야 합니다.")
-    private int price;
+    private Integer price;
     private String thumbnail; // Thumbnail image path
     @NotNull(message = "썸네일 이미지는 필수 항목입니다.")
     private MultipartFile thumbnailFile;

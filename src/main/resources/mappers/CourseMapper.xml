@@ -248,10 +248,11 @@
             modifyDate = NOW()
         WHERE idx = #{idx}
     </update>
+
     <update id="processDeleteRequest">
         UPDATE tbl_course
-        SET status = 'K'
-        WHERE idx=#{courseIdx}
+           SET status = 'K'
+           WHERE idx=#{courseIdx}
     </update>
     <update id="processDeleteRequestN">
         UPDATE tbl_course

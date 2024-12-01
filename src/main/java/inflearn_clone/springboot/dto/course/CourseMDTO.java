@@ -50,5 +50,4 @@ public class CourseMDTO {
     private MultipartFile thumbnailFile;
 
     private List<SectionDTO> sections = new ArrayList<>();
-
 }

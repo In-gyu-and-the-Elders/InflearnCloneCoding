@@ -1232,13 +1232,22 @@ public class AdminController {
 
     // 11261051 --> validation 아직 안 됨
     @GetMapping("notice/insert")
-    public String insert() {
+    public String insert(Model model) {
+        model.addAttribute("bbsDTO", new BbsDTO());
         return "admin/notice/insert";
     }
 
     @PostMapping("notice/insert")
-    public String insert(BbsDTO bbsDTO, HttpServletResponse response, HttpSession session) {
-
+    public String insert(@ModelAttribute @Valid BbsDTO bbsDTO,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes,
+                         HttpServletResponse response,
+                         HttpSession session,Model model) {
+        if(bindingResult.hasErrors()){
+            model.addAttribute("bbsDTO", bbsDTO);
+            redirectAttributes.addFlashAttribute("errors", bindingResult);
+            return "admin/notice/insert";
+        }
         String adminId = (String) session.getAttribute("adminId");
         if (adminId == null) {
             response.setCharacterEncoding("utf-8");
