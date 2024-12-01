@@ -122,8 +122,6 @@ public class TeacherController {
             // 이전 페이지 정보가 없거나, 올바르지 않으면 리다이렉트
             JSFunc.alertBack("허용되지 않은 접근입니다.",response);
             return null;
-        } else {
-            session.removeAttribute("flag");
         }
         String teacherId = (String) session.getAttribute("memberId");
         CourseDTO courseDTO = courseSerivce.viewMyLastCourse(teacherId);
@@ -150,6 +148,8 @@ public class TeacherController {
                            @RequestParam("courseIdx") int courseIdx,
                            HttpServletResponse response, HttpSession session, Model model
                            ) {
+        session.removeAttribute("flag");
+
         response.setCharacterEncoding("UTF-8");
         if(sections.length <= 0 ){
             session.setAttribute("flag", true);
@@ -190,8 +190,6 @@ public class TeacherController {
             log.info("잘못 들어옴");
             JSFunc.alertBack("허용되지 않은 접근입니다.",response);
             return null;
-        } else {
-            session.removeAttribute("flagS");
         }
         String teacherId = (String) session.getAttribute("memberId");
         int courseIdx = courseSerivce.viewMyLastCourse(teacherId).getIdx();
@@ -207,6 +205,8 @@ public class TeacherController {
                            @RequestParam("videoFile") MultipartFile[] videoFiles,
                            @RequestParam("sectionIdx") int sectionIdx, Model model,HttpServletResponse response
     ,HttpSession session) {
+        session.removeAttribute("flagS");
+
         response.setCharacterEncoding("UTF-8");
         if(titles.length <= 0 ){
             session.setAttribute("flagS", true);
@@ -547,9 +547,6 @@ public class TeacherController {
                 }
             }
         }
-
-
-
         log.info("lessonCount:{}",lessonCount);
         log.info("title: {}:", Arrays.toString(titles));
         log.info("videoFiles: {}:", Arrays.toString(videoFiles));
