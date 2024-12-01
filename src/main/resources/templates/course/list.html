@@ -18,11 +18,12 @@
                 <button type="submit" name="searchCategory" value="M">기획·경영·마케팅</button>
                 <button type="submit" name="searchCategory" value="C">커리어·자기계발</button>
             </section>
-            <select class="sort-dropdown" name="sortType">
-                <option value="regDate">최신순</option>
-                <option value="">평점높은순</option>
-                <option value="">평점낮은순</option>
+            <select class="sort-dropdown" name="sort">
+                <option value="regDateDesc" th:selected="${sort == 'regDateDesc'}">최신순</option>
+                <option value="ratingDesc" th:selected="${sort == 'ratingDesc'}">평점 높은순</option>
+                <option value="ratingAsc" th:selected="${sort == 'ratingAsc'}">평점 낮은순</option>
             </select>
+            <button type="submit">정렬</button>
         </section>
         </form>
         <section class="filters">
@@ -36,10 +37,10 @@
                 <img th:src="${course.thumbnail}" alt="강의 이미지">
                 <div class="content">
                     <h3 class="title" th:text="${course.title}"></h3>
-                    <p class="instructor" th:text="'강사: ' + ${course.teacherId}"></p>
+                    <p class="instructor" th:text="'강사: ' + ${course.teacherName}"></p>
                     <p class="price" th:text="'₩' + ${#numbers.formatInteger(course.price, 0, 'COMMA')}"></p>
                     <div class="rating">
-                        <span th:text="'⭐'"> 4.9</span>
+                        <span th:text="'⭐' + ${course.averageRating}"></span>
                         <span th:text="'👤'+${course.studentCount}"></span>
                     </div>
                 </div>

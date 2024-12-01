@@ -18,7 +18,6 @@ public class CourseTotalDTO {
     private String title;
     private String description;
     private String teacherId;
-    private String teacherName;
     private LocalDateTime regDate;
 
     private LocalDateTime displayDate;
@@ -34,5 +33,7 @@ public class CourseTotalDTO {
     private MultipartFile thumbnailFile;
     private int studentCount; // 학생수
 
+    private String teacherName;
+    private Double averageRating;
 
 }

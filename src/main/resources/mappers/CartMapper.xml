@@ -47,4 +47,14 @@
         FROM tbl_cart
         WHERE memberId = #{memberId}
     </select>
+
+<!--    결제후 장바구니 삭제-->
+    <delete id="deleteByCourseIdx" parameterType="map">
+        DELETE FROM tbl_cart
+        WHERE memberId = #{memberId}
+        AND courseIdx IN
+        <foreach item="courseIdx" collection="courseIdxList" open="(" separator="," close=")">
+            #{courseIdx}
+        </foreach>
+    </delete>
 </mapper>

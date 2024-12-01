@@ -39,12 +39,8 @@ public class CourseServiceImpl implements CourseSerivce {
                 .map(vo -> modelMapper.map(vo, CourseDTO.class)).collect(Collectors.toList());
     }
     @Override
-    public CourseDTO courseView(int idx) {
-        CourseVO courseVO = courseMapper.courseView(idx);
-        if (courseVO != null) {
-            return modelMapper.map(courseVO, CourseDTO.class);
-        }
-        return null;
+    public CourseTotalDTO courseView(int idx) {
+        return courseMapper.courseView(idx);
     }
     @Override
     public CourseDTO courseView1(int idx) {
@@ -126,32 +122,23 @@ public class CourseServiceImpl implements CourseSerivce {
             .map(vo -> modelMapper.map(vo, CourseDTO.class)).collect(Collectors.toList());
     }
     @Override
-    public List<CourseTotalDTO> getCourses(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
+    public List<CourseTotalDTO> getCourses(int pageNo, int pageSize, List<String> categoryCodes, String searchValue, String sortQuery) {
         Map<String, Object> map = new HashMap<>();
         map.put("offset", (pageNo - 1) * pageSize);
         map.put("limit", pageSize);
-        map.put("searchCategory", searchCategory);
-        if ("category".equals(searchCategory)) {
-            searchValue = CategoryMapper.getCode(searchValue);
-        }
+        map.put("categoryCodes", categoryCodes);
         map.put("searchValue", searchValue);
         map.put("sortQuery", sortQuery);
 
-        List<CourseVO> voList = courseMapper.selectAllCourse(map);
-        return voList.stream().map(vo -> modelMapper.map(vo, CourseTotalDTO.class)).collect(Collectors.toList());
+        return courseMapper.selectAllCourse(map);
     }
 
     @Override
-    public int getTotalCourses(String searchCategory, String searchValue) {
+    public int getTotalCourses(List<String> categoryCodes, String searchValue) {
         Map<String, Object> map = new HashMap<>();
-        map.put("searchCategory", searchCategory);
-
-        // 카테고리 검색일 경우 코드로 변환
-        if ("category".equals(searchCategory)) {
-            searchValue = CategoryMapper.getCode(searchValue);
-        }
+        map.put("categoryCodes", categoryCodes);
         map.put("searchValue", searchValue);
-        return courseMapper.courseTotalCnt(searchCategory, searchValue);
+        return courseMapper.courseTotalCnt(map);
     }
 
 

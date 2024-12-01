@@ -12,8 +12,13 @@
         <div class="header">
             <div class="course-info">
                 <h1 th:text="${course.title}">강의명</h1>
-                <p>⭐별점<span></span> 수강생:<span th:text="${studentCnt}"></span>명</p>
-                <p>👤 강사명: <span th:text="${course.teacherId}"></span></p>
+                <p>
+                    ⭐평균 평점: <span th:text="${averageRating}"></span>
+                    수강생: <span th:text="${studentCnt}"></span>명
+                </p>
+                <a th:href="@{/teacher/viewIntroduce(memberId=${course.teacherId})}">
+                 <p>👤 강사명: <span th:text="${course.teacherName}"></span></p>
+                </a>
             </div>
             <div class="thumbnail">
                 <img th:src="${course.thumbnail}" alt="강의 썸네일">
@@ -32,6 +37,7 @@
         <!-- 중앙: 변경될 콘텐츠 영역 -->
         <div class="tab-content">
             <!-- 동적으로 로드될 콘텐츠 -->
+
         </div>
 
         <!-- 우측: 사이드바 -->
@@ -49,9 +55,13 @@
                 <button type="submit" class="btn2">장바구니 이동</button>
             </form>
 
-            <form th:if="${!isOrderPossible}">
-                <button id="review" class="btn2">수강평 작성하기</button>
+            <form th:if="${!isOrderPossible && !hasWrittenReview}">
+                <button id="writeReviewBtn" class="btn2">수강평 작성하기</button>
             </form>
+            <form th:if="${!isOrderPossible && hasWrittenReview}">
+                <button id="modifyReviewBtn" class="btn2">수강평 확인</button>
+            </form>
+
             <div class="like">
                 <span class="heart" data-liked="[[${isLiked}]]" th:text="${isLiked ? '❤️' : '🤍'}"></span>
                 <span id="likeCount" th:text="${likeCount}"></span>
@@ -102,6 +112,11 @@
                 $('.tab-content').html(data);
             });
         });
+        // "수강평 확인" 버튼 클릭 시 "review" 탭으로 이동
+        $('#modifyReviewBtn').on('click', function(event) {
+            event.preventDefault(); // 기본 폼 제출 방지
+            $('.tab[data-tab="review"]').click(); // "review" 탭 버튼 클릭
+        });
 
         // 좋아요 버튼 클릭
         $(document).ready(function () {
@@ -132,7 +147,7 @@
         const submitButton = document.getElementById("submitButton");
         const cancelButton = document.getElementById("cancelButton");
         const reviewModal = document.getElementById("reviewModal");
-        const reviewButton = document.querySelector("#review");
+        const reviewButton = document.getElementById("writeReviewBtn");
 
         let selectedStar = 0;
 

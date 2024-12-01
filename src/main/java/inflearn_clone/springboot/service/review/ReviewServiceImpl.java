@@ -26,17 +26,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewMapper reviewMapper;
 
     @Override
-    public List<ReviewListDTO> getReviewList(int courseIdx, String sortBy, int page) {
-        int limit = 5;
-        int offset = page * limit;
-
-        log.info("getReviewList 호출: courseIdx={}, sortBy={}, page={}, offset={}, limit={}",
-                courseIdx, sortBy, page, offset, limit);
-
-        List<ReviewListDTO> reviews = reviewMapper.getReviewList(courseIdx, sortBy, offset, limit);
-
-//        log.info("조회된 리뷰 수: {}", reviews.size());
-        return reviews;
+    public List<ReviewListDTO> getReviewList(int courseIdx, String sortBy, int offset, int limit) {
+        return reviewMapper.getReviewList(courseIdx, sortBy, offset, limit);
     }
 
     @Override
@@ -59,8 +50,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public int deleteReview(int idx) {
-        return reviewMapper.deleteReview(idx);
+    public int deleteReview(int idx, String memberId) {
+        return reviewMapper.deleteReview(idx, memberId);
     }
 
     @Override
@@ -88,5 +79,21 @@ public class ReviewServiceImpl implements ReviewService {
         return voList.stream()
                 .map(vo -> modelMapper.map(vo, ReviewListDTO.class)).collect(Collectors.toList());
 
+    }
+    // 리뷰평점
+    @Override
+    public Double avgRating(int courseIdx) {
+        return reviewMapper.avgRating(courseIdx);
+    }
+
+    @Override
+    public boolean writerCheck(String memberId, int courseIdx) {
+        int result = reviewMapper.writerCheck(memberId, courseIdx);
+        return result > 0;
+    }
+
+    @Override
+    public int reviewCnt(int courseIdx) {
+        return reviewMapper.reviewcnt(courseIdx);
     }
 }

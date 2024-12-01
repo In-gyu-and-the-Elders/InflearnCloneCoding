@@ -69,13 +69,14 @@
     <!-- 정렬 드롭다운 -->
     <div class="review-sort">
         <label for="sortBy">정렬:</label>
-        <select id="sortBy" onchange="sortReviews()">
+        <select id="sortBy">
             <option value="latest" th:selected="${sortBy == 'latest'}">최신순</option>
             <option value="rating_desc" th:selected="${sortBy == 'rating_desc'}">평점높은순</option>
             <option value="rating_asc" th:selected="${sortBy == 'rating_asc'}">평점낮은순</option>
         </select>
     </div>
     <input type="hidden" id="courseIdx" value="${courseIdx}">
+    <input type="hidden" id="memberId" th:value="${memberId}">
     <!-- 리뷰 목록 -->
     <div th:if="${#lists.isEmpty(reviews)}">
         <p>등록된 수강평이 없습니다.</p>
@@ -100,17 +101,17 @@
             <div class="review-actions" th:if="${review.memberId == memberId}">
                 <div class="review-actions">
                     <button class="edit-btn" th:attr="data-review-idx=${review.idx}" id="modifyBtn">수정</button>
-                    <form action="/review/delete" method="POST" style="display:inline;">
+                    <form class="delete-form" style="display:inline;">
                         <input type="hidden" name="idx" th:value="${review.idx}">
                         <input type="hidden" name="courseIdx" th:value="${courseIdx}">
-                        <button type="submit" onclick="return confirm('정말로 이 리뷰를 삭제하시겠습니까?');">삭제</button>
+                        <button type="submit">삭제</button>
                     </form>
                 </div>
             </div>
             <!--    수정모달-->
             <div id="reviewModal" class="modal2">
                 <div class="modal-content">
-                    <form id="reviewForm" method="POST" action="/review/modify">
+                    <form id="reviewForm2" class="reviewForm2" method="POST">
                         <h3>수강평을 수정해주세요!</h3>
                         <div class="rating-stars">
                             <span data-star="1">★</span>
@@ -120,7 +121,7 @@
                             <span data-star="5">★</span>
                         </div>
                         <input type="hidden" name="reviewIdx" id="reviewIdx">
-                        <input type="hidden" name="rating" id="ratingInput">
+                        <input type="hidden" name="rating1" id="ratingInput1">
                         <input type="hidden" name="idx" th:value="${review.idx}">
                         <input type="hidden" name="memberId" th:value="${memberId}">
                         <input type="hidden" name="courseIdx" th:value="${courseIdx}">
@@ -149,21 +150,27 @@
     </div>
 
 
+    <!--    수정모달-->
+    <script th:inline="javascript">
+        let currentPage = [[${currentPage}]];
+        const totalReviewCount = [[${totalReviewCount}]];
+        const limit = 1;
 
-<!--    수정모달-->
-    <script>
-        function sortReviews() {
-            const sortBy = document.getElementById("sortBy").value;
-            const courseIdx = [[${courseIdx}]];
+        // sortBy 변경 이벤트에 대한 이벤트 위임
+        $(document).on('change', '#sortBy', function () {
+            const sortBy = $(this).val();
+            const page = 0;
 
-            window.location.href = `/course/tab/review/${courseIdx}?sortBy=${sortBy}`;
-        }
+            $.get(`/course/tab/review/${courseIdx}`, {sortBy: sortBy, page: page}, function (data) {
+                $('.tab-content').html(data);
+            });
+        });
 
         // 별점 선택 시, rating 값 업데이트
         document.querySelectorAll('.rating-stars span').forEach(star => {
             star.addEventListener('click', () => {
                 const selectedRating = star.getAttribute('data-star'); // 클릭한 별의 숫자 값
-                document.getElementById('ratingInput').value = selectedRating; // rating hidden input에 값 할당
+                document.getElementById('ratingInput1').value = selectedRating; // rating hidden input에 값 할당
 
                 // 별 색 변경
                 document.querySelectorAll('.rating-stars span').forEach(s => {
@@ -215,9 +222,142 @@
             });
         });
 
+        $(document).on('submit', '.reviewForm2', function (event) {
+            event.preventDefault();  // 기본 동작 방지
+            const form = $(this);
+            const formData = new FormData(this);
+            const modal = form.closest('.modal2');
+
+            fetch('/review/modify', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);  // 서버에서 전달한 메시지를 알림으로 표시
+                    if (data.status === 'success') {
+                        // 모달 닫기
+                        modal.removeClass('open');
+                        // 리뷰 목록 갱신
+                        const sortBy = $('#sortBy').val();
+                        const page = 0;
+                        $.get(`/course/tab/review/${courseIdx}`, {sortBy: sortBy, page: page}, function (data) {
+                            $('.tab-content').html(data);
+                        });
+                    }
+                })
+                .catch(error => {
+                    alert('리뷰 수정에 실패하였습니다.');
+                });
+        });
+
         // 모달 닫기 버튼
         document.getElementById('cancelButton').addEventListener('click', () => {
             document.getElementById('reviewModal').classList.remove('open');
+        });
+
+
+        $(document).on('submit', '.delete-form', function (e) {
+            e.preventDefault();
+            if (!confirm('정말로 이 리뷰를 삭제하시겠습니까?')) {
+                return;
+            }
+            const form = $(this);
+            const idx = form.find('input[name="idx"]').val();
+            $.ajax({
+                url: '/review/delete',
+                type: 'POST',
+                data: {idx: idx},
+                success: function (response) {
+                    alert(response.message);
+                    // 리뷰를 다시 로드합니다.
+                    const sortBy = $('#sortBy').val();
+                    const page = 0;
+                    $.get(`/course/tab/review/${courseIdx}`, {sortBy: sortBy, page: page}, function (data) {
+                        $('.tab-content').html(data);
+                    });
+                },
+                error: function (xhr) {
+                    alert('리뷰 삭제에 실패하였습니다.');
+                }
+            });
+        });
+
+
+        function loadMoreReviews() {
+            const sortBy = $('#sortBy').val();
+            const nextPage = currentPage + 1;
+
+            $.ajax({
+                url: '/review/list',
+                type: 'GET',
+                data: {
+                    courseIdx: courseIdx,
+                    sortBy: sortBy,
+                    page: nextPage
+                },
+                success: function (response) {
+                    if (response.length > 0) {
+                        // 리뷰 아이템을 생성하여 리뷰 목록에 추가
+                        response.forEach(function (review) {
+                            const reviewItem = generateReviewItem(review);
+                            $('.review-list').append(reviewItem);
+                        });
+                        currentPage = nextPage;
+
+                        // 모든 리뷰를 불러왔는지 확인
+                        const loadedReviews = (currentPage + 1) * limit;
+                        if (loadedReviews >= totalReviewCount) {
+                            // 더 이상 로드할 리뷰가 없으면 "더 보기" 버튼 숨기기
+                            $('#loadMore').hide();
+                        }
+                    } else {
+                        // 더 이상 로드할 리뷰가 없으면 "더 보기" 버튼 숨기기
+                        $('#loadMore').hide();
+                    }
+                },
+                error: function () {
+                    alert(' 페이지 실패 추가 리뷰를 불러오는데 실패했습니다.');
+                }
+            });
+        }
+
+        function generateReviewItem(review) {
+            let reviewHtml = `
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="review-author">${review.memberName}</span>
+                        <span class="review-rating">${'★'.repeat(review.rating)}</span>
+                        <span class="review-date">${new Date(review.regDate).toISOString().slice(0, 10)}</span>
+                    </div>
+                    <div class="review-content">
+                        <p>${review.content}</p>
+                    </div>
+                `;
+
+            if (review.memberId === memberId) {
+                reviewHtml += `
+                    <div class="review-actions">
+                        <button class="edit-btn" data-review-idx="${review.idx}">수정</button>
+                        <form class="delete-form" style="display:inline;">
+                            <input type="hidden" name="idx" value="${review.idx}">
+                            <input type="hidden" name="courseIdx" value="${courseIdx}">
+                            <button type="submit">삭제</button>
+                        </form>
+                    </div>
+                    `;
+            }
+
+            reviewHtml += '</div>';
+
+            return reviewHtml;
+        }
+
+        $(document).ready(function () {
+            const loadedReviews = (currentPage + 1) * limit;
+            if (loadedReviews >= totalReviewCount) {
+                $('#loadMore').hide();
+            }
         });
 
     </script>

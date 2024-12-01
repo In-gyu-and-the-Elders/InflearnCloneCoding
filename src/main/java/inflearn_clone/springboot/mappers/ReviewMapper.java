@@ -17,10 +17,16 @@ public interface ReviewMapper {
                                       @Param("limit") int limit);
     int insertReview(ReviewListDTO review);
     int modifyReview(ReviewListDTO review);
-    int deleteReview(@Param("idx") int idx);
+    int deleteReview(@Param("idx") int idx, @Param("memberId") String memberId);
     ReviewListDTO viewReview(@Param("idx") int idx);
 
     int courseCntByTeacher(@Param("memberId") String memberId);
     int reviewCntByTeacher(@Param("memberId") String memberId);
     List<ReviewVO> reviewListByTeacher(Map<String, Object> map);
+    //리뷰평점
+    Double avgRating(int courseIdx);
+    // 리뷰 작성 여부 확인
+    int writerCheck(@Param("memberId") String memberId, @Param("courseIdx") int courseIdx);
+    // 리뷰 총 개수 조회
+    int reviewcnt(@Param("courseIdx") int courseIdx);
 }

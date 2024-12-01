@@ -12,11 +12,13 @@
             LIMIT #{offset}, #{limit}
     </select>
 
-    <select id="courseView" parameterType="int" resultType="inflearn_clone.springboot.domain.CourseVO">
+    <select id="courseView" parameterType="int">
         SELECT
-            idx, category, title, description, teacherId, regDate, displayDate, modifyDate, price, thumbnail
-        FROM tbl_course
-        WHERE idx = #{idx};
+            c.idx, c.category, c.title, c.description, c.teacherId, c.regDate, c.displayDate, c.modifyDate, c.price, c.thumbnail,
+            m.name AS teacherName
+        FROM tbl_course c
+                 JOIN tbl_member m ON c.teacherId = m.memberId
+        WHERE c.idx = #{idx};
     </select>
 
     <!--teacherId로 존재하는 강의가 있는지 확인-->
@@ -133,36 +135,69 @@
 
     <select id="courseTotalCnt" resultType="int">
         SELECT COUNT(*)
-        FROM tbl_course
+        FROM tbl_course c
+        JOIN tbl_member m ON c.teacherId = m.memberId
         <where>
-            status = 'Y'
-            <if test="searchCategory != null and searchCategory != ''">
-                AND category = #{searchCategory}
-            </if>
-            <if test="searchValue != null and searchValue != ''">
-                AND (
-                title LIKE CONCAT('%', #{searchValue}, '%') OR
-                teacherId LIKE CONCAT('%', #{searchValue}, '%')
+            <if test="(categoryCodes != null and categoryCodes.size() > 0) or (searchValue != null and searchValue != '')">
+                (
+                <trim prefixOverrides="OR">
+                    <if test="categoryCodes != null and categoryCodes.size() > 0">
+                        OR c.category IN
+                        <foreach item="code" collection="categoryCodes" open="(" separator="," close=")">
+                            #{code}
+                        </foreach>
+                    </if>
+                    <if test="searchValue != null and searchValue != ''">
+                        OR c.title LIKE CONCAT('%', #{searchValue}, '%')
+                        OR m.name LIKE CONCAT('%', #{searchValue}, '%')
+                    </if>
+                </trim>
                 )
             </if>
+            AND c.status = 'Y'
+             <![CDATA[
+            AND c.displayDate <= NOW()
+              ]]>
         </where>
     </select>
 
 
-    <select id="selectAllCourse" resultType="inflearn_clone.springboot.domain.CourseVO">
+    <select id="selectAllCourse" resultType="inflearn_clone.springboot.dto.course.CourseTotalDTO">
         SELECT
-        idx, category, title, description, teacherId, regDate, displayDate, status, price, thumbnail
-        FROM tbl_course
+        c.idx,
+        c.category,
+        c.title,
+        c.description,
+        c.teacherId,
+        c.regDate,
+        c.displayDate,
+        c.status,
+        c.price,
+        c.thumbnail,
+        m.name AS teacherName
+        FROM tbl_course c
+        JOIN tbl_member m ON c.teacherId = m.memberId
         <where>
-            <if test="searchCategory != null and searchCategory != ''">
-                category = #{searchCategory}
-            </if>
-            <if test="searchValue != null and searchValue != ''">
-                AND (
-                title LIKE CONCAT('%', #{searchValue}, '%') OR
-                teacherId LIKE CONCAT('%', #{searchValue}, '%')
+            <if test="(categoryCodes != null and categoryCodes.size() > 0) or (searchValue != null and searchValue != '')">
+                (
+                <trim prefixOverrides="OR">
+                    <if test="categoryCodes != null and categoryCodes.size() > 0">
+                        OR c.category IN
+                        <foreach item="code" collection="categoryCodes" open="(" separator="," close=")">
+                            #{code}
+                        </foreach>
+                    </if>
+                    <if test="searchValue != null and searchValue != ''">
+                        OR c.title LIKE CONCAT('%', #{searchValue}, '%')
+                        OR m.name LIKE CONCAT('%', #{searchValue}, '%')
+                    </if>
+                </trim>
                 )
             </if>
+            AND c.status = 'Y'
+             <![CDATA[
+            AND c.displayDate <= NOW()
+                     ]]>
         </where>
         ${sortQuery}
         LIMIT #{offset}, #{limit}
