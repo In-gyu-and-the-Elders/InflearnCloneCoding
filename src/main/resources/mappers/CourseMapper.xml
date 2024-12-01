@@ -8,14 +8,17 @@
             idx, category, title, description, teacherId, regDate, displayDate, status, price, thumbnail
         FROM tbl_course
         WHERE status = 'Y' AND teacherId = #{memberId}
-        ORDER BY regDate DESC;
+        ORDER BY regDate DESC
+            LIMIT #{offset}, #{limit}
     </select>
 
-    <select id="courseView" parameterType="int" resultType="inflearn_clone.springboot.domain.CourseVO">
+    <select id="courseView" parameterType="int">
         SELECT
-            idx, category, title, description, teacherId, regDate, displayDate, modifyDate, price, thumbnail
-        FROM tbl_course
-        WHERE idx = #{idx};
+            c.idx, c.category, c.title, c.description, c.teacherId, c.regDate, c.displayDate, c.modifyDate, c.price, c.thumbnail,
+            m.name AS teacherName
+        FROM tbl_course c
+                 JOIN tbl_member m ON c.teacherId = m.memberId
+        WHERE c.idx = #{idx};
     </select>
 
     <!--teacherId로 존재하는 강의가 있는지 확인-->
@@ -75,16 +78,31 @@
         <where>
             <if test="searchCategory != null and searchValue != null">
                 <choose>
-                    <when test="searchCategory == 'memberId'">
-                        memberId LIKE CONCAT('%', #{searchValue}, '%')
+                    <when test="searchCategory == 'teacherId'">
+                        teacherId LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
-                    <when test="searchCategory == 'name'">
-                        `name` LIKE CONCAT('%', #{searchValue}, '%')
+                    <when test="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'price'">
+                        price LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'category'">
+                        category LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'status'">
+                        status LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
                 </choose>
             </if>
-            AND status = #{status}
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="status == null">
+                AND status IN('D', 'N', 'Y', 'R')
+            </if>
         </where>
+
     </select>
     <!-- 강좌 리스트 전체 조회(활성, 비활성, 탈퇴)-->
     <select id="allCourseList" resultType="inflearn_clone.springboot.domain.CourseVO">
@@ -94,16 +112,35 @@
         <where>
             <if test="searchCategory != null and searchValue != null">
                 <choose>
-                    <when test="searchCategory == 'title'">
-                        memberId LIKE CONCAT('%', #{searchValue}, '%')
-                    </when>
                     <when test="searchCategory == 'teacherId'">
-                        `name` LIKE CONCAT('%', #{searchValue}, '%')
+                        teacherId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'price'">
+                        price LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'category'">
+                        category LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'status'">
+                        status LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
                 </choose>
             </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
         </where>
-        ${sortQuery}
+        <choose>
+            <when test="sortQuery != null and sortQuery != ''">
+                ${sortQuery}
+            </when>
+            <otherwise>
+                ORDER BY regDate DESC
+            </otherwise>
+        </choose>
         LIMIT #{offset}, #{limit}
     </select>
 
@@ -111,7 +148,6 @@
         SELECT idx, category, title, description, teacherId, regDate, displayDate, status, price, thumbnail
         FROM tbl_course
         WHERE idx = #{idx}
-
     </select>
 
     <select id="courseTotalCnt1" resultType="int">
@@ -132,37 +168,73 @@
 
     <select id="courseTotalCnt" resultType="int">
         SELECT COUNT(*)
-        FROM tbl_course
+        FROM tbl_course c
+        JOIN tbl_member m ON c.teacherId = m.memberId
         <where>
-            status = 'Y'
-            <if test="searchCategory != null and searchCategory != ''">
-                AND category = #{searchCategory}
-            </if>
-            <if test="searchValue != null and searchValue != ''">
-                AND (
-                title LIKE CONCAT('%', #{searchValue}, '%') OR
-                teacherId LIKE CONCAT('%', #{searchValue}, '%')
+            <if test="(categoryCodes != null and categoryCodes.size() > 0) or (searchValue != null and searchValue != '')">
+                (
+                <trim prefixOverrides="OR">
+                    <if test="categoryCodes != null and categoryCodes.size() > 0">
+                        OR c.category IN
+                        <foreach item="code" collection="categoryCodes" open="(" separator="," close=")">
+                            #{code}
+                        </foreach>
+                    </if>
+                    <if test="searchValue != null and searchValue != ''">
+                        OR c.title LIKE CONCAT('%', #{searchValue}, '%')
+                        OR m.name LIKE CONCAT('%', #{searchValue}, '%')
+                    </if>
+                </trim>
                 )
             </if>
+            AND c.status = 'Y'
+             <![CDATA[
+            AND c.displayDate <= NOW()
+              ]]>
         </where>
     </select>
 
 
-    <select id="selectAllCourse" resultType="inflearn_clone.springboot.domain.CourseVO">
+    <select id="selectAllCourse" resultType="inflearn_clone.springboot.dto.course.CourseTotalDTO">
         SELECT
-        idx, category, title, description, teacherId, regDate, displayDate, status, price, thumbnail
-        FROM tbl_course
+        c.idx,
+        c.category,
+        c.title,
+        c.description,
+        c.teacherId,
+        c.regDate,
+        c.displayDate,
+        c.status,
+        c.price,
+        c.thumbnail,
+        m.name AS teacherName,
+        COALESCE(AVG(r.rating), 0) AS averageRating
+        FROM tbl_course c
+        JOIN tbl_member m ON c.teacherId = m.memberId
+        LEFT JOIN tbl_review r ON c.idx = r.courseIdx
         <where>
-            <if test="searchCategory != null and searchCategory != ''">
-                category = #{searchCategory}
-            </if>
-            <if test="searchValue != null and searchValue != ''">
-                AND (
-                title LIKE CONCAT('%', #{searchValue}, '%') OR
-                teacherId LIKE CONCAT('%', #{searchValue}, '%')
+            <if test="(categoryCodes != null and categoryCodes.size() > 0) or (searchValue != null and searchValue != '')">
+                (
+                <trim prefixOverrides="OR">
+                    <if test="categoryCodes != null and categoryCodes.size() > 0">
+                        OR c.category IN
+                        <foreach item="code" collection="categoryCodes" open="(" separator="," close=")">
+                            #{code}
+                        </foreach>
+                    </if>
+                    <if test="searchValue != null and searchValue != ''">
+                        OR c.title LIKE CONCAT('%', #{searchValue}, '%')
+                        OR m.name LIKE CONCAT('%', #{searchValue}, '%')
+                    </if>
+                </trim>
                 )
             </if>
+            AND c.status = 'Y'
+            <![CDATA[
+        AND c.displayDate <= NOW()
+        ]]>
         </where>
+        GROUP BY c.idx
         ${sortQuery}
         LIMIT #{offset}, #{limit}
     </select>
@@ -213,6 +285,17 @@
             status = 'N',
             modifyDate = NOW()
         WHERE idx = #{idx}
+    </update>
+
+    <update id="processDeleteRequest">
+        UPDATE tbl_course
+           SET status = 'K'
+           WHERE idx=#{courseIdx}
+    </update>
+    <update id="processDeleteRequestN">
+        UPDATE tbl_course
+        SET status = 'Y'
+        WHERE idx=#{courseIdx}
     </update>
 </mapper>
 

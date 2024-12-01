@@ -11,13 +11,18 @@ import inflearn_clone.springboot.dto.member.MemberDTO;
 import inflearn_clone.springboot.service.cart.CartService;
 import inflearn_clone.springboot.service.course.CourseSerivce;
 import inflearn_clone.springboot.service.lesson.LessonServiceIf;
+import inflearn_clone.springboot.service.lessonStatus.LessonStatusServiceImpl;
 import inflearn_clone.springboot.service.like.LikeService;
 import inflearn_clone.springboot.service.order.OrderService;
 import inflearn_clone.springboot.service.review.ReviewService;
 import inflearn_clone.springboot.service.section.SectionServiceIf;
+import inflearn_clone.springboot.utils.CategoryMapper;
+import inflearn_clone.springboot.utils.JSFunc;
 import inflearn_clone.springboot.utils.Paging;
+import inflearn_clone.springboot.utils.QueryUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -28,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static inflearn_clone.springboot.utils.QueryUtil.generateSortQuery;
 
@@ -44,39 +50,84 @@ public class CourseController {
     private final SectionServiceIf sectionService;
     private final LessonServiceIf lessonService;
     private final ModelMapper modelMapper;
+    private final LessonStatusServiceImpl lessonStatusService;
 
     @GetMapping("/list")
     public String list(Model model,
                        @RequestParam(defaultValue = "1") int pageNo,
                        @RequestParam(required = false) String searchCategory,
                        @RequestParam(required = false) String searchValue,
-                       @RequestParam(required = false) String sortType,
-                       @RequestParam(required = false) String sortOrder) {
-        String sortQuery = generateSortQuery(sortType, sortOrder);
+                       @RequestParam(required = false, defaultValue = "regDateDesc") String sort) {
+        String sortType;
+        String sortOrder;
+        switch (sort) {
+            case "regDateDesc":
+                sortType = "c.regDate";
+                sortOrder = "DESC";
+                break;
+            case "ratingDesc":
+                sortType = "averageRating";
+                sortOrder = "DESC";
+                break;
+            case "ratingAsc":
+                sortType = "averageRating";
+                sortOrder = "ASC";
+                break;
+            default:
+                sortType = "c.regDate";
+                sortOrder = "DESC";
+                break;
+        }
 
-        // 총 강의 수 가져오기
-        int totalCnt = courseSerivce.getTotalCourses(searchCategory, searchValue);
-//        log.info("강좌수:"+totalCnt);
+        String sortQuery = QueryUtil.generateSortQuery(sortType, sortOrder);
+//        log.info("SortType: {}, SortOrder: {}", sortType, sortOrder);
 
-        // 페이징 처리
+        List<String> categoryCodes = new ArrayList<>();
+
+        if (searchCategory != null && !searchCategory.isEmpty()) {
+            categoryCodes.add(searchCategory);
+//            log.info("SearchCategory: {}", searchCategory);
+        }
+
+        if (searchValue != null && !searchValue.isEmpty()) {
+            List<String> matchedCategoryCodes = CategoryMapper.getCodesContaining(searchValue);
+            categoryCodes.addAll(matchedCategoryCodes);
+            log.info("SearchValue: {}, MatchedCategoryCodes: {}", searchValue, matchedCategoryCodes);
+        }
+
+        int totalCnt = courseSerivce.getTotalCourses(categoryCodes, searchValue);
+
         Paging paging = new Paging(pageNo, 8, 5, totalCnt, sortType, sortOrder);
 
-        // 강의 리스트 가져오기
-        List<CourseTotalDTO> courseList  = courseSerivce.getCourses(pageNo, 8, searchCategory, searchValue, sortQuery);
-//        log.info("course{}",course);
-//        log.info("searchCategory"+searchCategory);
-//        log.info("searchValue"+searchValue);
-
-        for (CourseTotalDTO course : courseList) {
-            int studentCount = orderService.studentCnt(course.getIdx());
-            course.setStudentCount(studentCount); // 수강생 수를 DTO에 추가
+        if (paging.getTotalPage() < 1) {
+            paging = new Paging(1, 8, 5, 1, sortType, sortOrder);
         }
+        if (pageNo > paging.getTotalPage()) {
+            pageNo = paging.getTotalPage();
+            paging = new Paging(pageNo, 8, 5, totalCnt, sortType, sortOrder);
+        }
+
+        List<CourseTotalDTO> courseList = courseSerivce.getCourses(pageNo, 8, categoryCodes, searchValue, sortQuery);
+
+            for (CourseTotalDTO course : courseList) {
+                int studentCount = orderService.studentCnt(course.getIdx());
+                course.setStudentCount(studentCount); // 수강생 수 추가
+
+                // 리뷰평점 계산
+                Double averageRating = reviewService.avgRating(course.getIdx());
+                if (averageRating == null) {
+                    averageRating = 0.0;
+                }
+                averageRating = Math.round(averageRating * 100) / 100.0;
+                course.setAverageRating(averageRating);
+            }
+
+
         model.addAttribute("course", courseList);
         model.addAttribute("paging", paging);
         model.addAttribute("searchCategory", searchCategory);
         model.addAttribute("searchValue", searchValue);
-        model.addAttribute("sortType", sortType);
-        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("sort", sort);
         model.addAttribute("url", "/course/list");
 
         return "course/list";
@@ -89,7 +140,7 @@ public class CourseController {
         String memberId = (String) request.getSession().getAttribute("memberId");
 //        String memberId = "user1";
         // 상세보기
-        CourseDTO course = courseSerivce.courseView(idx);
+        CourseTotalDTO course = courseSerivce.courseView(idx);
         // 장바구니 중복확인
         boolean isCartPossible = cartService.cartCnt(course.getIdx(), memberId);
         // 결제내역 확인
@@ -100,6 +151,16 @@ public class CourseController {
         int likeCount = likeService.getLikeCount(idx);
         // 좋아요회원확인
         boolean isLiked = likeService.likeCheck(idx, memberId);
+        //리뷰평점
+        Double averageRating = reviewService.avgRating(idx);
+        if (averageRating == null) {
+            averageRating = 0.0;
+        }
+        averageRating = Math.round(averageRating * 100) / 100.0;
+        //리뷰작성확인
+        boolean hasWrittenReview = reviewService.writerCheck(memberId, idx); // 변수 이름 변경
+        model.addAttribute("hasWrittenReview", hasWrittenReview);
+        model.addAttribute("averageRating", averageRating);
         model.addAttribute("isCartPossible", isCartPossible);
         model.addAttribute("isOrderPossible", isOrderPossible);
         model.addAttribute("likeCount", likeCount);
@@ -119,12 +180,11 @@ public class CourseController {
                                 Model model) {
         switch (tabName) {
             case "info":
-                CourseDTO course = courseSerivce.courseView(idx);
+                CourseTotalDTO course = courseSerivce.courseView(idx);
+
                 model.addAttribute("course", course);
                 return "course/tabs/info";
             case "curriculum":
-
-
                 //여기서 해야 하는 것 --> 이미 이 강좌 뷰에 들어왔으니까, 섹션 리스트가 필요한데, 이 섹션에는 강의 리스트가 포함이 되어 있어야 함!
                 List<SectionDTO> sectionDTOList = sectionService.sectionList(idx); // 강좌 인덱스로 섹션의 리스트를 가져옴.
                 List<SectionWithLessonListDTO> sectionWithLessonListDTOList = new ArrayList<>(); // 강의 리스트가 포함된 섹션 리스트를 생성
@@ -146,17 +206,25 @@ public class CourseController {
 ////                model.addAttribute("qnaList", qnaService.getQnAList());
 //                return "course/tabs/qna";
             case "review":
-                log.info("실제 idx"+idx);
-                log.info("실제 sortBy"+sortBy);
-                log.info("실제 page"+page);
+//                log.info("실제 idx"+idx);
+//                log.info("실제 sortBy"+sortBy);
+//                log.info("실제 page"+page);
                 String memberId = (String) request.getSession().getAttribute("memberId");
-                List<ReviewListDTO> reviews = reviewService.getReviewList(idx, sortBy, page);
+                int limit = 5;
+                int offset = page * limit;
+                List<ReviewListDTO> reviews = reviewService.getReviewList(idx, sortBy, offset, limit);
+                boolean writerCheck = reviewService.writerCheck(memberId,idx);
+                int totalReviewCount = reviewService.reviewCnt(idx);
+
+                model.addAttribute("writerCheck", writerCheck);
+                model.addAttribute("totalReviewCount", totalReviewCount);
                 model.addAttribute("memberId", memberId);
                 model.addAttribute("reviews", reviews);
                 model.addAttribute("courseIdx", idx);
                 model.addAttribute("currentPage", page);
+                model.addAttribute("sortBy", sortBy);
 
-                log.info("reviews{}",reviews);
+//                log.info("reviews{}",reviews);
                 return "course/tabs/review";
 //            case "notice":
 ////                model.addAttribute("noticeList", noticeService.getNoticeList());
@@ -164,6 +232,56 @@ public class CourseController {
             default:
                 return "/";
         }
+    }
+
+    @GetMapping("/study/{lessonIdx}")
+    public String playLesson(@PathVariable int lessonIdx, Model model, HttpServletRequest request,HttpServletResponse response) {
+        String memberId = (String) request.getSession().getAttribute("memberId");
+        log.info("초기 아이디 확인 lessonidx:{}",lessonIdx);
+        // 강의 정보 가져오기
+        LessonDTO lesson = lessonService.getLessonById(lessonIdx);
+        if (lesson == null) {
+            response.setCharacterEncoding("UTF-8");
+            JSFunc.alertAndClose("해당 강의를 찾을 수 없습니다.", response);
+            return null;
+        }
+        log.info("강의정보lesson{}",lesson);
+        // 해당 강의의 courseIdx 가져오기
+        int courseIdx = lessonService.getCourseIdxByLessonId(lessonIdx);
+        log.info("해당 강의의 courseIdx{}",courseIdx);
+
+        // 사용자가 해당 강의를 구매했는지 확인
+        boolean hasOrdered = orderService.orderCnt(courseIdx, memberId);
+        if (hasOrdered) {
+            response.setCharacterEncoding("UTF-8");
+            JSFunc.alertAndClose("강좌 구매후 시청이 가능합니다.", response);
+            return null;
+        }
+
+        lessonStatusService.updateLessonStatus(lessonIdx, memberId);
+
+        // 이전/다음 강의 가져오기
+        LessonDTO previousLesson = lessonService.getPreviousLesson(lessonIdx);
+        LessonDTO nextLesson = lessonService.getNextLesson(lessonIdx);
+
+        // 커리큘럼 가져오기
+        List<SectionWithLessonListDTO> curriculum = new ArrayList<>();
+        List<SectionDTO> sectionList = sectionService.sectionList(courseIdx);
+        for (SectionDTO sectionDTO : sectionList) {
+            int sectionIdx = sectionDTO.getIdx();
+            List<LessonDTO> lessons = lessonService.getLessons(sectionIdx);
+            SectionWithLessonListDTO sectionWithLessons = modelMapper.map(sectionDTO, SectionWithLessonListDTO.class);
+            sectionWithLessons.setLessons(lessons);
+            curriculum.add(sectionWithLessons);
+        }
+
+        model.addAttribute("lesson", lesson);
+        model.addAttribute("previousLesson", previousLesson);
+        model.addAttribute("nextLesson", nextLesson);
+        model.addAttribute("curriculum", curriculum);
+        model.addAttribute("courseIdx", courseIdx);
+
+        return "course/tabs/viewLesson";
     }
 
 }

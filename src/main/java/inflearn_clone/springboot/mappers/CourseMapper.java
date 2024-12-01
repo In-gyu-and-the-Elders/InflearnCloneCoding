@@ -5,6 +5,7 @@ import inflearn_clone.springboot.domain.LessonVO;
 import inflearn_clone.springboot.domain.MemberVO;
 import inflearn_clone.springboot.domain.SectionVO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
+import inflearn_clone.springboot.dto.course.CourseTotalDTO;
 import inflearn_clone.springboot.dto.lesson.LessonDTO;
 import inflearn_clone.springboot.dto.section.SectionDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,7 +18,7 @@ import java.util.Map;
 @Mapper
 public interface CourseMapper {
     // 전체강좌 리스트
-    List<CourseVO> courseList(String memberId);
+    List<CourseVO> courseList(Map<String, Object> map);
 
     CourseVO courseView1(int idx);
 
@@ -48,10 +49,10 @@ public interface CourseMapper {
     List<CourseVO> allCourseList(Map<String, Object> map);
 
     // 강좌상세보기
-    CourseVO courseView(int idx);
+    CourseTotalDTO courseView(int idx);
     // 페이징 버전
-    List<CourseVO> selectAllCourse(Map<String, Object> map);
-    int courseTotalCnt(@Param("searchCategory") String searchCategory, @Param("searchValue") String searchValue);
+    List<CourseTotalDTO> selectAllCourse(Map<String, Object> map);
+    int courseTotalCnt(@Param("categoryCodes") List<String> categoryCodes, @Param("searchValue") String searchValue);
 
     int insertCourse(CourseVO courseVO);
     CourseVO viewMyLastCourse(@Param("memberId") String memberId);
@@ -63,6 +64,8 @@ public interface CourseMapper {
     List<SectionVO> selectSection(int idx);
     List<LessonVO> selectLesson(@Param("sectionIdx") List<Integer> sectionIdx);
 
+    boolean processDeleteRequest(@Param("courseIdx") long courseIdx);
+    boolean processDeleteRequestN(@Param("courseIdx") long courseIdx);
 
-
+    int courseTotalCnt(Map<String, Object> map);
 }

@@ -3,34 +3,12 @@
       layout:decorate="~{admin/layout/common}">
 <div layout:fragment="content">
     <div>
-        <h2>환불 목록</h2>
+        <h2>환불 대상자</h2>
     </div>
-<!--    <div class="search-container">-->
-<!--        <form action="/admin/course/list" method="get" class="d-flex align-items-center">-->
-<!--            <select class="form-select" name="searchCategory">-->
-<!--                <option value="">카테고리</option>-->
-<!--                <option value="title" >강의명</option>-->
-<!--                <option value="teacherId">강사 ID</option>-->
-<!--            </select>-->
-<!--            <input type="search" class="form-control" name="searchValue" placeholder="내용">-->
-<!--            <select class="form-select" name="sortOrder">-->
-<!--                <option value="">정렬순</option>-->
-<!--                <option value="DESC">내림차순</option>-->
-<!--                <option value="ASC">오름차순</option>-->
-<!--            </select>-->
-<!--            <select class="form-select" name="sortType">-->
-<!--                <option value="">정렬내용</option>-->
-<!--                <option value="regDate">등록일</option>-->
-<!--                <option value="teacherId">강사명</option>-->
-<!--            </select>-->
-<!--            <button class="btn btn-primary" type="submit">검색</button>-->
-<!--            <button class="btn btn-secondary" type="reset">취소</button>-->
-<!--        </form>-->
-<!--    </div>-->
+    <br>
     <table class="table table-bordered table-hover">
         <thead class="thead">
             <tr>
-                <th>#</th>
                 <th>주문자</th>
                 <th>가격</th>
                 <th>주문번호</th>
@@ -41,7 +19,6 @@
         </thead>
         <tbody>
         <tr th:each="dto, status:${list}">
-            <td>#</td>
             <td>[[${dto.memberId}]]</td>
             <td>[[${dto.orderPrice}]]</td>
             <td>[[${dto.orderNumber}]]</td>
@@ -51,6 +28,9 @@
                 <span class="badge badge-success" th:if="${dto.status == 'Y'}">환불전</span>
                 <span class="badge badge-danger" th:if="${dto.status != 'Y' or dto.status == 'D'}">환불 완료</span>
             </td>
+        </tr>
+        <tr th:if="${list == null or list.isEmpty()}">
+            <td colspan="6" class="text-center">등록된 내용이 없습니다.</td>
         </tr>
         </tbody>
     </table>

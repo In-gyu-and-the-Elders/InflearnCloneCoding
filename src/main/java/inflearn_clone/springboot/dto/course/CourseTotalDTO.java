@@ -33,5 +33,7 @@ public class CourseTotalDTO {
     private MultipartFile thumbnailFile;
     private int studentCount; // 학생수
 
+    private String teacherName;
+    private Double averageRating;
 
 }

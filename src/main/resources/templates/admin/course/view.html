@@ -2,10 +2,59 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
       layout:decorate="~{admin/layout/common}">
 <div layout:fragment="content">
-
+    <div>
+        <h2>강좌 정보</h2>
+    </div>
+    <br>
+    <div class="container">
+        <table class="table table-bordered">
+            <tr>
+                <th class="text-center" style="width: 150px;">강좌 제목</th>
+                <td th:text="${info.title}"></td>
+            </tr>
+            <tr>
+                <th class="text-center">강좌 소개</th>
+                <td th:text="${info.description}"></td>
+            </tr>
+            <tr>
+                <th class="text-center">강좌분류</th>
+                <td th:text="${info.category}"></td>
+            </tr>
+            <tr>
+                <th class="text-center">강사 ID</th>
+                <td th:text="${info.teacherId}"></td>
+            </tr>
+            <tr>
+                <th class="text-center">등록일</th>
+                <td th:text="${info.regDate}"></td>
+            </tr>
+            <tr>
+                <th class="text-center">노출일</th>
+                <td th:text="${info.displayDate}"></td>
+            </tr>
+            <tr>
+                <th class="text-center">상태</th>
+                <td>
+                    <span class="badge badge-success" th:if="${info.status == 'Y'}">활성</span>
+                    <span class="badge badge-secondary" th:if="${info.status == 'N'}">비활성</span>
+                    <span class="badge badge-warning" th:if="${info.status == 'R'}">삭제 처리 중</span>
+                    <span class="badge badge-danger" th:if="${info.status != 'Y' and info.status != 'N' and info.status != 'R'}">삭제</span>
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center">가격</th>
+                <td th:text="${#numbers.formatDecimal(info.price, 0, 'COMMA', 0, 'POINT')} + '원'"></td>
+            </tr>
+            <tr>
+                <th class="text-center">썸네일</th>
+                <td>
+                    <img th:src="${info.thumbnail}" alt="강좌 썸네일" style="width: 300px; height: auto;">
+                </td>
+            </tr>
+        </table>
+    </div>
     <div class="d-flex justify-content-end mt-3">
         <a th:href="@{/admin/course/delete(idx=${info.idx}, memberId=${info.teacherId})}" class="btn btn-danger me-2" onclick="return confirm('삭제하시겠습니까?')">삭제</a>
-        <a th:href="@{/admin/course/modify(idx=${info.idx})}" class="btn btn-success">수정</a>
+        <a th:href="@{/admin/course/modify(courseIdx=${info.idx})}" class="btn btn-success">수정</a>
     </div>
-
 </div>

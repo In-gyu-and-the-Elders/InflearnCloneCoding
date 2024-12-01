@@ -1,10 +1,12 @@
 package inflearn_clone.springboot.service.course;
 import inflearn_clone.springboot.domain.CourseVO;
 import inflearn_clone.springboot.domain.LessonVO;
+import inflearn_clone.springboot.domain.ReviewVO;
 import inflearn_clone.springboot.domain.SectionVO;
 import inflearn_clone.springboot.dto.course.CourseDTO;
 import inflearn_clone.springboot.dto.course.CourseTotalDTO;
 import inflearn_clone.springboot.dto.lesson.LessonDTO;
+import inflearn_clone.springboot.dto.review.ReviewListDTO;
 import inflearn_clone.springboot.dto.section.SectionDTO;
 import inflearn_clone.springboot.mappers.CourseMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,23 +29,25 @@ public class CourseServiceImpl implements CourseSerivce {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<CourseDTO> courseList(String memberId) {
-        List<CourseVO> voList = courseMapper.courseList(memberId);
+    public List<CourseDTO> courseList(int pageNo, int pageSize, String memberId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("offset", (pageNo - 1) * pageSize);
+        map.put("limit", pageSize);
+        map.put("memberId", memberId);
+        List<CourseVO> voList =  courseMapper.courseList(map);
         return voList.stream()
-            .map(vo -> modelMapper.map(vo, CourseDTO.class))
-            .collect(Collectors.toList());
+                .map(vo -> modelMapper.map(vo, CourseDTO.class)).collect(Collectors.toList());
     }
     @Override
-    public CourseDTO courseView(int idx) {
-        CourseVO courseVO = courseMapper.courseView(idx);
-        if (courseVO != null) {
-            return modelMapper.map(courseVO, CourseDTO.class);
-        }
-        return null;
+    public CourseTotalDTO courseView(int idx) {
+        return courseMapper.courseView(idx);
     }
     @Override
     public CourseDTO courseView1(int idx) {
         CourseVO vo = courseMapper.courseView1(idx);
+        if(vo == null) {
+            return null;
+        }
         CourseDTO courseInfo = modelMapper.map(vo, CourseDTO.class);
         return courseInfo;
     }
@@ -105,45 +109,37 @@ public class CourseServiceImpl implements CourseSerivce {
     }
 
     @Override
-    public List<CourseDTO> allCourseList(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
+    public List<CourseDTO> allCourseList(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String status) {
         Map<String, Object> map = new HashMap<>();
         map.put("offset", (pageNo - 1) * pageSize);
         map.put("limit", pageSize);
         map.put("searchCategory", searchCategory);
         map.put("searchValue", searchValue);
         map.put("sortQuery", sortQuery);
+        map.put("status", status);
 
         List<CourseVO> voList =  courseMapper.allCourseList(map);
         return voList.stream()
             .map(vo -> modelMapper.map(vo, CourseDTO.class)).collect(Collectors.toList());
     }
     @Override
-    public List<CourseTotalDTO> getCourses(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery) {
+    public List<CourseTotalDTO> getCourses(int pageNo, int pageSize, List<String> categoryCodes, String searchValue, String sortQuery) {
         Map<String, Object> map = new HashMap<>();
         map.put("offset", (pageNo - 1) * pageSize);
         map.put("limit", pageSize);
-        map.put("searchCategory", searchCategory);
-        if ("category".equals(searchCategory)) {
-            searchValue = CategoryMapper.getCode(searchValue);
-        }
+        map.put("categoryCodes", categoryCodes);
         map.put("searchValue", searchValue);
         map.put("sortQuery", sortQuery);
 
-        List<CourseVO> voList = courseMapper.selectAllCourse(map);
-        return voList.stream().map(vo -> modelMapper.map(vo, CourseTotalDTO.class)).collect(Collectors.toList());
+        return courseMapper.selectAllCourse(map);
     }
 
     @Override
-    public int getTotalCourses(String searchCategory, String searchValue) {
+    public int getTotalCourses(List<String> categoryCodes, String searchValue) {
         Map<String, Object> map = new HashMap<>();
-        map.put("searchCategory", searchCategory);
-
-        // 카테고리 검색일 경우 코드로 변환
-        if ("category".equals(searchCategory)) {
-            searchValue = CategoryMapper.getCode(searchValue);
-        }
+        map.put("categoryCodes", categoryCodes);
         map.put("searchValue", searchValue);
-        return courseMapper.courseTotalCnt(searchCategory, searchValue);
+        return courseMapper.courseTotalCnt(map);
     }
 
 

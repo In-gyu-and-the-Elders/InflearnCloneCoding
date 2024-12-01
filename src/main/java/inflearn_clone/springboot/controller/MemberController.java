@@ -192,7 +192,7 @@ public class MemberController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            log.error("리뷰 수정 중 ��류 발생", e);
+            log.error("리뷰 수정 중 오류 발생", e);
             response.put("success", false);
             response.put("message", "리뷰 수정 중 오류가 발생했습니다.");
             return ResponseEntity.internalServerError().body(response);
@@ -292,4 +292,40 @@ public class MemberController {
             return ResponseEntity.internalServerError().body(response);
         }
     }
+
+    @PostMapping("/leave")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> leaveMember(
+            @RequestBody Map<String, String> params,
+            HttpSession session) {
+        
+        Map<String, Object> response = new HashMap<>();
+        String memberId = (String) session.getAttribute("memberId");
+        
+        if (memberId == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        try {
+            String leaveReason = params.get("leaveReason");
+            
+            myPageService.updateMemberLeave(memberId, leaveReason);
+            
+            session.invalidate();
+            
+            response.put("success", true);
+            response.put("message", "회원 탈퇴가 완료되었습니다.");
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("회원 탈퇴 처리 중 오류 발생", e);
+            response.put("success", false);
+            response.put("message", "회원 탈퇴 처리 중 오류가 발생했습니다.");
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    
 }

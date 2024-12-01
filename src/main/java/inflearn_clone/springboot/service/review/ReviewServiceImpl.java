@@ -9,6 +9,7 @@ import inflearn_clone.springboot.dto.review.ReviewListDTO;
 import inflearn_clone.springboot.mappers.ReviewMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -25,17 +26,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewMapper reviewMapper;
 
     @Override
-    public List<ReviewListDTO> getReviewList(int courseIdx, String sortBy, int page) {
-        int limit = 5;
-        int offset = page * limit;
-
-        log.info("getReviewList 호출: courseIdx={}, sortBy={}, page={}, offset={}, limit={}",
-                courseIdx, sortBy, page, offset, limit);
-
-        List<ReviewListDTO> reviews = reviewMapper.getReviewList(courseIdx, sortBy, offset, limit);
-
-//        log.info("조회된 리뷰 수: {}", reviews.size());
-        return reviews;
+    public List<ReviewListDTO> getReviewList(int courseIdx, String sortBy, int offset, int limit) {
+        return reviewMapper.getReviewList(courseIdx, sortBy, offset, limit);
     }
 
     @Override
@@ -45,17 +37,31 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public int modifyReview(ReviewListDTO review) {
-        return reviewMapper.modifyReview(review);
+        try {
+            // 수정 쿼리 실행
+            return reviewMapper.modifyReview(review);
+        } catch (PersistenceException e) {
+            log.error("MyBatis 오류 발생: ", e);
+            throw new RuntimeException("리뷰 수정 실패", e); // 필요한 경우 RuntimeException을 던짐
+        } catch (Exception e) {
+            log.error("리뷰 수정 중 알 수 없는 오류 발생: ", e);
+            return 0; // 실패 시 0 반환
+        }
     }
 
     @Override
-    public int deleteReview(int idx) {
-        return reviewMapper.deleteReview(idx);
+    public int deleteReview(int idx, String memberId) {
+        return reviewMapper.deleteReview(idx, memberId);
     }
 
     @Override
     public ReviewListDTO viewReview(int idx) {
         return reviewMapper.viewReview(idx);
+    }
+
+    @Override
+    public int courseCntByTeacher(String memberId) {
+        return reviewMapper.courseCntByTeacher(memberId);
     }
 
     @Override
@@ -73,5 +79,21 @@ public class ReviewServiceImpl implements ReviewService {
         return voList.stream()
                 .map(vo -> modelMapper.map(vo, ReviewListDTO.class)).collect(Collectors.toList());
 
+    }
+    // 리뷰평점
+    @Override
+    public Double avgRating(int courseIdx) {
+        return reviewMapper.avgRating(courseIdx);
+    }
+
+    @Override
+    public boolean writerCheck(String memberId, int courseIdx) {
+        int result = reviewMapper.writerCheck(memberId, courseIdx);
+        return result > 0;
+    }
+
+    @Override
+    public int reviewCnt(int courseIdx) {
+        return reviewMapper.reviewcnt(courseIdx);
     }
 }

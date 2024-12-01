@@ -29,10 +29,17 @@
                     <when test ="searchValue == 'writerId'">
                         writerId LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
+                    <when test ="searchCategory == 'regDate'">
+                        regDate LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchValue == 'displayDate'">
+                        displayDate LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
                 </choose>
             </if>
             AND category = 'N'
         </where>
+        ORDER BY regDate DESC
         ${sortQuery}
         LIMIT #{offset}, #{limit}
     </select>
@@ -59,9 +66,53 @@
                     <when test="searchCategory == 'writerId'">
                         writerId LIKE CONCAT('%', #{searchValue}, '%')
                     </when>
+                    <when test ="searchCategory == 'regDate'">
+                        regDate LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchValue == 'displayDate'">
+                        displayDate LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
                 </choose>
             </if>
             AND category = 'N'
         </where>
     </select>
+
+    <select id="listS" resultType="inflearn_clone.springboot.domain.BbsVO">
+        SELECT * FROM tbl_bbs
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                <choose>
+                    <when test ="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test ="searchValue == 'writerId'">
+                        writerId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND category = 'N' AND (displayDate IS NULL OR displayDate &lt;= NOW())
+        </where>
+        ${sortQuery}
+        LIMIT #{offset}, #{limit}
+    </select>
+    <select id="noticeTotalCntS" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_bbs
+        <where>
+            <if test="searchCategory != null and searchValue != null">
+                <choose>
+                    <when test="searchCategory == 'title'">
+                        title LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchCategory == 'writerId'">
+                        writerId LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND category = 'N' AND (displayDate IS NULL OR displayDate &lt;= NOW())
+        </where>
+    </select>
+
+
 </mapper>    

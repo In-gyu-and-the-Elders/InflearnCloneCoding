@@ -6,24 +6,24 @@
         <h2>공지사항 목록</h2>
     </div>
     <div class="search-container">
-        <form action="/admin/member/sList" method="get" class="d-flex align-items-center">
+        <form action="/admin/notice/list" method="get" class="d-flex align-items-center">
             <select class="form-select" name="searchCategory">
                 <option value="">카테고리</option>
-                <option value="name" >이름</option>
-                <option value="memberId">회원 ID</option>
-                <option value="email">회원 이메일</option>
+                <option value="title">제목</option>
+                <option value="writerId">작성자</option>
             </select>
             <input type="search" class="form-control" name="searchValue" placeholder="내용">
+            <select class="form-select" name="sortType">
+                <option value="">정렬내용</option>
+                <option value="title">제목</option>
+                <option value="writerId">작성자</option>
+                <option value="regDate">등록일</option>
+                <option value="displayDate">공개일</option>
+            </select>
             <select class="form-select" name="sortOrder">
                 <option value="">정렬순</option>
                 <option value="DESC">내림차순</option>
                 <option value="ASC">오름차순</option>
-            </select>
-            <select class="form-select" name="sortType">
-                <option value="">정렬내용</option>
-                <option value="regDate">등록일</option>
-                <option value="teacherId">강사명</option>
-                <option value="name">이름</option>
             </select>
             <button class="btn btn-primary" type="submit">검색</button>
             <button class="btn btn-secondary" type="reset">취소</button>
@@ -53,12 +53,12 @@
             </td>
             <td th:if="${dto.filePath == null}"></td>
         </tr>
+        <tr th:if="${notice == null or notice.isEmpty()}">
+            <td colspan="7" class="text-center">등록된 내용이 없습니다.</td>
+        </tr>
         </tbody>
     </table>
     <div th:replace="~{/common/paging :: paging}"></div>
-    <p th:if="${notice.isEmpty()}">
-        등록된 공지사항이 없습니다.
-    </p>
     <div class="d-flex justify-content-end mt-3">
         <a th:href="@{/admin/notice/insert}" class="btn btn-primary">등록</a>
     </div>

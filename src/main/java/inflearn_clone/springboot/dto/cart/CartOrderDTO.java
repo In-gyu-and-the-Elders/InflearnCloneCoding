@@ -24,4 +24,5 @@ public class CartOrderDTO {
     private String thumbnail;
     private List<Integer> idxList;
     private String title;
+    private List<Integer> courseIdxList;
 }

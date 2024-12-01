@@ -47,12 +47,15 @@ public class OrderServiceImpl implements OrderService  {
     public List<OrderRefundDTO> refundByDeleteCourse(int idx) {
         System.out.println("idx" + idx);
         List<OrderVO> list = orderMapper.refundByDeleteCourse(idx);
+        if(list == null){
+            return null;
+        }
         return list.stream()
             .map(vo -> modelMapper.map(vo, OrderRefundDTO.class)).collect(Collectors.toList());
     }
     @Override
-    public boolean refundOrder(int idx) {
-        return orderMapper.refundOrder(idx) == 0;
+    public boolean refundOrder(int courseIdx, String memberId) {
+        return orderMapper.refundOrder(courseIdx, memberId) == 0;
     }
     @Override
     public int studentCnt(int courseIdx) {

@@ -5,44 +5,61 @@
         layout:decorate="~{layout/layout.html}"
 >
 <div layout:fragment="main">
-  <div class="container mt-5">
+  <div class="container mt-5 w-75">
     <h2 class="text-center mb-4">강좌 등록</h2>
-    <form id="courseForm" method="POST" enctype="multipart/form-data">
+    <form id="courseForm" method="POST" th:object="${courseDTO}" th:action="@{/teacher/course/insert}" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="title" class="form-label">강좌 제목</label>
-        <input type="text" class="form-control" id="title" name="title" placeholder="강좌 제목" required />
+        <input type="text" class="form-control" minlength="5" maxlength="100" id="title" th:field="*{title}" placeholder="강좌 제목" th:text="${courseDTO.title}" required />
+        <div th:if="${#fields.hasErrors('title')}" style="color: red;">
+          <span th:errors="*{title}"></span>
+        </div>
       </div>
 
       <div class="mb-3">
         <label for="description" class="form-label">강좌 소개</label>
-        <textarea class="form-control" id="description" name="description" placeholder="강좌 소개" rows="4" required></textarea>
+        <textarea class="form-control" minlength="100" maxlength="2000" id="description" th:field="*{description}" placeholder="강좌 소개" rows="4" required>[[${courseDTO.description}]]</textarea>
+        <div th:if="${#fields.hasErrors('description')}" style="color: red;">
+          <span th:errors="*{description}"></span>
+        </div>
       </div>
 
       <div class="mb-3">
         <label for="category" class="form-label">카테고리</label>
-        <select class="form-control" id="category" name="category" required>
-          <option value="D">개발</option>
-          <option value="A">인공지능</option>
-          <option value="H">하드웨어</option>
-          <option value="C">커리어,자기계발</option>
-          <option value="M">기획,경영,마케팅</option>
+        <select class="form-control" id="category" th:field="*{category}" required>
+          <option th:selected="${courseDTO.category == 'D'}" value="D">개발</option>
+          <option th:selected="${courseDTO.category == 'A'}" value="A">인공지능</option>
+          <option th:selected="${courseDTO.category == 'H'}" value="H">하드웨어</option>
+          <option th:selected="${courseDTO.category == 'C'}" value="C">커리어,자기계발</option>
+          <option th:selected="${courseDTO.category == 'M'}" value="M">기획,경영,마케팅</option>
         </select>
-
+        <div th:if="${#fields.hasErrors('category')}" style="color: red;">
+          <span th:errors="*{category}"></span>
+        </div>
       </div>
 
       <div class="mb-3">
         <label for="price" class="form-label">가격</label>
-        <input type="number" class="form-control" id="price" name="price" placeholder="가격" required />
+        <input type="number" class="form-control" id="price" th:field="*{price}" placeholder="가격" required />
+        <div th:if="${#fields.hasErrors('price')}" style="color: red;">
+          <span th:errors="*{price}"></span>
+        </div>
       </div>
 
       <div class="mb-3">
         <label for="displayDate" class="form-label">강좌 노출일</label>
-        <input type="datetime-local" class="form-control" id="displayDate" name="displayDate" required />
+        <input type="datetime-local" class="form-control" id="displayDate" th:field="*{displayDate}" required />
+        <div th:if="${#fields.hasErrors('displayDate')}" style="color: red;">
+          <span th:errors="*{displayDate}"></span>
+        </div>
       </div>
 
       <div class="mb-3">
         <label for="thumbnailFile" class="form-label">썸네일 이미지</label>
-        <input type="file" class="form-control" id="thumbnailFile" name="thumbnailFile" required />
+        <input type="file" class="form-control" accept="image/jpeg, image/png, image/jpg" id="thumbnailFile" th:field="*{thumbnailFile}" required onchange="checkFileExtension()"/>
+        <div th:if="${#fields.hasErrors('thumbnailFile')}" style="color: red;">
+          <span th:errors="*{thumbnailFile}"></span>
+        </div>
       </div>
 
       <div class="d-flex justify-content-center">
@@ -50,5 +67,31 @@
       </div>
     </form>
   </div>
+  <script>
+    function checkFileExtension() {
+      const fileInput = document.getElementById('thumbnailFile');
+      const file = fileInput.files[0];  // 선택된 파일 객체
+      const filePath = fileInput.value;
+      const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;  // 허용할 확장자 설정
+
+      // 확장자 체크
+      if (!allowedExtensions.exec(filePath)) {
+        alert('이미지 파일만 업로드 가능합니다 (jpg, jpeg, png)');
+        fileInput.value = '';  // 잘못된 파일을 선택한 경우 input을 초기화
+        return false;
+      }
+
+      // 파일 크기 체크 (1MB 이하)
+      const maxFileSize = 1 * 1024 * 1024;  // 1MB를 바이트로 변환
+      if (file.size > maxFileSize) {
+        alert('파일 크기는 1MB 이하만 업로드 가능합니다.');
+        fileInput.value = '';  // 파일 크기가 초과되면 input을 초기화
+        return false;
+      }
+
+      return true;  // 파일이 확장자와 크기 조건을 만족하면 true 반환
+    }
+
+  </script>
 </div>
 

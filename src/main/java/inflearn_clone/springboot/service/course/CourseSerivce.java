@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface CourseSerivce {
     // 강의 목록 가져오기
-    List<CourseDTO> courseList(String memberId);
+    List<CourseDTO> courseList(int pageNo, int pageSize, String memberId);
     // 강의 상세 정보 가져오기
 
     CourseDTO courseView1(int idx);
@@ -37,13 +37,13 @@ public interface CourseSerivce {
     //전체 강좌 수
     int allCourseListTotalCnt(String searchCategory, String searchValue, String status);
 
-    List<CourseDTO> allCourseList(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);
+    List<CourseDTO> allCourseList(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery, String status);
 
     // 강의 상세 정보 가져오기
-    CourseDTO courseView(int idx);
+    CourseTotalDTO courseView(int idx);
 
-    List<CourseTotalDTO> getCourses(int pageNo, int pageSize, String searchCategory, String searchValue, String sortQuery);
-    int getTotalCourses(String searchCategory, String searchValue);
+    List<CourseTotalDTO> getCourses(int pageNo, int pageSize, List<String> categoryCodes, String searchValue, String sortQuery);
+    int getTotalCourses(List<String> categoryCodes, String searchValue);
     int insertCourse(CourseDTO courseDTO);
     CourseDTO viewMyLastCourse(String memberId);
 
