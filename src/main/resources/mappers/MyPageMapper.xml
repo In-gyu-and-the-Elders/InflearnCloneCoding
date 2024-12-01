@@ -27,6 +27,7 @@
       tbl_member t ON c.teacherId = t.memberId
     WHERE
       o.memberId = #{memberId}
+      AND o.status = 'Y'
     ORDER BY
       CASE #{sortType}
         WHEN 'latest' THEN o.orderDate
