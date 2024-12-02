@@ -552,10 +552,9 @@ public class TeacherController {
         log.info("title: {}:", Arrays.toString(titles));
         log.info("videoFiles: {}:", Arrays.toString(videoFiles));
         log.info("lessonIdx : {}", lessonIdx);
-        //여기는 일단 이미 있는 강의들을 업데이트 쳐주는 공간
-        String[] filePaths = new String[titles.length]; // 파일 전체를 저장해둘 수 있는 통임.
-        for(int i=0;i<lessonCount;i++){ // 이미 존재하는 강의들만 돌면서 파일 업로드를 진행하고, "삭제하고" , 동영상 경로를 배열에 저장할 것
-            //근데 여기서 삭제를 하려면, 해당 강의의 idx가 필요함? lessonIdx가 존재하는 친구들은 이미 있는 강의들.
+
+        String[] filePaths = new String[titles.length]; // 파일 전체를 저장해둘 수 있는 통
+        for(int i=0;i<lessonCount;i++){
             try {
                 filePaths[i] = CommonFileUtil.uploadFile(videoFiles[i]);
             } catch (Exception e) {
@@ -563,7 +562,7 @@ public class TeacherController {
                 log.error(e);
                 break;
             }
-            try { //삭제 로직이 여기에 들어가야 함
+            try {
                 String videoPath = lessonMapper.getVideo(lessonIdx[i]);
                 log.info("videoPath: {}", videoPath);
                 if(filePaths[i] != null) {
@@ -592,7 +591,7 @@ public class TeacherController {
         }
         //여기까지 했으면 이미 존재하는 강의의 업데이트가 완료됨
 
-        //여기부터는 이제 새로운 거 등록
+        //여기부터는 이제 새로운 거 등
 
         for(int i=lessonCount;i<titles.length;i++){  // 이제 새로운 강의들을 등록함
             try {
