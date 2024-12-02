@@ -88,27 +88,38 @@ public class NoticeServiceImpl implements NoticeServiceIf{
         content.append("30일 이후 다음 강좌들은 폐지됩니다\n");
         content.append("폐지 강좌 목록\n");
 
-        // 강좌 인덱스 조회
-        List<Integer> idxList = list.stream()
-            .map(CourseDTO::getIdx)
-            .collect(Collectors.toList());
+//        // 강좌 인덱스 조회
+//        List<Integer> idxList = list.stream()
+//            .map(CourseDTO::getIdx)
+//            .collect(Collectors.toList());
+//
+//
+//
+//        //강좌명 조회
+//        List<String> titleList = list.stream()
+//                .map(CourseDTO::getTitle)
+//                .collect(Collectors.toList());
+//
+//            for(String title : titleList){
+//                courseMapper.updateDeleteDate(idx, LocalDateTime.now().plusMinutes(1));
+//                LocalDateTime month = LocalDateTime.now().plusDays(30);
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//                String formattedDate = month.format(formatter);
+//                content.append(title);
+//                content.append(formattedDate);
+//                content.append("\n");
+//            }
 
-        //강좌명 조회
-        List<String> titleList = list.stream()
-                .map(CourseDTO::getTitle)
-                .collect(Collectors.toList());
-
-        for(Integer idx : idxList){
-            for(String title : titleList){
-                courseMapper.updateDeleteDate(idx, LocalDateTime.now().plusMinutes(1));
-                LocalDateTime month = LocalDateTime.now().plusDays(30);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                String formattedDate = month.format(formatter);
-                content.append(title);
-                content.append(formattedDate);
-                content.append("\n");
-            }
+        for (CourseDTO course : list) {
+            Integer idx = course.getIdx();
+            String title = course.getTitle();
+            courseMapper.updateDeleteDate(idx, LocalDateTime.now().plusMinutes(1));
+            LocalDateTime month = LocalDateTime.now().plusDays(30);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String formattedDate = month.format(formatter);
+            content.append(title).append(" - ").append(formattedDate).append("\n");
         }
+
         bbsVO.setCategory("N");
         bbsVO.setContent(content.toString());
         int result = bbsMapper.insert(bbsVO);
@@ -123,7 +134,7 @@ public class NoticeServiceImpl implements NoticeServiceIf{
         bbsVO.setTitle(info.getTeacherId() + "강사님 강좌 폐지 안내");
         StringBuilder content = new StringBuilder();
         content.append("30일 이후 해당 강좌는 폐지됩니다\n");
-        courseMapper.updateDeleteDate(info.getIdx(), LocalDateTime.now().plusDays(30).with(LocalTime.MIDNIGHT));
+        courseMapper.updateDeleteDate(info.getIdx(), LocalDateTime.now().plusMinutes(1)); //시연용 1분
         LocalDateTime month = LocalDateTime.now().plusDays(30);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = month.format(formatter);
