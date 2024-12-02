@@ -159,7 +159,7 @@ public class AdminController {
         model.addAttribute("sortType", sortType);
         model.addAttribute("sortOrder", sortOrder);
         model.addAttribute("uri", "/admin/member/sList");
-        return "/admin/member/stdList";
+        return "admin/member/stdList";
     }
 
     /**
@@ -263,7 +263,7 @@ public class AdminController {
         }else{
             String referer = request.getHeader("Referer");
             if (referer == null) {
-                referer = "/admin/member/sList";
+                referer = "admin/member/sList";
             }
             JSFunc.alertAndRedirect("일치하는 회원 정보가 없습니다.", referer, response);
             return null;
@@ -357,7 +357,7 @@ public class AdminController {
         model.addAttribute("sortType", sortType);
         model.addAttribute("sortOrder", sortOrder);
         model.addAttribute("uri", "/admin/course/list");
-        return "/admin/course/courseList";
+        return "admin/course/courseList";
 
     }
 
@@ -389,7 +389,7 @@ public class AdminController {
         model.addAttribute("sortType", sortType);
         model.addAttribute("sortOrder", sortOrder);
         model.addAttribute("uri", "/admin/course/requestedDeleteList");
-        return "/admin/course/requestedDeleteList";
+        return "admin/course/requestedDeleteList";
 
     }
 
@@ -402,7 +402,7 @@ public class AdminController {
         CourseDTO courseInfo = courseSerivce.courseView1(idx);
         model.addAttribute("info", courseInfo);
         if(courseInfo != null){
-            return "/admin/course/view";
+            return "admin/course/view";
         }else{
             log.info("강좌 정보 없음");
         }

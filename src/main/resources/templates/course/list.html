@@ -11,7 +11,7 @@
     <main class="main-content">
         <form action="/course/list" method="get">
             <section class="filters">
-                <button id="searchBtn" onclick="javasrcipt:document.getElementById('searchbar-input').focus()">검색</button>
+                <button id="searchBtn" onclick="javascript:document.getElementById('searchbar-input').focus()">검색</button>
                 <button type="submit" name="searchCategory" value="">전체</button>
                 <button type="submit" name="searchCategory" value="D">개발·프로그래밍</button>
                 <button type="submit" name="searchCategory" value="A">인공지능</button>
@@ -56,7 +56,7 @@
             </p>
         </section>
     </main>
-    <div th:replace="~{/common/paging :: paging}"></div>
+    <div th:replace="~{common/paging :: paging}"></div>
 </div>
 <!--<script>-->
 <!--    // 검색 버튼 클릭 시 포커스 주기-->
